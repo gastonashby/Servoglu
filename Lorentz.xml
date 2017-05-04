@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Constantes 
+ r = 19
+ tita = 10 
+ b = 8/3
+ -->
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML">
+	<parameters>
+		<constant>
+			<m:math>
+				<apply> 
+					<eq/>
+					<ci>r</ci>
+					<cn>19</cn>
+				</apply>
+			</m:math>
+		</constant>
+		<constant>
+			<m:math>
+				<apply> 
+					<eq/>
+					<ci>t</ci>
+					<cn>19</cn>
+				</apply>
+			</m:math>
+		</constant>
+		<constant>
+			<m:math>
+				<apply> 
+					<eq/>
+					<ci>b</ci>
+					<cn>2.666667</cn>
+				</apply>
+			</m:math>
+		</constant>
+	</parameters>
+	<functions>
+		<function name="h" parameters="x">
+			<m:math>								
+				<piecewise>
+                	<piece>
+        				<apply><minus/><ci> x </ci></apply>
+        				<apply><lt/><ci> x </ci> <cn> 0 </cn></apply>
+					</piece>
+					<piece>
+						<cn> 0 </cn>
+						<apply><eq/><ci> x </ci> <cn> 0 </cn></apply>
+					</piece>
+					<piece>
+						  <ci> x </ci>
+						  <apply><gt/><ci> x </ci> <cn> 0 </cn></apply>
+					</piece>
+				</piecewise>				
+			</m:math>
+		</function>
+          <function name="g" parameters="x">
+			<m:math>				
+                    <apply>
+                       <power/>
+                       <ci>x</ci>
+                       <cn>2</cn>
+                    </apply>
+			</m:math>
+		</function>
+	</functions>	
+	<equations>
+		<!-- dxdt=tita(y -x) -->
+		<equation name="x" defaultValue="2.0" simulate="True">
+			<m:math>
+				<apply>
+					<times/>
+					<ci>t</ci>
+					<apply>	
+						<minus/>
+						<ci>y</ci>
+						<ci>x</ci>
+					</apply>
+				</apply>  
+			</m:math>
+		</equation>
+
+		<!-- dydt=rx - y -xz -->
+		<equation name="y" defaultValue="3.0" simulate="True">
+			<m:math>
+				<apply>
+					<minus/>
+					<apply>
+						<times/>
+						<ci>r</ci>
+						<ci>x</ci>
+					</apply>
+					<ci>y</ci>
+					<apply>
+						<times/>
+						<ci>x</ci>
+						<ci>z</ci>
+					</apply>
+				</apply>  
+			</m:math>
+		</equation>
+
+		<!-- dzdt=xy-bz -->
+		<equation name="z" defaultValue="4.0" simulate="True">
+			<m:math>
+				<apply>
+					<minus/>
+					<apply>
+						<times/>
+						<ci>x</ci>
+						<ci>y</ci>
+					</apply>
+					<apply>
+						<times/>
+						<ci>b</ci>
+						<ci>z</ci>
+					</apply>			
+				</apply>
+			</m:math>
+		</equation>
+	</equations>
+</servoglu>

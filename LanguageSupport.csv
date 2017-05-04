@@ -1,0 +1,67 @@
+lbl.version,"0,0,1",
+lbl.idioma,English,Español
+lbl.Sex,Sex,SexES
+"lbl.{Male 0,Female 1}","{Male 0,Female 1}","{Male 0,Female 1}ES"
+lbl.Height,Height,HeightES
+lbl.Weight,Weight,WeightES
+lbl.Age,Age,AgeES
+lbl.years,years,yearsES
+lbl.Type 1 Diabetes,Type 1 Diabetes,Type 1 DiabetesES
+"lbl.{No 0,Yes 1}","{No 0,Yes 1}","{No 0,Yes 1}ES"
+lbl.Glucose Initial Value,Glucose Initial Value,Glucose Initial ValueES
+lbl.Intravenous Glucose,Intravenous Glucose,Intravenous GlucoseES
+lbl.Exogenous insulin appearance rate,Exogenous insulin appearance rate,Exogenous insulin appearance rateES
+lbl.Enteral carbohydrate feedrate,Enteral carbohydrate feedrate,Enteral carbohydrate feedrateES
+lbl.Insulin sensitiviy,Insulin sensitiviy,Insulin sensitiviyES
+lbl.Body surface area,Body surface area,Body surface areaES
+"lbl.Fraction(Van Cauter), normal=0.76,obese=0.78,NIDDM=0.78","Fraction(Van Cauter), normal=0.76,obese=0.78,NIDDM=0.78","Fraction(Van Cauter), normal=0.76,obese=0.78,NIDDM=0.78ES"
+lbl.Long Half life(Van Cauter),Long Half life(Van Cauter),Long Half life(Van Cauter)ES
+lbl.minutes,minutes,minutesES
+"lbl.Short Half life(Van Cauter), normal=4.95,obese=4.55,NIDDM=4.52","Short Half life(Van Cauter), normal=4.95,obese=4.55,NIDDM=4.52","Short Half life(Van Cauter), normal=4.95,obese=4.55,NIDDM=4.52ES"
+lbl.minutes,minutes,minutesES
+lbl.1/min,1/min,1/minES
+lbl.1/min,1/min,1/minES
+lbl.fractional turnover rate,fractional turnover rate,fractional turnover rateES
+lbl.1/min,1/min,1/minES
+lbl.Peripheral insulin distribution,Peripheral insulin distribution,Peripheral insulin distributionES
+lbl.fractional turnover rate,fractional turnover rate,fractional turnover rateES
+lbl.1/min,1/min,1/minES
+lbl.Plasma insulin distribution volume,Plasma insulin distribution volume,Plasma insulin distribution volumeES
+lbl.Peripheral insulin distribution,Peripheral insulin distribution,Peripheral insulin distributionES
+lbl.Impaired gut absorption coefficient,Impaired gut absorption coefficient,Impaired gut absorption coefficientES
+lbl.GLUT 1 and GLUT 3 maximal uptake rate,GLUT 1 and GLUT 3 maximal uptake rate,GLUT 1 and GLUT 3 maximal uptake rateES
+lbl.Combined GLUT 1 and GLUT 3 carrier affinity,Combined GLUT 1 and GLUT 3 carrier affinity,Combined GLUT 1 and GLUT 3 carrier affinityES
+lbl.GLUT 4 maximal uptake rate,GLUT 4 maximal uptake rate,GLUT 4 maximal uptake rateES
+lbl.BG concentration threshold,BG concentration threshold,BG concentration thresholdES
+lbl.Coeficient Ah,Coeficient Ah,Coeficient AhES
+lbl.Coeficient Bh,Coeficient Bh,Coeficient BhES
+lbl.Coeficient Ch,Coeficient Ch,Coeficient ChES
+lbl.Glucose distribution volume,Glucose distribution volume,Glucose distribution volumeES
+lbl.Coeficient k,Coeficient k,Coeficient kES
+lbl.Conversion factor between steady state plasma insulin concentration and exogenous insulin infusion,Conversion factor between steady state plasma insulin concentration and exogenous insulin infusion,Conversion factor between steady state plasma insulin concentration and exogenous insulin infusionES
+lbl.Peripheral/plasma steady state concentration ratio,Peripheral/plasma steady state concentration ratio,Peripheral/plasma steady state concentration ratioES
+lbl.Molecular mass of C-peptide,Molecular mass of C-peptide,Molecular mass of C-peptideES
+lbl.Molecular mass of insulin,Molecular mass of insulin,Molecular mass of insulinES
+lbl.Insulin diffusion constant between plasma and peripheral compartments,Insulin diffusion constant between plasma and peripheral compartments,Insulin diffusion constant between plasma and peripheral compartmentsES
+lbl.Insulin removal from plasma,Insulin removal from plasma,Insulin removal from plasmaES
+"lbl.Insulin clearance rate, peripheral insulin binding","Insulin clearance rate, peripheral insulin binding","Insulin clearance rate, peripheral insulin bindingES"
+lbl.Glomerular filtration rate,Glomerular filtration rate,Glomerular filtration rateES
+lbl.Maximal reabsorption rate,Maximal reabsorption rate,Maximal reabsorption rateES
+lbl.GLUT 4 carrier affinity,GLUT 4 carrier affinity,GLUT 4 carrier affinityES
+lbl.p initial value,p initial value,p initial valueES
+lbl.i function initial value,i function initial value,i function initial valueES
+lbl.Glucose gut absorption,Glucose gut absorption,Glucose gut absorptionES
+lbl.Hepatic balance,Hepatic balance,Hepatic balanceES
+lbl.Peripheral glucose uptake: GLUT 1 and GLUT 3 mediated glucose uptake,Peripheral glucose uptake: GLUT 1 and GLUT 3 mediated glucose uptake,Peripheral glucose uptake: GLUT 1 and GLUT 3 mediated glucose uptakeES
+lbl.Peripheral glucose uptake: GLUT 4 mediated glucose uptake,Peripheral glucose uptake: GLUT 4 mediated glucose uptake,Peripheral glucose uptake: GLUT 4 mediated glucose uptakeES
+lbl.Renal glucose balance,Renal glucose balance,Renal glucose balanceES
+lbl.Endogenous glucose balance,Endogenous glucose balance,Endogenous glucose balanceES
+lbl.Fraction of insulin effect,Fraction of insulin effect,Fraction of insulin effectES
+lbl.i* normalized to lie between 0 and 1,i* normalized to lie between 0 and 1,i* normalized to lie between 0 and 1ES
+lbl.Insulin action on glucose uptake,Insulin action on glucose uptake,Insulin action on glucose uptakeES
+lbl.Steady-state insulin infusion rate per kg body mass,Steady-state insulin infusion rate per kg body mass,Steady-state insulin infusion rate per kg body massES
+lbl.Endogenous insulin appearancerate,Endogenous insulin appearancerate,Endogenous insulin appearancerateES
+lbl.Bioavailable glucose,Bioavailable glucose,Bioavailable glucoseES
+lbl.Blood Glucose concentration,Blood Glucose concentration,Blood Glucose concentrationES
+lbl.Plasma Insulin concentration,Plasma Insulin concentration,Plasma Insulin concentrationES
+lbl.Peripheral insulin concentration,Peripheral insulin concentration,Peripheral insulin concentrationES
