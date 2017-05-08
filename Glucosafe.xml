@@ -3,21 +3,21 @@
 <servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG">
 	<parameters>
 		<userDefinedParameters>
-			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" />
-			<userDefined name="H" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85"/>
-			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102"/>
-			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36"/>
-			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1"/>
-			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="5.1"/>
+			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False"/>
+			<userDefined name="H" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
+			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"/>
+			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False"/>
+			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False"/>
+			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="5.1" slider="False"/>
 
 
 			<!-- Treatments, entered by the user -->
-			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0"/>
-			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="110"/>
-			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg min" type="real" defaultValue ="0.0105"/>
+			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0.5" slider="True" sliderMin="0.0" sliderMax="1.0"/>
+			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0"/>
+			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="0.1"/>
 			
 			<!-- End of treatments, entered by the user -->
-			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real" defaultValue ="0.3"/>
+			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real" defaultValue ="0.3" slider="True" sliderMin="0.0" sliderMax="1.0"/>
 		</userDefinedParameters>
 		<constants>
 			
@@ -945,7 +945,7 @@
 		</equation>
 		
 		
-		<equation name="Q" defaultValue="18" simulate="True" description="lbl.Peripheral insulin concentration" unit="mU/l">
+		<equation name="Q" defaultValue="18" simulate="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>

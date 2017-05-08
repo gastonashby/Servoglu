@@ -97,7 +97,7 @@ def parseConstants(xmlroot,languageHash):
 
 def parseUserDefinedParameters(xmlroot,languageHash):
     userDefinedParameters = xmlroot.find('parameters').find('userDefinedParameters')
-    UserDefined = collections.namedtuple('UserDefined', ['name', 'description', 'unit', 'type', 'defaultValue'])
+    UserDefined = collections.namedtuple('UserDefined', ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider', 'sliderMin', 'sliderMax'])
     d = collections.deque()
     for userdp in userDefinedParameters:
         name = userdp.attrib['name']
@@ -114,7 +114,15 @@ def parseUserDefinedParameters(xmlroot,languageHash):
 
         type = userdp.attrib['type']
         defaultValue = userdp.attrib['defaultValue']
-        u = UserDefined(name, description, unit, type, defaultValue)
+        isSlider = False
+        sliderMin = 0
+        sliderMax = 0
+        if userdp.attrib['slider'] == 'True' or userdp.attrib['slider'] == 'true':
+            isSlider = True
+            sliderMin = float(userdp.attrib['sliderMin'])
+            sliderMax = float(userdp.attrib['sliderMax'])
+
+        u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax)
         d.append(u)
     return d
 
