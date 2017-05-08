@@ -26,15 +26,15 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                         ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
                         "plt2.recalculate()\n"
                 _s_f_aux = "sliderValueChanged" + str(i)
-                print(sliderF)
+                # print(sliderF)
                 exec(sliderF)
                 exec("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
                 i += 1
 
-        print("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
-        print(sliderF)
-
-        exec(sliderF)
+        # print("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
+        # print(sliderF)
+        #
+        # exec(sliderF)
 
     def createParams(self):
         # Tree params
@@ -109,7 +109,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 _s_f_aux = "self.sliderValueChanged" + str(i)
 
                 # print(sliderF)
-                print(_s_f_aux)
+                # print(_s_f_aux)
                 # exec(sliderF)
 
                 s_aux.valueChanged.connect(eval(_s_f_aux))
