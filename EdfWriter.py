@@ -54,12 +54,12 @@ def WriteEDF(DataSet,Equations,Frecuency,FileName):
 
     f.setSignalHeaders(channel_info)
     f.writeSamples(data_list)
-    f.writeAnnotation(0, -1, "Recording starts")
+    f.writeAnnotation(0, -1, "Simulation Starts")
     #f.writeAnnotation(298, -1, "Test 1")
     #f.writeAnnotation(294.99, -1, "pulse 1")
     #f.writeAnnotation(295.9921875, -1, "pulse 2")
     #f.writeAnnotation(296.99078341013825, -1, "pulse 3")
-    f.writeAnnotation(DataSet.shape[0], -1, "Recording ends")
+    #f.writeAnnotation(DataSet.shape[0], -1, "Recording ends")
     f.close()
     del f
 

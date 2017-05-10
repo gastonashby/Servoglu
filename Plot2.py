@@ -5,6 +5,7 @@ from DefineFunction import *
 import numpy as np
 
 from scipy.integrate import odeint
+import EdfWriter as edf
 
 _u,_c,_f,_e = mp.ParseMathml('Glucosafe.xml','LanguageSupport.csv')
 _aux = []
@@ -43,6 +44,8 @@ def fGluc(XX, tt):
 
 _xdata = np.linspace(0, 10000, 10000)
 _y = odeint(fGluc, _aux, _xdata)
+#edf.WriteEDF(_y,_e,1/60,'sampleEDF')
+
 #print(y)
 
 
