@@ -11,7 +11,9 @@ import numpy
 # import local python
 from ui_main_window import Ui_MainWindow
 from ui_dock_widget import Ui_ControlsBoxDockWidget
+from PyQt5.QtWidgets import QFileDialog
 import Plot2 as plt2
+#import TestingEDF as test
 
 
 class Window(QtGui.QMainWindow):
@@ -23,7 +25,12 @@ class Window(QtGui.QMainWindow):
         self.ui.setupUi(self)
 
         self.mbar = self.setMenuBar(self.ui.ui_menubar.ui_menubar)
+
+        # EXIT ACTION
         self.ui.ui_menubar.exit_action.triggered.connect(self.close)
+
+        # EXPORT TO EDF
+        self.ui.ui_menubar.export_action.triggered.connect(self.exportToEDF)
 
         self.dck_widget = Ui_ControlsBoxDockWidget()
         self.dck_widget.setupUi(self)
@@ -42,8 +49,6 @@ class Window(QtGui.QMainWindow):
         # TIMMER
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update1)
-
-
 
         # GRAPH
         self.definite_graph()
@@ -108,3 +113,25 @@ class Window(QtGui.QMainWindow):
             _j += 1
         self.indexGr += 1
         self.ui.ui_sinc_plot.setXRange(self.indexGr - 80, self.indexGr + 20)
+
+    def exportToEDF(self):
+
+        # file_dialog = QFileDialog(self)
+        #
+        # # the name filters must be a list
+        # file_dialog.setNameFilters(["EDF file (*.edf)"])
+        # file_dialog.selectNameFilter("EDF file (*.edf)")
+        #
+        # file_dialog.setAcceptMode(1)
+        # # # show the dialog
+        # file_dialog.exec_()
+        myFilter = ["EDF file (*.edf)"]
+        name, _ = QFileDialog.getSaveFileName(self, 'Save EDF as',"","EDF file (*.edf)", options=QFileDialog.DontUseNativeDialog)
+        #test.RunTest(name)
+        #file = open(name, 'w')
+        #text = self.textEdit.toPlainText()
+        #file.write(text)
+        #file.close()
+
+
+
