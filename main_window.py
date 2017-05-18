@@ -13,7 +13,7 @@ from ui_main_window import Ui_MainWindow
 from ui_dock_widget import Ui_ControlsBoxDockWidget
 from PyQt5.QtWidgets import QFileDialog
 import Plot2 as plt2
-#import TestingEDF as test
+import EdfWriter as edf
 
 import types
 
@@ -175,7 +175,12 @@ class Window(QtGui.QMainWindow):
         # file_dialog.exec_()
         myFilter = ["EDF file (*.edf)"]
         name, _ = QFileDialog.getSaveFileName(self, 'Save EDF as',"","EDF file (*.edf)", options=QFileDialog.DontUseNativeDialog)
-        #test.RunTest(name)
+        if name != "":
+            if not name.endswith(".edf"):
+                name = name + ".edf"
+            edf.WriteEDF(plt2._y[:300,:],plt2._e,1/60,name)
+
+
         #file = open(name, 'w')
         #text = self.textEdit.toPlainText()
         #file.write(text)

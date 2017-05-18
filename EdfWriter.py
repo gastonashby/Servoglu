@@ -29,7 +29,7 @@ def Interpolate(DataSet,Frecuency):
     return interpolatedDataSet
 
 def WriteEDF(DataSet,Equations,Frecuency,FileName):
-    test_data_file = os.path.join('.', FileName + '.edf')
+    test_data_file = os.path.join('.', FileName)
     numberOfColumns = DataSet.shape[1]
     numberOfRows = DataSet.shape[0]
 
@@ -59,7 +59,7 @@ def WriteEDF(DataSet,Equations,Frecuency,FileName):
     #f.writeAnnotation(294.99, -1, "pulse 1")
     #f.writeAnnotation(295.9921875, -1, "pulse 2")
     #f.writeAnnotation(296.99078341013825, -1, "pulse 3")
-    #f.writeAnnotation(DataSet.shape[0], -1, "Recording ends")
+    f.writeAnnotation(DataSet.shape[0], -1, "Recording ends")
     f.close()
     del f
 
