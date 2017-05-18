@@ -10,26 +10,12 @@ from pyqtgraph.parametertree import Parameter, ParameterTree
 # TODO: No importar Plot2, pasar por parametro
 import Plot2 as plt2
 # import local python scripts
-import types
 
 class Ui_ControlsBoxDockWidget(QtCore.QObject):
 
     def __init__(self):
         super(Ui_ControlsBoxDockWidget, self).__init__()
-        i = 1
-        sliderF = ""
-        for userDef in plt2._u:
-            if userDef.isSlider:
-                # sliderF = """def sliderValueChanged""" + str(i) + """(self, value):\n\tprint(value/100)\n\n"""
-                sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
-                        "plt2." + userDef.name + " = int_value / 100\n\tself.label[" + str(i-1) + "]" \
-                        ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
-                        "plt2.recalculate()\n"
-                _s_f_aux = "sliderValueChanged" + str(i)
-                # print(sliderF)
-                exec(sliderF)
-                exec("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
-                i += 1
+
 
         # print("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
         # print(sliderF)
@@ -106,13 +92,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 s_aux.setValue(float(userDef.defaultValue) * 100)
 
                 # sliderF = """def sliderValueChanged""" + str(i) + """(self, value):\n\tprint(value/100)\n\n"""
-                _s_f_aux = "self.sliderValueChanged" + str(i)
 
-                # print(sliderF)
-                # print(_s_f_aux)
-                # exec(sliderF)
-
-                s_aux.valueChanged.connect(eval(_s_f_aux))
                 l_aux = QtGui.QLabel()
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
 
@@ -134,13 +114,6 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
         self.btnReset = QtGui.QPushButton('Reset')
         #
 
-        # self.house_layout.addWidget(self.label[1])
-        # self.house_layout.addWidget(self.slider[1])
-        # self.house_layout.addWidget(self.label[2])
-        # self.house_layout.addWidget(self.slider[2])
-        # self.house_layout.addWidget(self.label[3])
-        # self.house_layout.addWidget(self.slider[3])
-
         self.house_layout.addWidget(self.parameter_tree)
 
         self.house_layout.addWidget(self.btnPlayStop)
@@ -150,27 +123,3 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
         self.house_widget.setLayout(self.house_layout)
         #
         self.ui_controls_box_widget.setWidget(self.house_widget)
-
-    # def sliderValueChanged1(self, int_value):
-    #     print(int_value/100)
-    #     plt2.z = int_value / 100
-    #     self.label[0].setText("Intravenous Glucose: " + str(float(plt2.z)) + " mmol/kg/min")
-    #     plt2.recalculate()
-    #
-    # def sliderValueChanged2(self, int_value):
-    #     print(int_value/100)
-    #     plt2.Ex = int_value / 100
-    #     self.label[1].setText("Exogenous insulin appearance rate: " + str(float(plt2.Ex)) + " mU/min")
-    #     plt2.recalculate()
-    #
-    # def sliderValueChanged3(self, int_value):
-    #     print(int_value/100)
-    #     plt2.ecf = int_value / 100
-    #     self.label[2].setText("Enteral carbohydrate feedrate: " + str(float(plt2.ecf)) + " mmol/kg min")
-    #     plt2.recalculate()
-    #
-    # def sliderValueChanged4(self, int_value):
-    #     print(int_value / 100)
-    #     plt2.s = int_value / 100
-    #     self.label[3].setText("Insulin sensitiviy: " + str(float(plt2.s)) + " {1 normal}")
-    #     plt2.recalculate()

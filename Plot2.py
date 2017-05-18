@@ -16,9 +16,9 @@ exec(defineEquations(_e),globals())
 
 indexGr = 1
 
-def recalculate():
-    global _y, _aux, _xdata, indexGr
-    #print(_aux)
+def recalculate(indexGr):
+    global _y, _aux, _xdata
+    #print(indexGr)
     #print(_y[indx-1])
     _aux = _y[indexGr-1]
     _xdata = np.linspace(indexGr-1, indexGr + 9999, 10000)
