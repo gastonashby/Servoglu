@@ -84,23 +84,23 @@ class Window(QtGui.QMainWindow):
     def definite_graph(self):
         _i = 0
         _dats = plt2.obtener(0)
-        mayor = _dats[0]
-        menor = _dats[0]
+        self.mayor = _dats[0]
+        self.menor = _dats[0]
         for eq in plt2._e:
             # print(eq.simulate)
             if eq.simulate:
                 self.all_data.append([plt2.obtener(0)[_i]])
                 self.all_curves.append(self.ui.ui_sinc_plot.plot(plt2._xdata, pen=(255, 255, 255)))
 
-                if _dats[_i] > mayor:
-                    mayor = _dats[_i]
+                if _dats[_i] > self.mayor:
+                    self.mayor = _dats[_i]
 
-                if _dats[_i] < menor:
-                    menor = _dats[_i]
+                if _dats[_i] < self.menor:
+                    self.menor = _dats[_i]
 
             _i += 1
 
-        self.ui.ui_sinc_plot.setYRange(menor - 10 , mayor + 10)
+        self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
 
     def play_stop(self):
         if self.dck_widget.btnPlayStop.text() == "Play":
@@ -119,14 +119,14 @@ class Window(QtGui.QMainWindow):
         self.indexGr = 0
 
         # TODO: falta restaurar los valores iniciales del XML
-        plt2.recalculate(0)
+        #plt2.recalculate(0)
 
         _dats = plt2.obtener(0)
         _i = 0
         _j = 0
         for eq in plt2._e:
             if eq.simulate:
-                # print(dats[_j])
+                #print(_dats)
                 self.all_data[_i] = [_dats[_j]]
                 self.all_curves[_i].setData(self.all_data[_i])
                 _i += 1
@@ -140,19 +140,17 @@ class Window(QtGui.QMainWindow):
         #print(_dats)
         _i = 0
         _j = 0
-        mayor = _dats[_j]
-        menor = _dats[_j]
         for eq in plt2._e:
             if eq.simulate:
                 #print(dats[_j])
                 self.all_data[_i].append(_dats[_j])
                 self.all_curves[_i].setData(self.all_data[_i])
 
-                if _dats[_j] > mayor:
-                    mayor = _dats[_j]
+                if _dats[_j] > self.mayor:
+                    self.mayor = _dats[_j]
 
-                if _dats[_i] < menor:
-                    menor = _dats[_i]
+                if _dats[_j] < self.menor:
+                    self.menor = _dats[_j]
 
                 _i += 1
             _j += 1
@@ -160,7 +158,7 @@ class Window(QtGui.QMainWindow):
 
         #if self.indexGr % 5 == 0:
         self.ui.ui_sinc_plot.setXRange(self.indexGr - 80, self.indexGr + 20)
-        self.ui.ui_sinc_plot.setYRange(menor - 10, mayor + 10)
+        self.ui.ui_sinc_plot.setYRange(self.menor - 10, self.mayor + 10)
 
     def exportToEDF(self):
 
