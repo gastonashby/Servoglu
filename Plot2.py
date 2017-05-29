@@ -20,11 +20,12 @@ def recalculate(indexGr):
     print(indexGr)
     #print(_y[indx-1])
     _aux = _y[indexGr-1]
-    _xdata = np.linspace(indexGr-1, indexGr + 9999, 10000)
-    print(_y)
+    # TODO: descomentar
+    # _xdata = np.linspace(indexGr-1, indexGr + 999, 1000)
+    #print(_y)
 
     _y = odeint(fGluc, _aux, _xdata)
-    print(_y)
+    #print(_y)
 
 
 def fGluc(XX, tt):
@@ -33,19 +34,21 @@ def fGluc(XX, tt):
     _i = 0
     salida = []
     for ec in _e:
-        print(eval('XX[' + str(_i) + ']'))
+        #print(eval('XX[' + str(_i) + ']'))
         auux = ec.name + '= XX[' + str(_i) + ']'
         _i += 1
         exec(auux)
-    print('********')
+    #print('********')
     for eq in _e:
        # print(eq.equation)
         salida.append(eval(eq.equation))
 
     return salida
 
-_xdata = np.linspace(0, 10000, 10000)
+_xdata = np.linspace(0, 999, 10000)
+print(_xdata)
 _y = odeint(fGluc, _aux, _xdata)
+#print(_y)
 
 #print(_y)
 #edf.WriteEDF(_y,_e,1/60,'sampleEDF')

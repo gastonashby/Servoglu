@@ -90,7 +90,8 @@ class Window(QtGui.QMainWindow):
             # print(eq.simulate)
             if eq.simulate:
                 self.all_data.append([plt2.obtener(0)[_i]])
-                self.all_curves.append(self.ui.ui_sinc_plot.plot(plt2._xdata, pen=(255, 255, 255)))
+                print(plt2._xdata)
+                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]], pen=(255, 255, 255)))
 
                 if _dats[_i] > self.mayor:
                     self.mayor = _dats[_i]
@@ -100,11 +101,11 @@ class Window(QtGui.QMainWindow):
 
             _i += 1
 
-        self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
+        #self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
 
     def play_stop(self):
         if self.dck_widget.btnPlayStop.text() == "Play":
-            self.timer.start(50)
+            self.timer.start(500)
             self.dck_widget.btnPlayStop.setText("Stop")
             self.dck_widget.btnNext.setEnabled(False)
         else:
@@ -136,6 +137,7 @@ class Window(QtGui.QMainWindow):
         self.dck_widget.btnNext.setEnabled(True)
 
     def update1(self):
+        self.indexGr += 1
         _dats = plt2.obtener(self.indexGr)
         #print(_dats)
         _i = 0
@@ -144,7 +146,7 @@ class Window(QtGui.QMainWindow):
             if eq.simulate:
                 #print(dats[_j])
                 self.all_data[_i].append(_dats[_j])
-                self.all_curves[_i].setData(self.all_data[_i])
+                self.all_curves[_i].setData(plt2._xdata[:self.indexGr+1], self.all_data[_i])
 
                 if _dats[_j] > self.mayor:
                     self.mayor = _dats[_j]
@@ -154,11 +156,10 @@ class Window(QtGui.QMainWindow):
 
                 _i += 1
             _j += 1
-        self.indexGr += 1
 
         #if self.indexGr % 5 == 0:
-        self.ui.ui_sinc_plot.setXRange(self.indexGr - 80, self.indexGr + 20)
-        self.ui.ui_sinc_plot.setYRange(self.menor - 10, self.mayor + 10)
+        self.ui.ui_sinc_plot.setXRange(plt2._xdata[self.indexGr+1] - 80, plt2._xdata[self.indexGr+1] + 20)
+        #self.ui.ui_sinc_plot.setYRange(self.menor - 10, self.mayor + 10)
 
     def exportToEDF(self):
 
