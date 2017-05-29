@@ -1,13 +1,20 @@
 
-import ParsingMathML as mp
+#import ParsingMathML as mp
 from DefineFunction import *
 
 import numpy as np
+import ModelParser as mp
 
 from scipy.integrate import odeint
 import EdfWriter as edf
 
-_u,_c,_f,_e = mp.ParseMathml('Glucosafe.xml','LanguageSupport.csv')
+model = mp.ModelParser('Glucosafe.xml','LanguageSupport.csv')
+_u = model.userDefinedParameters
+_c = model.constants
+_f = model.functions
+_e = model.equations
+
+
 _aux = []
 exec(defineUserDefinedParameters(_u), globals())
 exec(defineParameters(_c), globals())

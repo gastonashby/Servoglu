@@ -177,7 +177,7 @@ class Window(QtGui.QMainWindow):
         if name != "":
             if not name.endswith(".edf"):
                 name = name + ".edf"
-            edf.WriteEDF(plt2._y[:300,:],plt2._e,1/60,name)
+            edf.WriteEDF(plt2._y[:self.indexGr,:],plt2._e,1/60,name)
 
 
         #file = open(name, 'w')
