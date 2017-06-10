@@ -21,16 +21,22 @@ exec(defineParameters(_c), globals())
 exec(defineFunctions(_f),globals())
 exec(defineEquations(_e),globals())
 
+indexGrAux = 0
+
+
+def recalculate1():
+    global indexGrAux
+    recalculate(indexGrAux)
+
 
 def recalculate(indexGr):
-    global _y, _aux, _xdata
-    print(indexGr)
+    global _y, _aux, _xdata, indexGrAux
+    #print(indexGr)
     #print(_y[indx-1])
     _aux = _y[indexGr-1]
-    # TODO: descomentar
-    # _xdata = np.linspace(indexGr-1, indexGr + 999, 1000)
+    _xdata = np.linspace(indexGr, indexGr + 1000, 1000)
     #print(_y)
-
+    indexGrAux = indexGr
     _y = odeint(fGluc, _aux, _xdata)
     #print(_y)
 
@@ -53,7 +59,7 @@ def fGluc(XX, tt):
     return salida
 
 _xdata = np.linspace(0, 999, 10000)
-print(_xdata)
+#print(_xdata)
 _y = odeint(fGluc, _aux, _xdata)
 #print(_y)
 
