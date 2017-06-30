@@ -2,7 +2,7 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 from PyQt5 import QtGui, QtCore
-
+from pyqtgraph import mkPen
 from ui_main_window import Ui_MainWindow
 from ui_dock_widget import Ui_ControlsBoxDockWidget
 from PyQt5.QtWidgets import QFileDialog
@@ -85,7 +85,7 @@ class Window(QtGui.QMainWindow):
             if eq.simulate:
                 self.all_data.append([plt2.obtener(0)[_i]])
                 #print(plt2._xdata)
-                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]], pen=(255, 255, 255)))
+                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]], pen=mkPen('k', width=3)))
 
                 if _dats[_i] > self.mayor:
                     self.mayor = _dats[_i]

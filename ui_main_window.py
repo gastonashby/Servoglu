@@ -18,7 +18,7 @@ class Ui_MainWindow(QtCore.QObject):
         self.ui_central_widget = QtGui.QWidget(MainWindow)
         #
         self.ui_window = pyqtgraph.GraphicsWindow()
-        self.ui_window.setBackground('k')
+        self.ui_window.setBackground('w')
 
         # PLOT
         # TODO: Sacar el titulo del XML

@@ -31,14 +31,14 @@ def recalculate1():
 
 def recalculate(indexGr):
     global _y, _aux, _xdata, indexGrAux
-    #print(indexGr)
-    #print(_y[indx-1])
+    print(indexGr)
+    print(_y[indexGr - 1])
     _aux = _y[indexGr-1]
     _xdata = np.linspace(indexGr, indexGr + 1000, 1000)
-    #print(_y)
+    print(_y)
     indexGrAux = indexGr
     _y = odeint(fGluc, _aux, _xdata)
-    #print(_y)
+    print(_y)
 
 
 def fGluc(XX, tt):
