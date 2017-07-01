@@ -31,14 +31,10 @@ def recalculate1():
 
 def recalculate(indexGr):
     global _y, _aux, _xdata, indexGrAux
-    print(indexGr)
-    print(_y[indexGr - 1])
     _aux = _y[indexGr-1]
     _xdata = np.linspace(indexGr, indexGr + 1000, 1000)
-    print(_y)
-    indexGrAux = indexGr
+    indexGrAux = 0
     _y = odeint(fGluc, _aux, _xdata)
-    print(_y)
 
 
 def fGluc(XX, tt):
@@ -59,14 +55,7 @@ def fGluc(XX, tt):
     return salida
 
 _xdata = np.linspace(0, 999, 10000)
-#print(_xdata)
 _y = odeint(fGluc, _aux, _xdata)
-#print(_y)
-
-#print(_y)
-#edf.WriteEDF(_y,_e,1/60,'sampleEDF')
-
-#print(y)
 
 
 
