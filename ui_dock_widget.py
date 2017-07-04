@@ -104,7 +104,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 exec("plt2." + childName.split(".")[1] + " = " + data)
                 plt2.recalculate1()
 
-        __parTr1.sigTreeStateChanged.connect(change)
+        __parTr1.sigValueChanged.connect(change)
 
         self.slider = []
         self.label = []

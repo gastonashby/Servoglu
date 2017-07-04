@@ -130,6 +130,8 @@ class Window(QtGui.QMainWindow):
         self.dck_widget.btnPlayStop.setText("Play")
         self.dck_widget.btnNext.setEnabled(True)
 
+        plt2.recalculate(0)
+
     def update1(self):
         self.indexGr += 1
         _dats = plt2.obtener(self.indexGr)

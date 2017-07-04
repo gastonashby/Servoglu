@@ -26,20 +26,22 @@ indexGrAux = 0
 
 def recalculate1():
     global indexGrAux
+    print('5')
     recalculate(indexGrAux)
 
 
 def recalculate(indexGr):
     global _y, _aux, _xdata, indexGrAux
-    _aux = _y[indexGr-1]
-    _xdata = np.linspace(indexGr, indexGr + 1000, 1000)
+    _aux = _y[indexGr]
+    print('4')
+    _xdata = np.linspace(indexGr, indexGr + 999, 1000)
     indexGrAux = 0
     _y = odeint(fGluc, _aux, _xdata)
+    print(_y)
 
 
 def fGluc(XX, tt):
     global _e
-
     _i = 0
     salida = []
     for ec in _e:
@@ -54,12 +56,22 @@ def fGluc(XX, tt):
 
     return salida
 
-_xdata = np.linspace(0, 999, 10000)
-_y = odeint(fGluc, _aux, _xdata)
 
+_auxIni = _aux
+_xdata = np.linspace(0, 999, 1000)
+_y = odeint(fGluc, _aux, _xdata)
+print('Solution created 1st time')
+
+def restart():
+    global  _y, _auxIni
+    _xdata = np.linspace(0, 999, 1000)
+    _y = odeint(fGluc, _auxIni, _xdata)
 
 
 def obtener(_i):
     global _y
+    print('2')
+    print(_i)
+    print(_y)
     return _y[_i]
 
