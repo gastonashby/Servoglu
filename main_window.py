@@ -2,7 +2,7 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 from PyQt5 import QtGui, QtCore
-from pyqtgraph import mkPen
+import pyqtgraph
 from ui_main_window import Ui_MainWindow
 from ui_dock_widget import Ui_ControlsBoxDockWidget
 from PyQt5.QtWidgets import QFileDialog
@@ -35,7 +35,7 @@ class Window(QtGui.QMainWindow):
         self.all_data = []
         self.all_curves = []
         self.indexGr = 1
-
+        self.leyend = []
         # CONTROLS
         self.dck_widget.btnPlayStop.clicked.connect(self.play_stop)
         self.dck_widget.btnNext.clicked.connect(self.next_frame)
@@ -54,7 +54,7 @@ class Window(QtGui.QMainWindow):
         for userDef in plt2._u:
             if userDef.isSlider:
                 # sliderF = """def sliderValueChanged""" + str(i) + """(self, value):\n\tprint(value/100)\n\n"""
-                sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\t#print(int_value / 100)\n\t" \
+                sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
                     "plt2." + userDef.name + " = int_value / 100\n\tself.dck_widget.label[" + str(i - 1) + "]" \
                     ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
                     "plt2.recalculate(self.indexGr)\n"
@@ -70,6 +70,7 @@ class Window(QtGui.QMainWindow):
                 # print(_s_f_aux)
                 # exec(sliderF)
 
+                #TODO que entre cuando se suelta el slider
                 self.dck_widget.slider[i-1].valueChanged.connect(eval(_s_f_aux))
                 i += 1
 
@@ -80,12 +81,17 @@ class Window(QtGui.QMainWindow):
         _dats = plt2.obtener(0)
         self.mayor = _dats[0]
         self.menor = _dats[0]
+
+        self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
+
+        _j = 0
+
         for eq in plt2._e:
             # print(eq.simulate)
             if eq.simulate:
                 self.all_data.append([plt2.obtener(0)[_i]])
                 #print(plt2._xdata)
-                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]], pen=mkPen('k', width=3)))
+                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]],  symbol='o', symbolPen='k', symbolBrush=0.1, name='red plot', symbolSize=6, pen=pyqtgraph.mkPen('k', width=3)))
 
                 if _dats[_i] > self.mayor:
                     self.mayor = _dats[_i]
@@ -93,7 +99,13 @@ class Window(QtGui.QMainWindow):
                 if _dats[_i] < self.menor:
                     self.menor = _dats[_i]
 
+                _j += 1
+
             _i += 1
+
+        self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
+
+
 
         #self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
 
@@ -121,9 +133,13 @@ class Window(QtGui.QMainWindow):
         _j = 0
         for eq in plt2._e:
             if eq.simulate:
-                #print(_dats)
+                self.leyend.removeItem(eq.name + ': ' + str(round(self.all_data[_i][self.indexGr -1], 2)))
+
                 self.all_data[_i] = [_dats[_j]]
                 self.all_curves[_i].setData(self.all_data[_i])
+
+                self.leyend.addItem(self.all_curves[_i],
+                                    eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
                 _i += 1
             _j += 1
         self.timer.stop()
@@ -135,6 +151,7 @@ class Window(QtGui.QMainWindow):
     def update1(self):
         self.indexGr += 1
         _dats = plt2.obtener(self.indexGr)
+
         #print(_dats)
         _i = 0
         _j = 0
@@ -149,6 +166,9 @@ class Window(QtGui.QMainWindow):
 
                 if _dats[_j] < self.menor:
                     self.menor = _dats[_j]
+
+                self.leyend.removeItem(eq.name + ': ' + str(round(self.all_data[_i][-2], 2)))
+                self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
 
                 _i += 1
             _j += 1

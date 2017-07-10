@@ -43,7 +43,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
         for const in plt2._c:
             nomC = const.value1
             # nomC = const.value1 + ' ' + const.operator
-            _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': False}
+            _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
             _listChildAuxConst.append(_childAuxConst)
         _paramAuxConst = {'name': 'Constantes', 'type': 'group', 'children': _listChildAuxConst, 'expanded': False}
         _params.append(_paramAuxConst)
@@ -101,10 +101,11 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 print('  data:      %s' % str(data))
                 print('  ----------')
 
-                exec("plt2." + childName.split(".")[1] + " = " + data)
+                print("plt2." + childName.split(".")[1] + " = float(" + data + ")")
+                exec("plt2." + childName.split(".")[1] + " = float(" + data + ")")
                 plt2.recalculate1()
 
-        __parTr1.sigValueChanged.connect(change)
+        __parTr1.sigTreeStateChanged.connect(change)
 
         self.slider = []
         self.label = []

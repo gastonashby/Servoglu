@@ -4,11 +4,11 @@
 	<parameters>
 		<userDefinedParameters>
 			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False"/>
-			<userDefined name="H" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
+			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False"/>
 			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False"/>
-			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="5.1" slider="False"/>
+			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="2" slider="False"/>
 
 
 			<!-- Treatments, entered by the user -->
@@ -35,7 +35,7 @@
 								<divide/>
 								<apply>
 									<times/>
-									<ci>H</ci>
+									<ci>Height</ci>
 									<ci>W</ci>
 								</apply>
 								<cn>36</cn>
@@ -904,7 +904,7 @@
 		</equation>
 
 		<!-- dIdt= -nkl*I(t) - nI/VP*(I(t) - Q(t)) + (P(t) + U(t))/Vp  -->
-		<equation name="I" defaultValue="30" simulate="False" description="lbl.Plasma Insulin concentration" unit="mU/l">
+		<equation name="I" defaultValue="30" simulate="True" description="lbl.Plasma Insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>
