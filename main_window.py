@@ -150,6 +150,7 @@ class Window(QtGui.QMainWindow):
 
     def update1(self):
         self.indexGr += 1
+        self.ui.indexGr = self.indexGr
         _dats = plt2.obtener(self.indexGr)
 
         #print(_dats)

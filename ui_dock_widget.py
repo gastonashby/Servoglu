@@ -14,6 +14,7 @@ import Plot2 as plt2
 class Ui_ControlsBoxDockWidget(QtCore.QObject):
 
     def __init__(self):
+        self.indexGr = 0
         super(Ui_ControlsBoxDockWidget, self).__init__()
 
     def createParamsUserDef(self):
@@ -100,10 +101,11 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 print('  change:    %s' % change)
                 print('  data:      %s' % str(data))
                 print('  ----------')
-
-                print("plt2." + childName.split(".")[1] + " = float(" + data + ")")
-                exec("plt2." + childName.split(".")[1] + " = float(" + data + ")")
-                plt2.recalculate1()
+                print(eval("plt2." + childName.split(".")[1]))
+                print("plt2." + childName.split(".")[1] + " = " + data + "")
+                exec("plt2." + childName.split(".")[1] + " = " + data + "")
+                print(eval("plt2." + childName.split(".")[1]))
+                plt2.recalculate(self.indexGr)
 
         __parTr1.sigTreeStateChanged.connect(change)
 
