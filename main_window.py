@@ -5,6 +5,7 @@ from PyQt5 import QtGui, QtCore
 import pyqtgraph
 from ui_main_window import Ui_MainWindow
 from ui_dock_widget import Ui_ControlsBoxDockWidget
+from ui_controls_widget import Ui_GeneralControlsWidget
 from PyQt5.QtWidgets import QFileDialog
 import Plot2 as plt2
 import EdfWriter as edf
@@ -31,15 +32,21 @@ class Window(QtGui.QMainWindow):
         self.dck_widget.setupUi(self)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_widget.ui_controls_box_widget)
 
+        self.ctl_widget = Ui_GeneralControlsWidget()
+        self.ctl_widget.setupUi(self)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.ctl_widget.ui_controls_box_widget)
+
         # DATA
         self.all_data = []
         self.all_curves = []
         self.indexGr = 1
         self.leyend = []
         # CONTROLS
-        self.dck_widget.btnPlayStop.clicked.connect(self.play_stop)
-        self.dck_widget.btnNext.clicked.connect(self.next_frame)
-        self.dck_widget.btnReset.clicked.connect(self.restart_graph)
+        self.ctl_widget.btnPlayStop.clicked.connect(self.play_stop)
+        self.ctl_widget.btnNext.clicked.connect(self.next_frame)
+        self.ctl_widget.btnReset.clicked.connect(self.restart_graph)
+        self.ctl_widget.timeSlider.valueChanged.connect(self.timerChange)
+        self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModel)
 
         # TIMMER
         self.timer = QtCore.QTimer()
@@ -74,6 +81,30 @@ class Window(QtGui.QMainWindow):
                 self.dck_widget.slider[i-1].valueChanged.connect(eval(_s_f_aux))
                 i += 1
 
+    def timerChange(self, int_value):
+        self.timer.setInterval(int_value)
+        self.ctl_widget.timeSliderLbl.setText('Time control: 1 minute every ' + str(int_value) + ' ms')
+        self.ctl_widget.timeSlider.setTickInterval(100)
+
+
+    def changeModel(self, param, changes):
+        print("tree changes MODEL:")
+        _dats = plt2.obtener(self.indexGr)
+        for param, change, data in changes:
+            i = -1
+            j = 0
+            var = 1
+            while (var):
+                if plt2._e[j].simulate:
+                    i += 1
+                    if plt2._e[j].description == param._parent.name():
+                        var = 0
+                j += 1
+            self.all_curves[i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[j]],  symbol='o',
+                        symbolPen='k', symbolBrush=1, name=plt2._e[j].name,
+                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[i]))
+            self.all_curves[i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[i])
+
 
 
     def definite_graph(self):
@@ -91,7 +122,9 @@ class Window(QtGui.QMainWindow):
             if eq.simulate:
                 self.all_data.append([plt2.obtener(0)[_i]])
                 #print(plt2._xdata)
-                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]],  symbol='o', symbolPen='k', symbolBrush=0.1, name='red plot', symbolSize=6, pen=pyqtgraph.mkPen('k', width=3)))
+                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]],  symbol='o',
+                        symbolPen='k', symbolBrush=1, name=eq.name,
+                        symbolSize=3, pen=pyqtgraph.mkPen(self.dck_widget.colors[_i], width=self.dck_widget.pen_size[_i])))
 
                 if _dats[_i] > self.mayor:
                     self.mayor = _dats[_i]
@@ -110,14 +143,14 @@ class Window(QtGui.QMainWindow):
         #self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
 
     def play_stop(self):
-        if self.dck_widget.btnPlayStop.text() == "Play":
-            self.timer.start(500)
-            self.dck_widget.btnPlayStop.setText("Stop")
-            self.dck_widget.btnNext.setEnabled(False)
+        if self.ctl_widget.btnPlayStop.text() == "Play":
+            self.timer.start(50)
+            self.ctl_widget.btnPlayStop.setText("Stop")
+            self.ctl_widget.btnNext.setEnabled(False)
         else:
             self.timer.stop()
-            self.dck_widget.btnPlayStop.setText("Play")
-            self.dck_widget.btnNext.setEnabled(True)
+            self.ctl_widget.btnPlayStop.setText("Play")
+            self.ctl_widget.btnNext.setEnabled(True)
 
     def next_frame(self):
         self.update1()
@@ -143,8 +176,8 @@ class Window(QtGui.QMainWindow):
                 _i += 1
             _j += 1
         self.timer.stop()
-        self.dck_widget.btnPlayStop.setText("Play")
-        self.dck_widget.btnNext.setEnabled(True)
+        self.ctl_widget.btnPlayStop.setText("Play")
+        self.ctl_widget.btnNext.setEnabled(True)
 
         plt2.recalculate(0)
 

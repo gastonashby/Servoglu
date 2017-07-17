@@ -3,7 +3,8 @@ __version__ = '0.0.1'
 
 # import python standard modules
 import sys
-import pyqtgraph
+
+
 
 from PyQt5.QtWidgets import QApplication
 

@@ -88,7 +88,7 @@ class ModelParser():
             else:
                 unit = cons.attrib['unit']
 
-            calculated = cons.attrib['calculated']
+            calculated = self.str_to_bool(cons.attrib['calculated'])
             xmlstr = ET.tostring(cons[0], encoding='unicode', method='xml')
             operation = self.translateMathML(xmlstr)
             matchObj = re.match(r'(.*?)\((.*?), (.*)\)', operation, re.M | re.I)

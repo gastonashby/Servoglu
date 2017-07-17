@@ -15,6 +15,8 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
 
     def __init__(self):
         self.indexGr = 0
+        self.colors = ['#4268B3', '#B38D42', '#B345A1', '#42B354', '#B345A1', '#B345A1', '#B345A1']
+        self.pen_size = [3, 3, 3, 3, 3, 3]
         super(Ui_ControlsBoxDockWidget, self).__init__()
 
     def createParamsUserDef(self):
@@ -39,22 +41,31 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
         _listChildUsrDef = []
         _params = []
         #_init_timmer = 200
-
-        _listChildAuxConst = []
-        for const in plt2._c:
-            nomC = const.value1
-            # nomC = const.value1 + ' ' + const.operator
-            _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
-            _listChildAuxConst.append(_childAuxConst)
-        _paramAuxConst = {'name': 'Constantes', 'type': 'group', 'children': _listChildAuxConst, 'expanded': False}
-        _params.append(_paramAuxConst)
-
+        _i = 0
         _listChildAuxEq = []
         for const in plt2._e:
-            _childAuxEq = {'name': const.name, 'type': 'str', 'value': const.equation, 'readonly': True}
+            _childAuxEq = []
+            if const.simulate:
+                _childAuxEq = {'name': const.description, 'type': 'group' , 'expanded': const.simulate, 'children': [
+                        {'name': 'Formula', 'type': 'str',
+                            'value': const.name + ' = ' + const.equation,
+                            'readonly': True},
+                        {'name': 'Simulated', 'type': 'str', 'value': 'Yes', 'readonly': True},
+                        {'name': 'Color', 'type': 'color', 'value': self.colors[_i], 'readonly': not const.simulate},
+                        #TODO: agregar mas atributos
+                        # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},
+                    ]}
+            else:
+                _childAuxEq = {'name': const.description, 'type': 'group' , 'expanded': const.simulate, 'children': [
+                        {'name': 'Formula', 'type': 'str',
+                            'value': const.name + ' = ' + const.equation,
+                            'readonly': True},
+                        {'name': 'Simulated', 'type': 'str', 'value': 'No', 'readonly': True},
+                    ]}
             _listChildAuxEq.append(_childAuxEq)
+            _i += 1
             # print(const)
-        _paramAux = {'name': 'Ecuaciones', 'type': 'group', 'children': _listChildAuxEq, 'expanded': False}
+        _paramAux = {'name': 'Equations', 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
         _params.append(_paramAux)
 
         _listChildAuxFunc = []
@@ -63,15 +74,17 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                              'readonly': True}
             _listChildAuxFunc.append(_childAuxFunc)
             # print(const)
-        _paramAux = {'name': 'Funciones', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': False}
+        _paramAux = {'name': 'Functions', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': False}
         _params.append(_paramAux)
 
-        # _listCommAuxFunc = []
-        # _childAuxComm = {'name': "Timmer", 'type': 'int', 'value': _init_timmer, 'suffix': 'ms', 'readonly': False,
-        #                  'limits': (100, 1000), 'step': 100}
-        # _listCommAuxFunc.append(_childAuxComm)
-        # _paramAux = {'name': 'Controles', 'type': 'group', 'children': _listCommAuxFunc, 'expanded': False}
-        # _params.append(_paramAux)
+        _listChildAuxConst = []
+        for const in plt2._c:
+            nomC = const.value1
+            # nomC = const.value1 + ' ' + const.operator
+            _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
+            _listChildAuxConst.append(_childAuxConst)
+        _paramAuxConst = {'name': 'Constants', 'type': 'group', 'children': _listChildAuxConst, 'expanded': False}
+        _params.append(_paramAuxConst)
 
         return _params
 
@@ -133,21 +146,13 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
 
         ## Create ParameterTree for the rest of the parameters
         self.parameter_tree = ParameterTree()
-        __parTr = Parameter.create(name='params', type='group', children=self.createParamsRest())
-        self.parameter_tree.setParameters(__parTr, showTop=False)
+        self.parTr = Parameter.create(name='params', type='group', children=self.createParamsRest())
+        self.parameter_tree.setParameters(self.parTr, showTop=False)
 
-        #
-
-        self.btnPlayStop = QtGui.QPushButton('Play')
-        self.btnNext = QtGui.QPushButton('Next')
-        self.btnReset = QtGui.QPushButton('Reset')
         #
 
         self.house_layout.addWidget(self.parameter_tree)
 
-        self.house_layout.addWidget(self.btnPlayStop)
-        self.house_layout.addWidget(self.btnNext)
-        self.house_layout.addWidget(self.btnReset)
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
         #

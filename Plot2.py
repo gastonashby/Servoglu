@@ -6,9 +6,9 @@ import numpy as np
 import ModelParser as mp
 
 from scipy.integrate import odeint
-import EdfWriter as edf
 
-model = mp.ModelParser('Glucosafe.xml','LanguageSupport.csv')
+
+model = mp.ModelParser('Glucosafe.xml', 'LanguageSupport.csv')
 _u = model.userDefinedParameters
 _c = model.constants
 _f = model.functions
@@ -23,21 +23,8 @@ exec(defineEquations(_e),globals())
 
 indexGrAux = 0
 
-
-def recalculate1():
-    global indexGrAux
-    #print('5')
-    recalculate(indexGrAux)
-
-
-def recalculate(indexGr):
-    global _y, _aux, _xdata, indexGrAux
-    _aux = _y[indexGr]
-   # print('4')
-    _xdata = np.linspace(indexGr, indexGr + 999, 1000)
-    indexGrAux = 0
-    _y = odeint(fGluc, _aux, _xdata)
-    #print(_y)
+_auxIni = _aux
+_xdata = np.linspace(0, 999, 1000)
 
 
 def fGluc(XX, tt):
@@ -57,16 +44,37 @@ def fGluc(XX, tt):
 
     return salida
 
-
-_auxIni = _aux
-_xdata = np.linspace(0, 999, 1000)
 #print(_xdata)
 _y = odeint(fGluc, _aux, _xdata)
 print('Solution created 1st time')
 
+
+def recalculate1():
+    global indexGrAux
+    #print('5')
+    recalculate(indexGrAux)
+
+
+def recalculate(indexGr):
+    global _y, _aux, _xdata, indexGrAux, _c
+    _aux = _y[indexGr]
+    #print(eval("ABSA"))
+    #for const in _c:
+    #    if const.calculated:
+    #        print(const.value1 + operators(const.operator) + const.value2)
+    #        exec(const.value1 + operators(const.operator) + const.value2, globals())
+    #print(eval("ABSA"))
+
+    indexGrAux = 0
+    print(_y)
+    _y = odeint(fGluc, _aux, _xdata)
+    print(_y)
+
+
+
 def restart():
-    global  _y, _auxIni
-    _xdata = np.linspace(0, 999, 1000)
+    global  _y, _auxIni, _xdata
+    #_xdata = np.linspace(0, 999, 1000)
     _y = odeint(fGluc, _auxIni, _xdata)
 
 
