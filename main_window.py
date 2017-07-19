@@ -11,12 +11,14 @@ import Plot2 as plt2
 import EdfWriter as edf
 
 import types
+import sys
 
 class Window(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent)
         self.setWindowTitle('SERVOGLU')
-
+        self.setWindowIcon(QtGui.QIcon('logo.png'))
+        #TODO estilo QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Plastique"))
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -30,22 +32,18 @@ class Window(QtGui.QMainWindow):
 
         self.dck_widget = Ui_ControlsBoxDockWidget()
         self.dck_widget.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_widget.ui_controls_box_widget)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_widget.ui_controls_box_widget)
 
-        self.ctl_widget = Ui_GeneralControlsWidget()
-        self.ctl_widget.setupUi(self)
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.ctl_widget.ui_controls_box_widget)
+        self.statusBar = QtGui.QStatusBar()
+        self.setStatusBar(self.statusBar)
 
         # DATA
         self.all_data = []
         self.all_curves = []
         self.indexGr = 1
+        self.step = 1
         self.leyend = []
         # CONTROLS
-        self.ctl_widget.btnPlayStop.clicked.connect(self.play_stop)
-        self.ctl_widget.btnNext.clicked.connect(self.next_frame)
-        self.ctl_widget.btnReset.clicked.connect(self.restart_graph)
-        self.ctl_widget.timeSlider.valueChanged.connect(self.timerChange)
         self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModel)
 
         # TIMMER
@@ -55,55 +53,109 @@ class Window(QtGui.QMainWindow):
         # GRAPH
         self.definite_graph()
         self.restart_graph()
+        self.create_toolbars()
 
-        i = 1
+        _i = 1
         sliderF = ""
         for userDef in plt2._u:
             if userDef.isSlider:
-                # sliderF = """def sliderValueChanged""" + str(i) + """(self, value):\n\tprint(value/100)\n\n"""
-                sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
-                    "plt2." + userDef.name + " = int_value / 100\n\tself.dck_widget.label[" + str(i - 1) + "]" \
+                # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
+                sliderF = "def sliderValueChanged" + str(_i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
+                    "plt2." + userDef.name + " = int_value / 100\n\tself.dck_widget.label[" + str(_i - 1) + "]" \
                     ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
                     "plt2.recalculate(self.indexGr)\n"
 
-                _s_f_aux = "sliderValueChanged" + str(i)
+                _s_f_aux = "sliderValueChanged" + str(_i)
                 # print(sliderF)
                 exec(sliderF)
                 exec("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
 
-                _s_f_aux = "self.sliderValueChanged" + str(i)
+                _s_f_aux = "self.sliderValueChanged" + str(_i)
 
                 # print(sliderF)
                 # print(_s_f_aux)
                 # exec(sliderF)
 
                 #TODO que entre cuando se suelta el slider
-                self.dck_widget.slider[i-1].valueChanged.connect(eval(_s_f_aux))
-                i += 1
+                self.dck_widget.slider[_i-1].valueChanged.connect(eval(_s_f_aux))
+                _i += 1
 
-    def timerChange(self, int_value):
-        self.timer.setInterval(int_value)
-        self.ctl_widget.timeSliderLbl.setText('Time control: 1 minute every ' + str(int_value) + ' ms')
-        self.ctl_widget.timeSlider.setTickInterval(100)
+    def create_toolbars(self):
+        prevAction = QtGui.QAction(QtGui.QIcon('prev.png'), 'Previous step', self)
+        self.playAction = QtGui.QAction(QtGui.QIcon('play.png'), 'Play/Pause simulation', self)
+        nextAction = QtGui.QAction(QtGui.QIcon('next.png'), 'Next step', self)
+        resetAction = QtGui.QAction(QtGui.QIcon('reset.png'), 'Reset simulation', self)
+
+        prevAction.triggered.connect(self.prev_frame)
+        self.playAction.triggered.connect(self.play_stop)
+        nextAction.triggered.connect(self.next_frame)
+        resetAction.triggered.connect(self.restart_graph)
+
+        self.ctrlToolBar = self.addToolBar('Tool Bar')
+
+        self.ctrlToolBar.addAction(prevAction)
+        self.ctrlToolBar.addAction(self.playAction)
+        self.ctrlToolBar.addAction(nextAction)
+        self.ctrlToolBar.addAction(resetAction)
+
+
+        ##############################
+
+        self.eventToolBar = self.addToolBar('Tool Bar 2')
+
+        label1 = QtGui.QLabel("Step ")
+        self.spboxStep = QtGui.QSpinBox()
+        self.spboxStep.setValue(1)
+        # TODO sacar unidad de xml
+        label2 = QtGui.QLabel(" min every ")
+        self.spBoxTimmer = QtGui.QSpinBox()
+        self.spBoxTimmer.setRange(1, 60000)
+        self.spBoxTimmer.setValue(500)
+        label3 = QtGui.QLabel(" ms")
+
+        self.eventToolBar.addWidget(label1)
+        self.eventToolBar.addWidget(self.spboxStep)
+        self.eventToolBar.addWidget(label2)
+        self.eventToolBar.addWidget(self.spBoxTimmer)
+        self.eventToolBar.addWidget(label3)
+
+        self.spBoxTimmer.valueChanged.connect(self.timerChange)
+        self.spboxStep.valueChanged.connect(self.stepChange)
+
+    def stepChange(self):
+        self.step = int(self.spboxStep.value())
+        print(self.step)
+
+    def close_app(self):
+        choice = QtGui.QMessageBox.question(self, 'Exit?', 'Close application?',
+                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+
+        if choice == QtGui.QMessageBox.Yes:
+            sys.exit()
+        else:
+            pass
+
+    def timerChange(self):
+        self.timer.setInterval(int(self.spBoxTimmer.value()))
 
 
     def changeModel(self, param, changes):
         print("tree changes MODEL:")
         _dats = plt2.obtener(self.indexGr)
         for param, change, data in changes:
-            i = -1
+            _i = -1
             j = 0
             var = 1
             while (var):
                 if plt2._e[j].simulate:
-                    i += 1
+                    _i += 1
                     if plt2._e[j].description == param._parent.name():
                         var = 0
                 j += 1
-            self.all_curves[i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[j]],  symbol='o',
+            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[j]],  symbol='o',
                         symbolPen='k', symbolBrush=1, name=plt2._e[j].name,
-                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[i]))
-            self.all_curves[i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[i])
+                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
+            self.all_curves[_i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[_i])
 
 
 
@@ -137,23 +189,21 @@ class Window(QtGui.QMainWindow):
             _i += 1
 
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
-
-
-
         #self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
 
     def play_stop(self):
-        if self.ctl_widget.btnPlayStop.text() == "Play":
-            self.timer.start(50)
-            self.ctl_widget.btnPlayStop.setText("Stop")
-            self.ctl_widget.btnNext.setEnabled(False)
+        if not self.timer.isActive():
+            self.timer.start(500)
+            self.playAction.setIcon(QtGui.QIcon('pause.png'))
         else:
             self.timer.stop()
-            self.ctl_widget.btnPlayStop.setText("Play")
-            self.ctl_widget.btnNext.setEnabled(True)
+            self.playAction.setIcon(QtGui.QIcon('play.png'))
 
     def next_frame(self):
         self.update1()
+
+    def prev_frame(self):
+        pass
 
     def restart_graph(self):
         self.indexGr = 0
@@ -176,8 +226,6 @@ class Window(QtGui.QMainWindow):
                 _i += 1
             _j += 1
         self.timer.stop()
-        self.ctl_widget.btnPlayStop.setText("Play")
-        self.ctl_widget.btnNext.setEnabled(True)
 
         plt2.recalculate(0)
 

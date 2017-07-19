@@ -40,11 +40,11 @@ def parseLanguages(LanguageFileName,language):
         for row in reader:
             if rowNum == 0:
                 languageIndex = 0
-                i = 0
+                _i = 0
                 for cell in row:
                     if cell == language:
-                        languageIndex = i
-                    i = i + 1
+                        languageIndex = _i
+                    _i = _i + 1
             else:
                 dictionary[row[0]] = row[languageIndex]
             rowNum = rowNum + 1
@@ -58,11 +58,11 @@ def obtainPossibleLanguages(LanguageFileName):
         reader = csv.reader(f)
         firstRow = next(reader)
         d = collections.deque()
-        i = 0
+        _i = 0
         for cell in firstRow:
-            if i > 0: #First column is not a language
+            if _i > 0: #First column is not a language
                 d.append(cell)
-            i = i + 1
+            _i = _i + 1
         return d
     finally:
         f.close()

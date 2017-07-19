@@ -5,11 +5,7 @@ __version__ = '0.0.1'
 
 # import 3rd party libraries
 from PyQt5 import QtCore, QtGui
-from pyqtgraph.parametertree import Parameter, ParameterTree
 
-# TODO: No importar Plot2, pasar por parametro
-import Plot2 as plt2
-# import local python scripts
 
 class Ui_GeneralControlsWidget(QtCore.QObject):
 
@@ -34,7 +30,7 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
         self.timeSlider.setTickInterval(100)
 
         self.timeSliderLbl = QtGui.QLabel()
-        self.timeSliderLbl.setText('Time control: 1 minute every 500 ms')
+        self.timeSliderLbl.setText('1 simulated minute every 500 ms')
 
 
         self.btnPlayStop = QtGui.QPushButton('Play')

@@ -59,12 +59,50 @@ def defineFunctions(functionTuples):
                           return """ + f.function + """ \n"""
     return functions
 
+# Recursive function to return the list of complete parameters
+# If a function parameter is a function, call processParameters
+def processParameters(funcList, params, _i):
+    out = '('
+    listPar =  params[_i].split(",")
+    cantParam = len(listPar)
+    _i = 0
+    for par in listPar:
+        out += par
+        if par in funcList:
+            j = funcList.index(par)
+            out += processParameters(funcList, params, j)
+
+        if _i < cantParam-1:
+            out += ', '
+
+        _i += 1
+    out += ')'
+    return out
+
+def defineFunctionList(functionTuples):
+    functions = []
+    params = []
+    for f in functionTuples:
+        functions.append(f.name)
+        params.append(f.parameters)
+
+    pParams = []
+    _i = 0
+    for p in params:
+        pParams.append(processParameters(functions, params, _i))
+        _i += 1
+
+    return functions, pParams
+
 
 def defineParameters(constantTuples):
     constants = ""
+    calculated = []
     for c in constantTuples:
         constants += c.value1 + operators(c.operator) + c.value2 + "\n"
-    return constants
+        if c.calculated:
+            calculated.append(c.value1 + operators(c.operator) + c.value2)
+    return constants, calculated
 
 def defineUserDefinedParameters(userDefinedTuples):
     userDefinedParameters = ""

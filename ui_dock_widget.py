@@ -125,7 +125,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
         self.slider = []
         self.label = []
 
-        i = 1
+        _i = 1
         sliderF = ""
         for userDef in plt2._u:
             if userDef.isSlider:
@@ -133,7 +133,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 s_aux.setRange(float(userDef.sliderMin) * 100, float(userDef.sliderMax) * 100)
                 s_aux.setValue(float(userDef.defaultValue) * 100)
 
-                # sliderF = """def sliderValueChanged""" + str(i) + """(self, value):\n\tprint(value/100)\n\n"""
+                # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
 
                 l_aux = QtGui.QLabel()
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
@@ -142,7 +142,7 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
                 self.label.append(l_aux)
                 self.house_layout.addWidget(l_aux)
                 self.house_layout.addWidget(s_aux)
-                i += 1
+                _i += 1
 
         ## Create ParameterTree for the rest of the parameters
         self.parameter_tree = ParameterTree()
