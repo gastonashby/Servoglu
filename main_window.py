@@ -32,7 +32,11 @@ class Window(QtGui.QMainWindow):
 
         self.dck_widget = Ui_ControlsBoxDockWidget()
         self.dck_widget.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_widget.ui_controls_box_widget)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_widget.ui_controls_box_widget)
+
+        self.dck_param = Ui_GeneralControlsWidget()
+        self.dck_param.setupUi(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_param.ui_controls_box_widget)
 
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -40,20 +44,22 @@ class Window(QtGui.QMainWindow):
         # DATA
         self.all_data = []
         self.all_curves = []
-        self.indexGr = 1
+        self.indexGr = 0
         self.step = 1
         self.leyend = []
+        self.dats = plt2.getPoint()
         # CONTROLS
-        self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModel)
+        self.dck_param.parTr.sigTreeStateChanged.connect(self.changeModel)
 
         # TIMMER
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update1)
+        self.timer.stop()
 
         # GRAPH
-        self.definite_graph()
-        self.restart_graph()
         self.create_toolbars()
+        self.definite_graph()
+        #self.restart_graph()
 
         _i = 1
         sliderF = ""
@@ -63,7 +69,7 @@ class Window(QtGui.QMainWindow):
                 sliderF = "def sliderValueChanged" + str(_i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
                     "plt2." + userDef.name + " = int_value / 100\n\tself.dck_widget.label[" + str(_i - 1) + "]" \
                     ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
-                    "plt2.recalculate(self.indexGr)\n"
+                    "plt2.recalculate()\n"
 
                 _s_f_aux = "sliderValueChanged" + str(_i)
                 # print(sliderF)
@@ -124,6 +130,8 @@ class Window(QtGui.QMainWindow):
 
     def stepChange(self):
         self.step = int(self.spboxStep.value())
+        plt2.change_scale(self.step)
+        plt2.recalculate()
         print(self.step)
 
     def close_app(self):
@@ -141,7 +149,6 @@ class Window(QtGui.QMainWindow):
 
     def changeModel(self, param, changes):
         print("tree changes MODEL:")
-        _dats = plt2.obtener(self.indexGr)
         for param, change, data in changes:
             _i = -1
             j = 0
@@ -152,18 +159,17 @@ class Window(QtGui.QMainWindow):
                     if plt2._e[j].description == param._parent.name():
                         var = 0
                 j += 1
-            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[j]],  symbol='o',
+            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[j]],  symbol='o',
                         symbolPen='k', symbolBrush=1, name=plt2._e[j].name,
-                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
+                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_param.pen_size[_i]))
             self.all_curves[_i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[_i])
 
 
 
     def definite_graph(self):
         _i = 0
-        _dats = plt2.obtener(0)
-        self.mayor = _dats[0]
-        self.menor = _dats[0]
+        # self.mayor = self.dats[0]
+        # self.menor = self.dats[0]
 
         self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
 
@@ -172,24 +178,24 @@ class Window(QtGui.QMainWindow):
         for eq in plt2._e:
             # print(eq.simulate)
             if eq.simulate:
-                self.all_data.append([plt2.obtener(0)[_i]])
+                self.all_data.append([self.dats[_i]])
                 #print(plt2._xdata)
-                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [_dats[_i]],  symbol='o',
+                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[_i]],  symbol='o',
                         symbolPen='k', symbolBrush=1, name=eq.name,
-                        symbolSize=3, pen=pyqtgraph.mkPen(self.dck_widget.colors[_i], width=self.dck_widget.pen_size[_i])))
+                        symbolSize=3, pen=pyqtgraph.mkPen(self.dck_param.colors[_i], width=self.dck_param.pen_size[_i])))
 
-                if _dats[_i] > self.mayor:
-                    self.mayor = _dats[_i]
-
-                if _dats[_i] < self.menor:
-                    self.menor = _dats[_i]
+                # if self.dats[_i] > self.mayor:
+                #     self.mayor = self.dats[_i]
+                #
+                # if self.dats[_i] < self.menor:
+                #     self.menor = self.dats[_i]
 
                 _j += 1
 
             _i += 1
-
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
-        #self.ui.ui_sinc_plot.setYRange(self.menor - 10 , self.mayor + 10)
+        self.ui.ui_sinc_plot.setYRange(0 , 20)
+
 
     def play_stop(self):
         if not self.timer.isActive():
@@ -203,51 +209,54 @@ class Window(QtGui.QMainWindow):
         self.update1()
 
     def prev_frame(self):
+        #TODO: todo
         pass
 
     def restart_graph(self):
+        self.timer.stop()
+        plt2.restart()
         self.indexGr = 0
-
+        self.playAction.setIcon(QtGui.QIcon('play.png'))
         # TODO: falta restaurar los valores iniciales del XML
-        #plt2.recalculate(0)
 
-        _dats = plt2.obtener(0)
         _i = 0
         _j = 0
         for eq in plt2._e:
             if eq.simulate:
                 self.leyend.removeItem(eq.name + ': ' + str(round(self.all_data[_i][self.indexGr -1], 2)))
+                _i += 1
+            _j += 1
 
-                self.all_data[_i] = [_dats[_j]]
+        self.dats = plt2.getPoint()
+        _i = 0
+        _j = 0
+        for eq in plt2._e:
+            if eq.simulate:
+                self.all_data[_i] = [self.dats[_j]]
                 self.all_curves[_i].setData(self.all_data[_i])
 
                 self.leyend.addItem(self.all_curves[_i],
                                     eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
                 _i += 1
             _j += 1
-        self.timer.stop()
-
-        plt2.recalculate(0)
 
     def update1(self):
         self.indexGr += 1
         self.ui.indexGr = self.indexGr
-        _dats = plt2.obtener(self.indexGr)
-
-        #print(_dats)
+        self.dats = plt2.getPoint()
         _i = 0
         _j = 0
         for eq in plt2._e:
             if eq.simulate:
                 #print(dats[_j])
-                self.all_data[_i].append(_dats[_j])
+                self.all_data[_i].append(self.dats[_j])
                 self.all_curves[_i].setData(plt2._xdata[:self.indexGr+1], self.all_data[_i])
 
-                if _dats[_j] > self.mayor:
-                    self.mayor = _dats[_j]
-
-                if _dats[_j] < self.menor:
-                    self.menor = _dats[_j]
+                # if self.dats[_j] > self.mayor:
+                #     self.mayor = self.dats[_j]
+                #
+                # if self.dats[_j] < self.menor:
+                #     self.menor = self.dats[_j]
 
                 self.leyend.removeItem(eq.name + ': ' + str(round(self.all_data[_i][-2], 2)))
                 self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
@@ -255,9 +264,8 @@ class Window(QtGui.QMainWindow):
                 _i += 1
             _j += 1
 
-        #if self.indexGr % 5 == 0:
-        self.ui.ui_sinc_plot.setXRange(plt2._xdata[self.indexGr+1] - 80, plt2._xdata[self.indexGr+1] + 20)
-        #self.ui.ui_sinc_plot.setYRange(self.menor - 10, self.mayor + 10)
+        self.ui.ui_sinc_plot.setXRange(plt2._xdata[self.indexGr+1] - 13, plt2._xdata[self.indexGr+1] + 7)
+        self.ui.ui_sinc_plot.setYRange(0, 20)
 
     def exportToEDF(self):
 
