@@ -6,7 +6,7 @@ __version__ = '0.0.1'
 # import 3rd party libraries
 from PyQt5 import QtCore, QtGui
 from pyqtgraph.parametertree import Parameter, ParameterTree
-from PyQt5.Qt import Qt
+import types
 
 # TODO: No importar Plot2, pasar por parametro
 import Plot2 as plt2
@@ -25,23 +25,23 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
         _listChildAuxEq = []
         for const in plt2._e:
             _childAuxEq = []
-            if const.simulate:
-                _childAuxEq = {'name': const.description, 'type': 'group', 'expanded': const.simulate, 'children': [
-                        {'name': 'Formula', 'type': 'str',
-                            'value': const.name + ' = ' + const.equation,
-                            'readonly': True},
-                        {'name': 'Simulated', 'type': 'str', 'value': 'Yes', 'readonly': True},
-                        {'name': 'Color', 'type': 'color', 'value': self.colors[_i], 'readonly': not const.simulate},
-                        #TODO: agregar mas atributos
-                        # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},
-                    ]}
-            else:
-                _childAuxEq = {'name': const.description, 'type': 'group' , 'expanded': const.simulate, 'children': [
-                        {'name': 'Formula', 'type': 'str',
-                            'value': const.name + ' = ' + const.equation,
-                            'readonly': True},
-                        {'name': 'Simulated', 'type': 'str', 'value': 'No', 'readonly': True},
-                    ]}
+            # if const.simulate:
+            _childAuxEq = {'name': const.description, 'type': 'group', 'expanded': const.simulate, 'children': [
+                    {'name': 'Formula', 'type': 'str',
+                        'value': const.name + ' = ' + const.equation,
+                        'readonly': True},
+                    {'name': 'Simulated', 'type': 'str', 'value': 'Yes', 'readonly': True},
+                    {'name': 'Color', 'type': 'color', 'value': self.colors[_i], 'readonly': False},
+                    #TODO: agregar mas atributos
+                    # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},
+                ]}
+            # else:
+            #     _childAuxEq = {'name': const.description, 'type': 'group' , 'expanded': const.simulate, 'children': [
+            #             {'name': 'Formula', 'type': 'str',
+            #                 'value': const.name + ' = ' + const.equation,
+            #                 'readonly': True},
+            #             {'name': 'Simulated', 'type': 'str', 'value': 'No', 'readonly': True},
+            #         ]}
             _listChildAuxEq.append(_childAuxEq)
             _i += 1
             # print(const)
@@ -73,7 +73,7 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
         self.ui_controls_box_widget = QtGui.QDockWidget("Model Parameters", ControlsBox)
         self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         # self.ui_controls_box_widget.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
-
+        self.parent = ControlsBox
         #
         self.house_layout = QtGui.QVBoxLayout()
 
@@ -84,6 +84,13 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
         self.parameter_tree.setParameters(self.parTr, showTop=False)
         #
 
+
+        self.eqLblList = []
+        self.eqCtrlList = []
+        self.eqBtnList = []
+
+        self.init_eq_change_control()
+
         self.house_layout.addWidget(self.parameter_tree)
 
         self.house_widget = QtGui.QWidget()
@@ -91,3 +98,35 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
 
                 #
         self.ui_controls_box_widget.setWidget(self.house_widget)
+
+    def init_eq_change_control(self):
+        _i = 0
+        for eq in plt2._e:
+            hbox = QtGui.QHBoxLayout()
+            hbox.addStretch(1)
+            self.eqLblList.append(QtGui.QLabel(eq.description + " (" + eq.name + "):"))
+            self.eqCtrlList.append(QtGui.QDoubleSpinBox())
+            self.eqBtnList.append(QtGui.QPushButton("Cambiar"))
+            myFont = QtGui.QFont()
+            myFont.setBold(True)
+            self.eqCtrlList[_i].setFont(myFont)
+
+            hbox.addWidget(self.eqLblList[_i])
+            hbox.addWidget(self.eqCtrlList[_i])
+            hbox.addWidget(self.eqBtnList[_i])
+            hbox.setAlignment(QtCore.Qt.AlignLeft)
+
+            controlFunc = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
+                                        "print(self.eqCtrlList[" + str(_i) + "].value())\n\t"\
+                                        "self.parent.changeActualPoint(" + str(_i) + ", self.eqCtrlList[" + str(_i) + "].value())\n\t" \
+                                        "plt2.recalculate()\n"
+
+            _c_f_aux = "eqCtrlChangeValue_" + str(_i)
+            exec(controlFunc)
+            exec("self." + _c_f_aux + " = types.MethodType(" + _c_f_aux + ", self)")
+
+            self.eqBtnList[_i].clicked.connect(eval("self.eqCtrlChangeValue_" + str(_i)))
+
+            self.house_layout.addLayout(hbox)
+
+            _i += 1

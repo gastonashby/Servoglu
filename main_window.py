@@ -18,7 +18,7 @@ class Window(QtGui.QMainWindow):
         super(Window, self).__init__(parent)
         self.setWindowTitle('SERVOGLU')
         self.setWindowIcon(QtGui.QIcon('logo.png'))
-        #TODO estilo QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Plastique"))
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -32,11 +32,11 @@ class Window(QtGui.QMainWindow):
 
         self.dck_widget = Ui_ControlsBoxDockWidget()
         self.dck_widget.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_widget.ui_controls_box_widget)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_widget.ui_controls_box_widget)
 
         self.dck_param = Ui_GeneralControlsWidget()
         self.dck_param.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_param.ui_controls_box_widget)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_param.ui_controls_box_widget)
 
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -48,6 +48,7 @@ class Window(QtGui.QMainWindow):
         self.step = 1
         self.leyend = []
         self.dats = plt2.getPoint()
+        self.old_dats = self.dats
         # CONTROLS
         self.dck_param.parTr.sigTreeStateChanged.connect(self.changeModel)
 
@@ -86,6 +87,23 @@ class Window(QtGui.QMainWindow):
                 self.dck_widget.slider[_i-1].valueChanged.connect(eval(_s_f_aux))
                 _i += 1
 
+    def changeActualPoint(self, i, value):
+        self.all_data[i][self.indexGr] = value
+        self.all_curves[i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[i])
+
+        _i = 0
+        for eq in plt2._e:
+            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], 2)))
+            _i += 1
+
+        self.dats[i] = value
+        _i = 0
+        for eq in plt2._e:
+            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], 2)))
+            _i += 1
+
+
+
     def create_toolbars(self):
         prevAction = QtGui.QAction(QtGui.QIcon('prev.png'), 'Previous step', self)
         self.playAction = QtGui.QAction(QtGui.QIcon('play.png'), 'Play/Pause simulation', self)
@@ -97,7 +115,7 @@ class Window(QtGui.QMainWindow):
         nextAction.triggered.connect(self.next_frame)
         resetAction.triggered.connect(self.restart_graph)
 
-        self.ctrlToolBar = self.addToolBar('Tool Bar')
+        self.ctrlToolBar = self.addToolBar('Simulation controls')
 
         self.ctrlToolBar.addAction(prevAction)
         self.ctrlToolBar.addAction(self.playAction)
@@ -107,7 +125,7 @@ class Window(QtGui.QMainWindow):
 
         ##############################
 
-        self.eventToolBar = self.addToolBar('Tool Bar 2')
+        self.eventToolBar = self.addToolBar('Time controls')
 
         label1 = QtGui.QLabel("Step ")
         self.spboxStep = QtGui.QSpinBox()
@@ -148,19 +166,19 @@ class Window(QtGui.QMainWindow):
 
 
     def changeModel(self, param, changes):
-        print("tree changes MODEL:")
+        print("change color:")
         for param, change, data in changes:
             _i = -1
-            j = 0
+            # j = 0
             var = 1
             while (var):
-                if plt2._e[j].simulate:
-                    _i += 1
-                    if plt2._e[j].description == param._parent.name():
-                        var = 0
-                j += 1
-            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[j]],  symbol='o',
-                        symbolPen='k', symbolBrush=1, name=plt2._e[j].name,
+                # if plt2._e[j].simulate:
+                _i += 1
+                if plt2._e[_i].description == param._parent.name():
+                    var = 0
+                # j += 1
+            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[_i]],  symbol='o',
+                        symbolPen='k', symbolBrush=1, name=plt2._e[_i].name,
                         symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_param.pen_size[_i]))
             self.all_curves[_i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[_i])
 
@@ -177,20 +195,20 @@ class Window(QtGui.QMainWindow):
 
         for eq in plt2._e:
             # print(eq.simulate)
-            if eq.simulate:
-                self.all_data.append([self.dats[_i]])
-                #print(plt2._xdata)
-                self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[_i]],  symbol='o',
-                        symbolPen='k', symbolBrush=1, name=eq.name,
-                        symbolSize=3, pen=pyqtgraph.mkPen(self.dck_param.colors[_i], width=self.dck_param.pen_size[_i])))
+            # if eq.simulate:
+            self.all_data.append([self.dats[_i]])
+            #print(plt2._xdata)
+            self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[_i]],  symbol='o',
+                    symbolPen='k', symbolBrush=1, name=eq.name,
+                    symbolSize=3, pen=pyqtgraph.mkPen(self.dck_param.colors[_i], width=self.dck_param.pen_size[_i])))
 
-                # if self.dats[_i] > self.mayor:
-                #     self.mayor = self.dats[_i]
-                #
-                # if self.dats[_i] < self.menor:
-                #     self.menor = self.dats[_i]
+            # if self.dats[_i] > self.mayor:
+            #     self.mayor = self.dats[_i]
+            #
+            # if self.dats[_i] < self.menor:
+            #     self.menor = self.dats[_i]
 
-                _j += 1
+            # _j += 1
 
             _i += 1
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
@@ -217,52 +235,60 @@ class Window(QtGui.QMainWindow):
         plt2.restart()
         self.indexGr = 0
         self.playAction.setIcon(QtGui.QIcon('play.png'))
-        # TODO: falta restaurar los valores iniciales del XML
+        # TODO: falta restaurar los valores iniciales del XML?
 
         _i = 0
-        _j = 0
+        # _j = 0
         for eq in plt2._e:
-            if eq.simulate:
-                self.leyend.removeItem(eq.name + ': ' + str(round(self.all_data[_i][self.indexGr -1], 2)))
-                _i += 1
-            _j += 1
+            #if eq.simulate:
+            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], 2)))
+            _i += 1
+            #_j += 1
 
         self.dats = plt2.getPoint()
         _i = 0
-        _j = 0
+        # _j = 0
         for eq in plt2._e:
-            if eq.simulate:
-                self.all_data[_i] = [self.dats[_j]]
-                self.all_curves[_i].setData(self.all_data[_i])
+            #if eq.simulate:
+            self.all_data[_i] = [self.dats[_i]]
+            self.all_curves[_i].setData(self.all_data[_i])
 
-                self.leyend.addItem(self.all_curves[_i],
-                                    eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
-                _i += 1
-            _j += 1
+            self.leyend.addItem(self.all_curves[_i],
+                                eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
+            _i += 1
+            #_j += 1
 
     def update1(self):
         self.indexGr += 1
         self.ui.indexGr = self.indexGr
-        self.dats = plt2.getPoint()
         _i = 0
-        _j = 0
+
         for eq in plt2._e:
-            if eq.simulate:
-                #print(dats[_j])
-                self.all_data[_i].append(self.dats[_j])
-                self.all_curves[_i].setData(plt2._xdata[:self.indexGr+1], self.all_data[_i])
+            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], 2)))
+            _i += 1
 
-                # if self.dats[_j] > self.mayor:
-                #     self.mayor = self.dats[_j]
-                #
-                # if self.dats[_j] < self.menor:
-                #     self.menor = self.dats[_j]
+        self.dats = plt2.getPoint()
 
-                self.leyend.removeItem(eq.name + ': ' + str(round(self.all_data[_i][-2], 2)))
-                self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
+        _i = 0
+        # _j = 0
+        for eq in plt2._e:
 
-                _i += 1
-            _j += 1
+            self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], 2))
+            # if eq.simulate:
+            #print(dats[_j])
+            self.all_data[_i].append(self.dats[_i])
+            self.all_curves[_i].setData(plt2._xdata[:self.indexGr+1], self.all_data[_i])
+
+            # if self.dats[_j] > self.mayor:
+            #     self.mayor = self.dats[_j]
+            #
+            # if self.dats[_j] < self.menor:
+            #     self.menor = self.dats[_j]
+
+            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], 2)))
+
+            _i += 1
+            # _j += 1
 
         self.ui.ui_sinc_plot.setXRange(plt2._xdata[self.indexGr+1] - 13, plt2._xdata[self.indexGr+1] + 7)
         self.ui.ui_sinc_plot.setYRange(0, 20)

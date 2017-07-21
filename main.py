@@ -6,7 +6,7 @@ import sys
 
 
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QStyleFactory
 
 from main_window import Window
 
@@ -14,7 +14,7 @@ from main_window import Window
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName('SERVOGLU')
-
+    QApplication.setStyle(QStyleFactory.create('Fusion'))
     window = Window()
     window.show()
     window.showMaximized()
