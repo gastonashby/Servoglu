@@ -36,9 +36,10 @@ exec(defineFunctions(_f),globals())
 exec(defineEquations(_e),globals())
 
 indexGrAux = 0
+top_x = 1000
 
 _auxIni = _aux
-_xdata = np.linspace(0, 999, 1000)
+_xdata = np.linspace(0, top_x -1, top_x)
 
 
 def odesys(XX, tt):
@@ -63,7 +64,7 @@ print('Solution created 1st time')
 
 def change_scale(step):
     global _xdata
-    _xdata = np.linspace(0, 999 * step, 1000)
+    _xdata = np.linspace(0, (top_x - 1) * step, top_x)
 
 def recalculate():
     global _sol, _aux, _xdata, indexGrAux, _c
@@ -79,7 +80,7 @@ def recalculate():
 
 
 def restart():
-    global  _sol, _auxIni, _xdata, indexGrAux
+    global _sol, _auxIni, _xdata, indexGrAux
     indexGrAux = 0
     updateCalculatedConstants()
     updateFunctions()
@@ -91,8 +92,12 @@ def restart():
 
 
 def getPoint():
-    global _sol, indexGrAux
+    global _sol, indexGrAux, top_x
     #TODO calcular maximos y minimos por columna para graficar
+
+    if indexGrAux == top_x - 1:
+        recalculate()
+
     out = _sol[indexGrAux]
     indexGrAux += 1
     return out

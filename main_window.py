@@ -23,7 +23,7 @@ class Window(QtGui.QMainWindow):
         self.ui.setupUi(self)
 
         self.mbar = self.setMenuBar(self.ui.ui_menubar.ui_menubar)
-
+        self.round = 4
         # EXIT ACTION
         self.ui.ui_menubar.exit_action.triggered.connect(self.close)
 
@@ -42,6 +42,12 @@ class Window(QtGui.QMainWindow):
         self.setStatusBar(self.statusBar)
 
         # DATA
+        self.simulated_cicle_number = 1
+        self.simulated_cicle_steps = 1000
+        
+        self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
+                                          , self.simulated_cicle_number * self.simulated_cicle_steps)
+        
         self.all_data = []
         self.all_curves = []
         self.indexGr = 0
@@ -50,7 +56,7 @@ class Window(QtGui.QMainWindow):
         self.dats = plt2.getPoint()
         self.old_dats = self.dats
         # CONTROLS
-        self.dck_param.parTr.sigTreeStateChanged.connect(self.changeModel)
+        self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModelPropertie)
 
         # TIMMER
         self.timer = QtCore.QTimer()
@@ -68,7 +74,7 @@ class Window(QtGui.QMainWindow):
             if userDef.isSlider:
                 # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
                 sliderF = "def sliderValueChanged" + str(_i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
-                    "plt2." + userDef.name + " = int_value / 100\n\tself.dck_widget.label[" + str(_i - 1) + "]" \
+                    "plt2." + userDef.name + " = int_value / 100\n\tself.dck_param.label[" + str(_i - 1) + "]" \
                     ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
                     "plt2.recalculate()\n"
 
@@ -84,22 +90,23 @@ class Window(QtGui.QMainWindow):
                 # exec(sliderF)
 
                 #TODO que entre cuando se suelta el slider
-                self.dck_widget.slider[_i-1].valueChanged.connect(eval(_s_f_aux))
+                self.dck_param.slider[_i-1].valueChanged.connect(eval(_s_f_aux))
                 _i += 1
+
 
     def changeActualPoint(self, i, value):
         self.all_data[i][self.indexGr] = value
-        self.all_curves[i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[i])
+        self.all_curves[i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[i])
 
         _i = 0
         for eq in plt2._e:
-            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], 2)))
+            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)))
             _i += 1
 
         self.dats[i] = value
         _i = 0
         for eq in plt2._e:
-            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], 2)))
+            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)))
             _i += 1
 
 
@@ -165,22 +172,26 @@ class Window(QtGui.QMainWindow):
         self.timer.setInterval(int(self.spBoxTimmer.value()))
 
 
-    def changeModel(self, param, changes):
+    def changeModelPropertie(self, param, changes):
         print("change color:")
         for param, change, data in changes:
+
             _i = -1
             # j = 0
             var = 1
+
             while (var):
                 # if plt2._e[j].simulate:
                 _i += 1
                 if plt2._e[_i].description == param._parent.name():
                     var = 0
                 # j += 1
-            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[_i]],  symbol='o',
+
+            self.all_curves[_i].clear()
+            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
                         symbolPen='k', symbolBrush=1, name=plt2._e[_i].name,
-                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_param.pen_size[_i]))
-            self.all_curves[_i].setData(plt2._xdata[:self.indexGr + 1], self.all_data[_i])
+                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
+            self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
 
 
 
@@ -191,17 +202,19 @@ class Window(QtGui.QMainWindow):
 
         self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
 
-        _j = 0
+        #_j = 0
 
         for eq in plt2._e:
             # print(eq.simulate)
             # if eq.simulate:
             self.all_data.append([self.dats[_i]])
-            #print(plt2._xdata)
-            self.all_curves.append(self.ui.ui_sinc_plot.plot([plt2._xdata[0]], [self.dats[_i]],  symbol='o',
+            self.all_curves.append(self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
                     symbolPen='k', symbolBrush=1, name=eq.name,
-                    symbolSize=3, pen=pyqtgraph.mkPen(self.dck_param.colors[_i], width=self.dck_param.pen_size[_i])))
+                    symbolSize=3, pen=pyqtgraph.mkPen(self.dck_widget.colors[_i], width=self.dck_widget.pen_size[_i])))
 
+            self.leyend.addItem(self.all_curves[_i],
+                                eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)))
+            self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
             # if self.dats[_i] > self.mayor:
             #     self.mayor = self.dats[_i]
             #
@@ -214,10 +227,9 @@ class Window(QtGui.QMainWindow):
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
         self.ui.ui_sinc_plot.setYRange(0 , 20)
 
-
     def play_stop(self):
         if not self.timer.isActive():
-            self.timer.start(500)
+            self.timer.start(int(self.spBoxTimmer.value()))
             self.playAction.setIcon(QtGui.QIcon('pause.png'))
         else:
             self.timer.stop()
@@ -236,12 +248,12 @@ class Window(QtGui.QMainWindow):
         self.indexGr = 0
         self.playAction.setIcon(QtGui.QIcon('play.png'))
         # TODO: falta restaurar los valores iniciales del XML?
-
+        self.xDataGraf = plt2.np.linspace(0, 999, 1000)
         _i = 0
         # _j = 0
         for eq in plt2._e:
             #if eq.simulate:
-            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], 2)))
+            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)))
             _i += 1
             #_j += 1
 
@@ -254,7 +266,7 @@ class Window(QtGui.QMainWindow):
             self.all_curves[_i].setData(self.all_data[_i])
 
             self.leyend.addItem(self.all_curves[_i],
-                                eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], 2)))
+                                eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)))
             _i += 1
             #_j += 1
 
@@ -263,8 +275,28 @@ class Window(QtGui.QMainWindow):
         self.ui.indexGr = self.indexGr
         _i = 0
 
+        if len(self.xDataGraf) - 1 == self.indexGr:
+            self.simulated_cicle_number += 1
+            self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps - 1
+                                              , self.simulated_cicle_number * self.simulated_cicle_steps)
+            for eq in plt2._e:
+                # print(eq.simulate)
+                # if eq.simulate:
+                self.all_curves[_i].clear()
+                self.all_data.append([self.dats[_i]])
+                self.all_curves.append(self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]], symbol='o',
+                                                                 symbolPen='k', symbolBrush=1, name=eq.name,
+                                                                 symbolSize=3,
+                                                                 pen=pyqtgraph.mkPen(self.dck_widget.colors[_i],
+                                                                                     width=self.dck_widget.pen_size[
+                                                                                         _i])))
+
+            print(len(self.xDataGraf))
+            print(self.xDataGraf)
+
+
         for eq in plt2._e:
-            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], 2)))
+            self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)))
             _i += 1
 
         self.dats = plt2.getPoint()
@@ -273,11 +305,11 @@ class Window(QtGui.QMainWindow):
         # _j = 0
         for eq in plt2._e:
 
-            self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], 2))
+            self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
             # if eq.simulate:
             #print(dats[_j])
             self.all_data[_i].append(self.dats[_i])
-            self.all_curves[_i].setData(plt2._xdata[:self.indexGr+1], self.all_data[_i])
+            self.all_curves[_i].setData(self.xDataGraf[:self.indexGr+1], self.all_data[_i])
 
             # if self.dats[_j] > self.mayor:
             #     self.mayor = self.dats[_j]
@@ -285,12 +317,12 @@ class Window(QtGui.QMainWindow):
             # if self.dats[_j] < self.menor:
             #     self.menor = self.dats[_j]
 
-            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], 2)))
+            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)))
 
             _i += 1
             # _j += 1
 
-        self.ui.ui_sinc_plot.setXRange(plt2._xdata[self.indexGr+1] - 13, plt2._xdata[self.indexGr+1] + 7)
+        self.ui.ui_sinc_plot.setXRange(self.xDataGraf[self.indexGr+1] - 13, self.xDataGraf[self.indexGr+1] + 7)
         self.ui.ui_sinc_plot.setYRange(0, 20)
 
     def exportToEDF(self):
