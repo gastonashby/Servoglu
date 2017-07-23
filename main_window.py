@@ -280,6 +280,7 @@ class Window(QtGui.QMainWindow):
         s = (mili / 1000) % 60
         m = (mili / (1000 * 60)) % 60
         h = (mili / (1000 * 60 * 60)) % 24
+        d = str(int((mili / (1000 * 60 * 60 * 24))))
         if h < 10:
             h = "0" + str(int(h))
         else:
@@ -302,7 +303,7 @@ class Window(QtGui.QMainWindow):
         # else:
         #     ms = str(int(ms))
 
-        return h + ":" + m + ":" + s #+ ":" + ms
+        return d + ":" + h + ":" + m + ":" + s #+ ":" + ms
 
     def update1(self):
         self.indexGr += 1

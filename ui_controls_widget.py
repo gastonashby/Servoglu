@@ -43,8 +43,8 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
     def init_time_label(self):
         hbox = QtGui.QHBoxLayout()
         hbox.addStretch(1)
-        label = QtGui.QLabel("Simulation time (HH:MM:SS:mmm): ")
-        self.timeLbl = QtGui.QLabel("0:00:00")
+        label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
+        self.timeLbl = QtGui.QLabel("0:00:00:00")
         myFont = QtGui.QFont()
         myFont.setBold(True)
         myFont.setPointSize(11)
