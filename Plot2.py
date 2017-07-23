@@ -39,12 +39,13 @@ indexGrAux = 0
 top_x = 1000
 
 _auxIni = _aux
-_xdata = np.linspace(0, top_x -1, top_x)
+_xdata = np.linspace(0, top_x - 1, top_x, dtype=np.int32)
 
 
-def odesys(XX, tt):
+def odesys(XX,  tt):
     global _e
     _i = 0
+    tt = int(round(tt, 1))
     salida = []
     for ec in _e:
         #print(eval('XX[' + str(_i) + ']'))
@@ -63,8 +64,9 @@ print('Solution created 1st time')
 
 
 def change_scale(step):
-    global _xdata
+    global _xdata, indexGrAux
     _xdata = np.linspace(0, (top_x - 1) * step, top_x)
+    print("plt2 ", _xdata[:indexGrAux + 10])
 
 def recalculate():
     global _sol, _aux, _xdata, indexGrAux, _c
@@ -94,8 +96,8 @@ def restart():
 def getPoint():
     global _sol, indexGrAux, top_x
     #TODO calcular maximos y minimos por columna para graficar
-
-    if indexGrAux == top_x - 1:
+    # print("indexGrAux", indexGrAux)
+    if indexGrAux == top_x - 2:
         recalculate()
 
     out = _sol[indexGrAux]

@@ -46,8 +46,8 @@ class Window(QtGui.QMainWindow):
         self.simulated_cicle_steps = 1000
         
         self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
-                                          , self.simulated_cicle_number * self.simulated_cicle_steps)
-        
+                                          , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)
+        self.timeCount = 0
         self.all_data = []
         self.all_curves = []
         self.indexGr = 0
@@ -104,12 +104,13 @@ class Window(QtGui.QMainWindow):
             _i += 1
 
         self.dats[i] = value
+        plt2.recalculate()
+
         _i = 0
         for eq in plt2._e:
             self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)))
+
             _i += 1
-
-
 
     def create_toolbars(self):
         prevAction = QtGui.QAction(QtGui.QIcon('prev.png'), 'Previous step', self)
@@ -157,7 +158,13 @@ class Window(QtGui.QMainWindow):
         self.step = int(self.spboxStep.value())
         plt2.change_scale(self.step)
         plt2.recalculate()
-        print(self.step)
+        linX = plt2.np.linspace(self.xDataGraf[self.indexGr]
+                        , self.xDataGraf[self.indexGr] + (self.step * ((self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
+                        , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)
+        #plt2.np.concatenate((arr1, arr2), axis=0)
+        self.xDataGraf = plt2.np.append(self.xDataGraf[:self.indexGr], linX)
+
+        print("Main ", self.xDataGraf[:self.indexGr +10])
 
     def close_app(self):
         choice = QtGui.QMessageBox.question(self, 'Exit?', 'Close application?',
@@ -170,7 +177,6 @@ class Window(QtGui.QMainWindow):
 
     def timerChange(self):
         self.timer.setInterval(int(self.spBoxTimmer.value()))
-
 
     def changeModelPropertie(self, param, changes):
         print("change color:")
@@ -192,8 +198,6 @@ class Window(QtGui.QMainWindow):
                         symbolPen='k', symbolBrush=1, name=plt2._e[_i].name,
                         symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
             self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
-
-
 
     def definite_graph(self):
         _i = 0
@@ -225,7 +229,7 @@ class Window(QtGui.QMainWindow):
 
             _i += 1
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
-        self.ui.ui_sinc_plot.setYRange(0 , 20)
+        # self.ui.ui_sinc_plot.setYRange(0 , 20)
 
     def play_stop(self):
         if not self.timer.isActive():
@@ -248,7 +252,8 @@ class Window(QtGui.QMainWindow):
         self.indexGr = 0
         self.playAction.setIcon(QtGui.QIcon('play.png'))
         # TODO: falta restaurar los valores iniciales del XML?
-        self.xDataGraf = plt2.np.linspace(0, 999, 1000)
+        self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
+                                          , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)
         _i = 0
         # _j = 0
         for eq in plt2._e:
@@ -270,29 +275,49 @@ class Window(QtGui.QMainWindow):
             _i += 1
             #_j += 1
 
+    def convertMs(self, mili):
+        # ms = mili % 1000
+        s = (mili / 1000) % 60
+        m = (mili / (1000 * 60)) % 60
+        h = (mili / (1000 * 60 * 60)) % 24
+        if h < 10:
+            h = "0" + str(int(h))
+        else:
+            h = str(int(h))
+
+        if m < 10:
+            m = "0" + str(int(m))
+        else:
+            m = str(int(m))
+
+        if s < 10:
+            s = "0" + str(int(s))
+        else:
+            s = str(int(s))
+
+        # if ms < 10:
+        #     ms = "00" + str(int(ms))
+        # elif ms < 100:
+        #     ms = "0" + str(int(ms))
+        # else:
+        #     ms = str(int(ms))
+
+        return h + ":" + m + ":" + s #+ ":" + ms
+
     def update1(self):
         self.indexGr += 1
-        self.ui.indexGr = self.indexGr
+        self.ui.indexGr = self.indexGr #TODO usar parent
+        self.timeCount += self.step * 1000 * 60
+        self.dck_param.timeLbl.setText(self.convertMs(self.timeCount))
+
         _i = 0
-
-        if len(self.xDataGraf) - 1 == self.indexGr:
-            self.simulated_cicle_number += 1
-            self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps - 1
-                                              , self.simulated_cicle_number * self.simulated_cicle_steps)
-            for eq in plt2._e:
-                # print(eq.simulate)
-                # if eq.simulate:
-                self.all_curves[_i].clear()
-                self.all_data.append([self.dats[_i]])
-                self.all_curves.append(self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]], symbol='o',
-                                                                 symbolPen='k', symbolBrush=1, name=eq.name,
-                                                                 symbolSize=3,
-                                                                 pen=pyqtgraph.mkPen(self.dck_widget.colors[_i],
-                                                                                     width=self.dck_widget.pen_size[
-                                                                                         _i])))
-
-            print(len(self.xDataGraf))
-            print(self.xDataGraf)
+        if len(self.xDataGraf) - 2 == self.indexGr:
+            linX = plt2.np.linspace(self.xDataGraf[self.indexGr]
+                                    , self.xDataGraf[self.indexGr] + (
+                                    self.step * ((self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
+                                    , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)
+            # plt2.np.concatenate((arr1, arr2), axis=0)
+            self.xDataGraf = plt2.np.append(self.xDataGraf[:self.indexGr], linX)
 
 
         for eq in plt2._e:
@@ -321,9 +346,13 @@ class Window(QtGui.QMainWindow):
 
             _i += 1
             # _j += 1
+        # act_range = plt2.np.absolute(self.ui.ui_sinc_plot.getAxis('bottom').range[1]) + \
+        #             plt2.np.absolute(self.ui.ui_sinc_plot.getAxis('bottom').range[0])
+        self.ui.ui_sinc_plot.setXRange(self.xDataGraf[self.indexGr] - 20,
+                                       self.xDataGraf[self.indexGr] + 10)
+        # print('x axis range: {}'.format(self.ui.ui_sinc_plot.getAxis('bottom').range))
 
-        self.ui.ui_sinc_plot.setXRange(self.xDataGraf[self.indexGr+1] - 13, self.xDataGraf[self.indexGr+1] + 7)
-        self.ui.ui_sinc_plot.setYRange(0, 20)
+        # self.ui.ui_sinc_plot.setYRange(0, 20)
 
     def exportToEDF(self):
 

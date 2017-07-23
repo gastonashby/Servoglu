@@ -28,15 +28,33 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
         self.eqLblList = []
         self.eqCtrlList = []
         self.eqBtnList = []
-
         self.init_eq_change_control()
         self.house_layout.addSpacing(10)
         self.init_eq_sliders()
+        self.house_layout.addSpacing(10)
+        self.init_time_label()
+
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
 
                 #
         self.ui_controls_box_widget.setWidget(self.house_widget)
+
+    def init_time_label(self):
+        hbox = QtGui.QHBoxLayout()
+        hbox.addStretch(1)
+        label = QtGui.QLabel("Simulation time (HH:MM:SS:mmm): ")
+        self.timeLbl = QtGui.QLabel("0:00:00")
+        myFont = QtGui.QFont()
+        myFont.setBold(True)
+        myFont.setPointSize(11)
+        self.timeLbl.setFont(myFont)
+
+        hbox.addWidget(label)
+        hbox.addWidget(self.timeLbl)
+
+        self.house_layout.addLayout(hbox)
+
 
     def init_eq_change_control(self):
         _i = 0
@@ -55,9 +73,8 @@ class Ui_GeneralControlsWidget(QtCore.QObject):
             hbox.addWidget(self.eqBtnList[_i])
 
             controlFunc = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
-                                        "print(self.eqCtrlList[" + str(_i) + "].value())\n\t"\
-                                        "self.parent.changeActualPoint(" + str(_i) + ", self.eqCtrlList[" + str(_i) + "].value())\n\t" \
-                                        "plt2.recalculate()\n"
+                                        "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t"\
+                                        "self.parent.changeActualPoint(" + str(_i) + ", self.eqCtrlList[" + str(_i) + "].value())\n\t"
 
             _c_f_aux = "eqCtrlChangeValue_" + str(_i)
             exec(controlFunc)
