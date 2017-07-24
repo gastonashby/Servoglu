@@ -44,7 +44,8 @@
 		</constants>
 	</parameters>
 	<functions>
-		<function name="H" parameters="x" description="Heaviside step function">		
+
+		<function name="Heaviside" parameters="x" description="Heaviside step function">
 			<m:math>								
 				<piecewise>
                 	<piece>					
@@ -66,7 +67,39 @@
 				</piecewise>				
 			</m:math>
 		</function>
-		<function  name="D" parameters="t" description="Assumed pattern of drug dosage">
+		<function name="D" parameters="x" description="Heaviside step function" outputType="int">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<cn>2</cn>
+        				<apply>
+							<eq/>
+							<apply>
+								<quotient/>
+							  	<ci> x </ci>
+							  	<ci> 6 </ci>
+							</apply>
+							<cn>0</cn>
+						</apply>
+					</piece>
+					<piece>
+						<cn>0</cn>
+        				<apply>
+							<neq/>
+							<apply>
+								<quotient/>
+							  	<ci> x </ci>
+							  	<ci> 6 </ci>
+							</apply>
+							<cn>0</cn>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+
+		<!--Mathematical expression of function D -->
+		<function  name="D2" parameters="t" description="Assumed pattern of drug dosage" outputType="int">
 			<m:math>
 				<apply>
 					<times/>
@@ -76,7 +109,7 @@
 						<apply>
 							<minus/>
 							<apply>
-								<ci>H</ci>
+								<ci>Heaviside</ci>
 								<apply>
 									<minus/>
 									<ci>t</ci>
@@ -88,7 +121,7 @@
 								</apply>								
 							</apply>
 							<apply>								
-								<ci>H</ci>
+								<ci>Heaviside</ci>
 								<apply>
 									<minus/>
 									<ci>t</ci>
@@ -108,7 +141,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -122,7 +155,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -143,7 +176,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -157,7 +190,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -178,7 +211,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -192,7 +225,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -213,7 +246,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -227,7 +260,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -248,7 +281,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -262,7 +295,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -283,7 +316,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -297,7 +330,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -318,7 +351,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -332,7 +365,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -353,7 +386,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -367,7 +400,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -388,7 +421,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -402,7 +435,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -423,7 +456,7 @@
 							<minus/>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -437,7 +470,7 @@
 							</apply>
 							<apply>
 								<apply>
-									<ci>H</ci>
+									<ci>Heaviside</ci>
 									<apply>
 										<minus/>
 										<ci>t</ci>
@@ -458,9 +491,8 @@
 				</apply>
 			</m:math>
 		</function>
-	
-		
-	</functions>	
+
+	</functions>
 	<equations>
 		<!-- dGdt= -a*G(t) + D(t) -->
 		<equation name="G" defaultValue="0" simulate="True" description="Concentration of the drug in the gastrointestinal tract" unit="mg/ml">
@@ -477,7 +509,11 @@
 					</apply>
 					<apply>					
 						<ci>D</ci>
+<<<<<<< Updated upstream
 						<ci>tt</ci>
+=======
+						<ci>modelTime</ci>
+>>>>>>> Stashed changes
 					</apply>
 				</apply>  
 			</m:math>
@@ -501,6 +537,5 @@
 				</apply>  
 			</m:math>
 		</equation>
-				
 	</equations>
 </servoglu>
