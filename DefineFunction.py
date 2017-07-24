@@ -4,6 +4,7 @@ import numpy as np
 from libsbml import *
 import xml.etree.ElementTree as ET
 import collections
+from random import randint
 
 
 def piecewise(*args):
@@ -13,10 +14,8 @@ def piecewise(*args):
             trueIndex = index
     return args[trueIndex - 1]
 
-
 def lt(x, y):
     return x < y
-
 
 def gt(x, y):
     return x > y
@@ -25,6 +24,8 @@ def gt(x, y):
 def eq(x, y):
     return x == y
 
+def neq(x, y):
+    return x != y
 
 def geq(x, y):
     return x >= y
@@ -46,17 +47,22 @@ def log(x):
 def root(x, y):
     return np.power(y, 1 / x)
 
+def quotient(x, y):
+    return x % y
 
 def operators(op):
     if (op == "eq"):
         return "="
 
-
 def defineFunctions(functionTuples):
     functions = ""
     for f in functionTuples:
-        functions += """def """ + f.name + """(""" + f.parameters + """):
+        if (f.outputType == ''):
+            functions += """def """ + f.name + """(""" + f.parameters + """):
                           return """ + f.function + """ \n"""
+        else:
+            functions += """def """ + f.name + """(""" + f.parameters + """):
+                          return """ + f.outputType + """(""" + f.function + """)""" +""" \n"""
     return functions
 
 # Recursive function to return the list of complete parameters

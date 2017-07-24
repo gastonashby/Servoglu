@@ -131,20 +131,24 @@ class ModelParser():
 
     def parseFunction(self, xmlroot, languageHash):
         functions = xmlroot.find('functions')
-        Function = collections.namedtuple('Function', ['name', 'description', 'parameters', 'function'])
+        Function = collections.namedtuple('Function', ['name', 'description', 'parameters','outputType','function'])
         d = collections.deque()
-        for eq in functions:
-            xmlstr = ET.tostring(eq, encoding='utf8', method='xml')
+        for func in functions:
+            xmlstr = ET.tostring(func, encoding='utf8', method='xml')
 
-            if eq.attrib['description'].startswith("lbl."):
-                description = languageHash[eq.attrib['description']]
+            if func.attrib['description'].startswith("lbl."):
+                description = languageHash[func.attrib['description']]
             else:
-                description = eq.attrib['description']
+                description = func.attrib['description']
 
-            name = eq.attrib['name']
-            parameters = eq.attrib['parameters']
-            function = self.translateMathML(ET.tostring(eq[0], encoding='unicode', method='xml'))
-            f = Function(name, description, parameters, function)
+            name = func.attrib['name']
+            parameters = func.attrib['parameters']
+            if ('outputType' in func.attrib):
+                outputType = func.attrib['outputType']
+            else:
+                outputType = ""
+            function = self.translateMathML(ET.tostring(func[0], encoding='unicode', method='xml'))
+            f = Function(name, description, parameters,outputType, function)
             d.append(f)
         return d
 

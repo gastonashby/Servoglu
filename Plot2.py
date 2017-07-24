@@ -8,7 +8,7 @@ import ModelParser as mp
 from scipy.integrate import odeint
 
 
-model = mp.ModelParser('Glucosafe.xml', 'LanguageSupport.csv')
+model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
 _u = model.userDefinedParameters
 _c = model.constants
 _f = model.functions
@@ -36,6 +36,7 @@ exec(defineFunctions(_f),globals())
 exec(defineEquations(_e),globals())
 
 indexGrAux = 0
+modelTime = 0
 top_x = 1000
 
 _auxIni = _aux
@@ -44,9 +45,11 @@ _xdata = np.linspace(0, top_x - 1, top_x, dtype=np.int32)
 
 def odesys(XX,  tt):
     global _e
+    global modelTime
+    modelTime = int(tt)
     _i = 0
-    tt = int(round(tt, 1))
     salida = []
+
     for ec in _e:
         #print(eval('XX[' + str(_i) + ']'))
         auux = ec.name + '= XX[' + str(_i) + ']'
@@ -55,7 +58,6 @@ def odesys(XX,  tt):
 
     for eq in _e:
         salida.append(eval(eq.equation))
-
     return salida
 
 #print(_xdata)
