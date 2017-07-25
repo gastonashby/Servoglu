@@ -21,7 +21,7 @@ class Ui_MainWindow(QtCore.QObject):
         self.ui_window.setBackground('w')
 
         # PLOT
-        # TODO: Sacar el titulo del XML
+        # TODO: Sacar el titulo del XML y unidad
         self.ui_sinc_plot = self.ui_window.addPlot(title='Glucosa')
         self.ui_sinc_plot.showGrid(x=True, y=True, alpha=1)
         self.ui_sinc_plot.setLabel('bottom', 'Time', units='min')

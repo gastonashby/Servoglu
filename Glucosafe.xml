@@ -820,7 +820,7 @@
 	</functions>	
 	<equations>
 		<!-- dNdt= -e(t) + ecf(t) -->
-		<equation name="N" defaultValue="0.774" simulate="False" description="lbl.Bioavailable glucose" unit="mmol/kg">
+		<equation name="N" defaultValue="0.774" simulate="True" description="lbl.Bioavailable glucose" unit="mmol/kg">
 			<m:math>
 				<apply>
 					<plus/>

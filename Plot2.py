@@ -7,39 +7,16 @@ import ModelParser as mp
 
 from scipy.integrate import odeint
 
-
-model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
-_u = model.userDefinedParameters
-_c = model.constants
-_f = model.functions
-_e = model.equations
-
-def updateCalculatedConstants():
-    for _i in range(0, len(_calculated)-1):
-        #print(eval(_calculated[_i]))
-        #print(_calculated[_i])
-        exec(_calculated[_i], globals())
-    #print(eval("ABSA"))
-
-def updateFunctions():
-    for _i in range(0, len(_functionList)-1):
-        #print(eval(_functionList[_i] + _paramsList[_i]))
-        #print(_functionList[_i] + _paramsList[_i])
-        eval(_functionList[_i] + _paramsList[_i])
-
-_aux = []
-exec(defineUserDefinedParameters(_u), globals())
-_constants, _calculated = defineParameters(_c)
-exec(_constants, globals())
-_functionList, _paramsList = defineFunctionList(_f)
-exec(defineFunctions(_f),globals())
-exec(defineEquations(_e),globals())
-
+_u = []
+_c = []
+_f = []
+_e = []
+_sol = [0]
+_constants = []
+_calculated = []
 indexGrAux = 0
 modelTime = 0
-top_x = 1000
-
-_auxIni = _aux
+top_x = 100
 _xdata = np.linspace(0, top_x - 1, top_x, dtype=np.int32)
 
 
@@ -60,10 +37,42 @@ def odesys(XX,  tt):
         salida.append(eval(eq.equation))
     return salida
 
-#print(_xdata)
-_sol = odeint(odesys, _aux, _xdata)
-print('Solution created 1st time')
 
+def initialize(name):
+    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni
+    # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
+    model = mp.ModelParser(name, 'LanguageSupport.csv')
+    _u = model.userDefinedParameters
+    _c = model.constants
+    _f = model.functions
+    _e = model.equations
+
+    print (_e)
+
+    exec(defineUserDefinedParameters(_u), globals())
+    _constants, _calculated = defineParameters(_c)
+    exec(_constants, globals())
+    # _functionList, _paramsList = defineFunctionList(_f)
+    exec(defineFunctions(_f), globals())
+    exec(defineEquations(_e), globals())
+    _auxIni = _aux
+    _sol = odeint(odesys, _aux, _xdata)
+    print('Solution created 1st time')
+    print(_sol)
+
+
+def updateCalculatedConstants():
+    for _i in range(0, len(_calculated)-1):
+        #print(eval(_calculated[_i]))
+        #print(_calculated[_i])
+        exec(_calculated[_i], globals())
+    #print(eval("ABSA"))
+
+# def updateFunctions():
+#     for _i in range(0, len(_functionList)-1):
+#         #print(eval(_functionList[_i] + _paramsList[_i]))
+#         #print(_functionList[_i] + _paramsList[_i])
+#         eval(_functionList[_i] + _paramsList[_i])
 
 def change_scale(step):
     global _xdata, indexGrAux
@@ -75,8 +84,7 @@ def recalculate():
     _aux = _sol[indexGrAux-1]
     indexGrAux = 1
     updateCalculatedConstants()
-    updateFunctions()
-
+#    updateFunctions()
     print(_sol)
     print("-- Recalculate --")
     _sol = odeint(odesys, _aux, _xdata)
@@ -87,8 +95,7 @@ def restart():
     global _sol, _auxIni, _xdata, indexGrAux
     indexGrAux = 0
     updateCalculatedConstants()
-    updateFunctions()
-    
+ #   updateFunctions()
     print(_sol)
     print("-- Restart --")
     _sol = odeint(odesys, _auxIni, _xdata)

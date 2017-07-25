@@ -23,28 +23,25 @@ class Window(QtGui.QMainWindow):
         self.ui.setupUi(self)
 
         self.mbar = self.setMenuBar(self.ui.ui_menubar.ui_menubar)
-        self.round = 4
-        # EXIT ACTION
-        self.ui.ui_menubar.exit_action.triggered.connect(self.close)
 
-        # EXPORT TO EDF
+        # MENU ACTION
+        self.ui.ui_menubar.open_action.triggered.connect(self.open_model)
+        self.ui.ui_menubar.exit_action.triggered.connect(self.close_app)
         self.ui.ui_menubar.export_action.triggered.connect(self.exportToEDF)
 
-        self.dck_widget = Ui_ControlsBoxDockWidget()
-        self.dck_widget.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_widget.ui_controls_box_widget)
-
-        self.dck_param = Ui_GeneralControlsWidget()
-        self.dck_param.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_param.ui_controls_box_widget)
+        self.dck_widget = []
+        self.dck_param = []
 
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
 
-        # DATA
-        self.simulated_cicle_number = 1
-        self.simulated_cicle_steps = 1000
-        
+        # INITIAL SETTINGS
+        self.round = 4          # General round
+        self.simulated_cicle_number = 1     # Internal variable
+        self.simulated_cicle_steps = 1000   # Cicle
+        self.modelUbic = ""
+
+        self.simulated_eq = []  # Array of bool to indicate the simulated graph
         self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
                                           , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)
         self.timeCount = 0
@@ -53,20 +50,25 @@ class Window(QtGui.QMainWindow):
         self.indexGr = 0
         self.step = 1
         self.leyend = []
-        self.dats = plt2.getPoint()
-        self.old_dats = self.dats
-        # CONTROLS
-        self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModelPropertie)
+        self.dats = []
 
         # TIMMER
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update1)
         self.timer.stop()
 
-        # GRAPH
         self.create_toolbars()
-        self.definite_graph()
-        #self.restart_graph()
+
+
+    def definite_controls(self):
+        self.dck_widget = Ui_ControlsBoxDockWidget()
+        self.dck_widget.setupUi(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_widget.ui_controls_box_widget)
+
+        self.dck_param = Ui_GeneralControlsWidget()
+        self.dck_param.setupUi(self)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_param.ui_controls_box_widget)
+        self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModelPropertie)
 
         _i = 1
         sliderF = ""
@@ -74,9 +76,10 @@ class Window(QtGui.QMainWindow):
             if userDef.isSlider:
                 # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
                 sliderF = "def sliderValueChanged" + str(_i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
-                    "plt2." + userDef.name + " = int_value / 100\n\tself.dck_param.label[" + str(_i - 1) + "]" \
-                    ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
-                    "plt2.recalculate()\n"
+                                                               "plt2." + userDef.name + " = int_value / 100\n\tself.dck_param.label[" + str(
+                    _i - 1) + "]" \
+                              ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
+                                                                                                                                       "plt2.recalculate()\n"
 
                 _s_f_aux = "sliderValueChanged" + str(_i)
                 # print(sliderF)
@@ -89,8 +92,8 @@ class Window(QtGui.QMainWindow):
                 # print(_s_f_aux)
                 # exec(sliderF)
 
-                #TODO que entre cuando se suelta el slider
-                self.dck_param.slider[_i-1].valueChanged.connect(eval(_s_f_aux))
+                # TODO que entre cuando se suelta el slider
+                self.dck_param.slider[_i - 1].valueChanged.connect(eval(_s_f_aux))
                 _i += 1
 
 
@@ -179,28 +182,46 @@ class Window(QtGui.QMainWindow):
         self.timer.setInterval(int(self.spBoxTimmer.value()))
 
     def changeModelPropertie(self, param, changes):
-        print("change color:")
+
         for param, change, data in changes:
+            if param.name() == 'Simulated':
+                print("change simulated:")
+                _i = -1
+                # j = 0
+                var = 1
 
-            _i = -1
-            # j = 0
-            var = 1
+                while (var):
+                    _i += 1
+                    if plt2._e[_i].description in param._parent.name():
+                        var = 0
 
-            while (var):
-                # if plt2._e[j].simulate:
-                _i += 1
-                if plt2._e[_i].description == param._parent.name():
-                    var = 0
-                # j += 1
+                self.simulated_eq[_i] = data
 
-            self.all_curves[_i].clear()
-            self.all_curves[_i] = self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
-                        symbolPen='k', symbolBrush=1, name=plt2._e[_i].name,
-                        symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
-            self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
+
+
+            elif param.name() == 'Color':
+                print("change color:")
+                _i = -1
+                # j = 0
+                var = 1
+
+                while (var):
+                    # if plt2._e[j].simulate:
+                    _i += 1
+                    if plt2._e[_i].description in param._parent.name():
+                        var = 0
+                    # j += 1
+
+                self.all_curves[_i].clear()
+                self.all_curves[_i] = self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
+                            symbolPen='k', symbolBrush=1, name=plt2._e[_i].name,
+                            symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
+                self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
 
     def definite_graph(self):
         _i = 0
+        self.dats = plt2.getPoint()
+        self.old_dats = self.dats
         # self.mayor = self.dats[0]
         # self.menor = self.dats[0]
 
@@ -210,7 +231,11 @@ class Window(QtGui.QMainWindow):
 
         for eq in plt2._e:
             # print(eq.simulate)
-            # if eq.simulate:
+            if eq.simulate:
+                self.simulated_eq.append(True)
+            else:
+                self.simulated_eq.append(False)
+
             self.all_data.append([self.dats[_i]])
             self.all_curves.append(self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
                     symbolPen='k', symbolBrush=1, name=eq.name,
@@ -263,6 +288,7 @@ class Window(QtGui.QMainWindow):
             #_j += 1
 
         self.dats = plt2.getPoint()
+
         _i = 0
         # _j = 0
         for eq in plt2._e:
@@ -308,7 +334,7 @@ class Window(QtGui.QMainWindow):
     def update1(self):
         self.indexGr += 1
         self.ui.indexGr = self.indexGr #TODO usar parent
-        self.timeCount += self.step * 1000 * 60
+        self.timeCount += self.step * 1000 * 60 * 60
         self.dck_param.timeLbl.setText(self.convertMs(self.timeCount))
 
         _i = 0
@@ -317,7 +343,6 @@ class Window(QtGui.QMainWindow):
                                     , self.xDataGraf[self.indexGr] + (
                                     self.step * ((self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
                                     , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)
-            # plt2.np.concatenate((arr1, arr2), axis=0)
             self.xDataGraf = plt2.np.append(self.xDataGraf[:self.indexGr], linX)
 
 
@@ -328,14 +353,13 @@ class Window(QtGui.QMainWindow):
         self.dats = plt2.getPoint()
 
         _i = 0
-        # _j = 0
         for eq in plt2._e:
 
             self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
-            # if eq.simulate:
-            #print(dats[_j])
             self.all_data[_i].append(self.dats[_i])
-            self.all_curves[_i].setData(self.xDataGraf[:self.indexGr+1], self.all_data[_i])
+
+            if self.simulated_eq[_i]:
+                self.all_curves[_i].setData(self.xDataGraf[:self.indexGr+1], self.all_data[_i])
 
             # if self.dats[_j] > self.mayor:
             #     self.mayor = self.dats[_j]
@@ -343,17 +367,13 @@ class Window(QtGui.QMainWindow):
             # if self.dats[_j] < self.menor:
             #     self.menor = self.dats[_j]
 
-            self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)))
+                self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)))
+            else:
+                self.all_curves[_i].clear()
 
             _i += 1
-            # _j += 1
-        # act_range = plt2.np.absolute(self.ui.ui_sinc_plot.getAxis('bottom').range[1]) + \
-        #             plt2.np.absolute(self.ui.ui_sinc_plot.getAxis('bottom').range[0])
         self.ui.ui_sinc_plot.setXRange(self.xDataGraf[self.indexGr] - 20,
                                        self.xDataGraf[self.indexGr] + 10)
-        # print('x axis range: {}'.format(self.ui.ui_sinc_plot.getAxis('bottom').range))
-
-        # self.ui.ui_sinc_plot.setYRange(0, 20)
 
     def exportToEDF(self):
 
@@ -379,5 +399,26 @@ class Window(QtGui.QMainWindow):
         #file.write(text)
         #file.close()
 
+    def restart_all(self):
+        if self.dck_widget != []:
+            self.removeDockWidget(self.dck_widget.ui_controls_box_widget)
+            self.removeDockWidget(self.dck_param.ui_controls_box_widget)
 
 
+    def open_model(self):
+        myFilter = ["XML file (*.xml)"]
+        name, _ = QFileDialog.getOpenFileName(self, 'Open XML SERVOGLU model...',"","XML file (*.xml)", options=QFileDialog.DontUseNativeDialog)
+        if name != "":
+            if name.endswith(".xml"):
+                self.restart_all()
+                self.modelUbic = name
+                plt2.initialize(name)
+
+                _i = 0
+                self.all_data = []
+                for gr in self.all_curves:
+                    gr.clear()
+                    _i = + 1
+
+                self.definite_controls()
+                self.definite_graph()

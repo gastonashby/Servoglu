@@ -43,11 +43,11 @@ class Ui_ControlsBoxDockWidget(QtCore.QObject):
         for const in plt2._e:
             _childAuxEq = []
             # if const.simulate:
-            _childAuxEq = {'name': const.description, 'type': 'group', 'expanded': const.simulate, 'children': [
+            _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': const.simulate, 'children': [
                     {'name': 'Formula', 'type': 'str',
-                        'value': const.name + ' = ' + const.equation,
+                        'value': const.equation,
                         'readonly': True},
-                    {'name': 'Simulated', 'type': 'str', 'value': 'Yes', 'readonly': True},
+                    {'name': 'Simulated', 'type': 'bool', 'value': const.simulate, 'readonly': False},
                     {'name': 'Color', 'type': 'color', 'value': self.colors[_i], 'readonly': False},
                     #TODO: agregar mas atributos
                     # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},

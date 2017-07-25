@@ -509,11 +509,7 @@
 					</apply>
 					<apply>					
 						<ci>D</ci>
-<<<<<<< Updated upstream
-						<ci>tt</ci>
-=======
 						<ci>modelTime</ci>
->>>>>>> Stashed changes
 					</apply>
 				</apply>  
 			</m:math>
