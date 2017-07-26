@@ -11,10 +11,10 @@ import types
 # TODO: No importar Plot2, pasar por parametro
 import Plot2 as plt2
 
-class Ui_GeneralControlsWidget(QtCore.QObject):
+class Ui_ControlsDockWidget(QtCore.QObject):
 
     def __init__(self):
-        super(Ui_GeneralControlsWidget, self).__init__()
+        super(Ui_ControlsDockWidget, self).__init__()
 
     def setupUi(self, ControlsBox):
         ControlsBox.setObjectName('General Controls')

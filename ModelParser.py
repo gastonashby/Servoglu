@@ -1,8 +1,5 @@
-import os
-import os.path
 import libsbml as libsbml
 import csv
-import sys
 import xml.etree.ElementTree as ET
 import collections
 import re

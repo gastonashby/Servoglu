@@ -1,9 +1,50 @@
 
 #import ParsingMathML as mp
-from DefineFunction import *
+import DefineFunction as df
 
 import numpy as np
 import ModelParser as mp
+
+import numpy as np
+
+
+def piecewise(*args):
+    trueIndex = 0
+    for index, obj in enumerate(args):
+        if obj == True:
+            trueIndex = index
+    return args[trueIndex - 1]
+
+def lt(x, y):
+    return x < y
+
+def gt(x, y):
+    return x > y
+
+
+def eq(x, y):
+    return x == y
+
+def neq(x, y):
+    return x != y
+
+def geq(x, y):
+    return x >= y
+
+
+def leq(x, y):
+    return x <= y
+
+
+def log(x):
+    return np.log(x)
+
+
+def root(x, y):
+    return np.power(y, 1 / x)
+
+def quotient(x, y):
+    return x % y
 
 from scipy.integrate import odeint
 
@@ -18,7 +59,7 @@ indexGrAux = 0
 modelTime = 0
 top_x = 100
 _xdata = np.linspace(0, top_x - 1, top_x, dtype=np.int32)
-
+gen = []
 
 def odesys(XX,  tt):
     global _e
@@ -39,26 +80,28 @@ def odesys(XX,  tt):
 
 
 def initialize(name):
-    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni
+    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux
+    indexGrAux = 0
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
     model = mp.ModelParser(name, 'LanguageSupport.csv')
     _u = model.userDefinedParameters
     _c = model.constants
     _f = model.functions
     _e = model.equations
+    gen = df.DefiniteFunction()
 
-    print (_e)
+    print(_e)
 
-    exec(defineUserDefinedParameters(_u), globals())
-    _constants, _calculated = defineParameters(_c)
+    exec(gen.defineUserDefinedParameters(_u), globals())
+    _constants, _calculated = gen.defineParameters(_c)
     exec(_constants, globals())
     # _functionList, _paramsList = defineFunctionList(_f)
-    exec(defineFunctions(_f), globals())
-    exec(defineEquations(_e), globals())
+    exec(gen.defineFunctions(_f), globals())
+    exec(gen.defineEquations(_e), globals())
     _auxIni = _aux
     _sol = odeint(odesys, _aux, _xdata)
     print('Solution created 1st time')
-    print(_sol)
+    print(_sol[:100])
 
 
 def updateCalculatedConstants():

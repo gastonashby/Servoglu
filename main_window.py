@@ -4,12 +4,13 @@ __version__ = '0.0.1'
 from PyQt5 import QtGui, QtCore
 import pyqtgraph
 from ui_main_window import Ui_MainWindow
-from ui_dock_widget import Ui_ControlsBoxDockWidget
-from ui_controls_widget import Ui_GeneralControlsWidget
+from ui_properties_widget import Ui_PropertiesDockWidget
+from ui_controls_widget import Ui_ControlsDockWidget
 from PyQt5.QtWidgets import QFileDialog
+import DefineFunction as df
 import Plot2 as plt2
 import EdfWriter as edf
-
+import imp
 import types
 import sys
 
@@ -22,6 +23,7 @@ class Window(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.dataFormat = df.DefiniteFunction()
         self.mbar = self.setMenuBar(self.ui.ui_menubar.ui_menubar)
 
         # MENU ACTION
@@ -29,8 +31,8 @@ class Window(QtGui.QMainWindow):
         self.ui.ui_menubar.exit_action.triggered.connect(self.close_app)
         self.ui.ui_menubar.export_action.triggered.connect(self.exportToEDF)
 
-        self.dck_widget = []
-        self.dck_param = []
+        self.ui.dck_model_param_properties = []
+        self.ui.dck_model_param_controls = []
 
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -49,9 +51,8 @@ class Window(QtGui.QMainWindow):
         self.all_curves = []
         self.indexGr = 0
         self.step = 1
-        self.leyend = []
         self.dats = []
-
+        self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
         # TIMMER
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update1)
@@ -61,39 +62,26 @@ class Window(QtGui.QMainWindow):
 
 
     def definite_controls(self):
-        self.dck_widget = Ui_ControlsBoxDockWidget()
-        self.dck_widget.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dck_widget.ui_controls_box_widget)
+        self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
+        self.ui.dck_model_param_properties.setupUi(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
 
-        self.dck_param = Ui_GeneralControlsWidget()
-        self.dck_param.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dck_param.ui_controls_box_widget)
-        self.dck_widget.parTr.sigTreeStateChanged.connect(self.changeModelPropertie)
+        self.ui.dck_model_param_controls = Ui_ControlsDockWidget()
+        self.ui.dck_model_param_controls.setupUi(self)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_model_param_controls.ui_controls_box_widget)
+        self.ui.dck_model_param_properties.parTr.sigTreeStateChanged.connect(self.changeModelPropertie)
 
         _i = 1
         sliderF = ""
         for userDef in plt2._u:
             if userDef.isSlider:
-                # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
-                sliderF = "def sliderValueChanged" + str(_i) + "(self, int_value):\n\tprint(int_value / 100)\n\t" \
-                                                               "plt2." + userDef.name + " = int_value / 100\n\tself.dck_param.label[" + str(
-                    _i - 1) + "]" \
-                              ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
-                                                                                                                                       "plt2.recalculate()\n"
+                sliderF, sl_met_reg, sl_met_nom = self.dataFormat.definiteSlider(userDef, _i)
 
-                _s_f_aux = "sliderValueChanged" + str(_i)
-                # print(sliderF)
                 exec(sliderF)
-                exec("self." + _s_f_aux + " = types.MethodType(" + _s_f_aux + ", self)")
-
-                _s_f_aux = "self.sliderValueChanged" + str(_i)
-
-                # print(sliderF)
-                # print(_s_f_aux)
-                # exec(sliderF)
+                exec(sl_met_reg)
 
                 # TODO que entre cuando se suelta el slider
-                self.dck_param.slider[_i - 1].valueChanged.connect(eval(_s_f_aux))
+                self.ui.dck_model_param_controls.slider[_i - 1].valueChanged.connect(eval(sl_met_nom))
                 _i += 1
 
 
@@ -215,7 +203,7 @@ class Window(QtGui.QMainWindow):
                 self.all_curves[_i].clear()
                 self.all_curves[_i] = self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
                             symbolPen='k', symbolBrush=1, name=plt2._e[_i].name,
-                            symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.dck_widget.pen_size[_i]))
+                            symbolSize=3, pen=pyqtgraph.mkPen(str(data.name()), width=self.ui.dck_model_param_properties.pen_size[_i]))
                 self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
 
     def definite_graph(self):
@@ -225,7 +213,7 @@ class Window(QtGui.QMainWindow):
         # self.mayor = self.dats[0]
         # self.menor = self.dats[0]
 
-        self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
+
 
         #_j = 0
 
@@ -239,11 +227,11 @@ class Window(QtGui.QMainWindow):
             self.all_data.append([self.dats[_i]])
             self.all_curves.append(self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[_i]],  symbol='o',
                     symbolPen='k', symbolBrush=1, name=eq.name,
-                    symbolSize=3, pen=pyqtgraph.mkPen(self.dck_widget.colors[_i], width=self.dck_widget.pen_size[_i])))
+                    symbolSize=3, pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[_i], width=self.ui.dck_model_param_properties.pen_size[_i])))
 
             self.leyend.addItem(self.all_curves[_i],
                                 eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)))
-            self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
+            self.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
             # if self.dats[_i] > self.mayor:
             #     self.mayor = self.dats[_i]
             #
@@ -254,6 +242,7 @@ class Window(QtGui.QMainWindow):
 
             _i += 1
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
+        self.leyend.updateSize()
         # self.ui.ui_sinc_plot.setYRange(0 , 20)
 
     def play_stop(self):
@@ -300,6 +289,7 @@ class Window(QtGui.QMainWindow):
                                 eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)))
             _i += 1
             #_j += 1
+        self.leyend.updateSize()
 
     def convertMs(self, mili):
         # ms = mili % 1000
@@ -335,7 +325,7 @@ class Window(QtGui.QMainWindow):
         self.indexGr += 1
         self.ui.indexGr = self.indexGr #TODO usar parent
         self.timeCount += self.step * 1000 * 60 * 60
-        self.dck_param.timeLbl.setText(self.convertMs(self.timeCount))
+        self.ui.dck_model_param_controls.timeLbl.setText(self.convertMs(self.timeCount))
 
         _i = 0
         if len(self.xDataGraf) - 2 == self.indexGr:
@@ -355,7 +345,7 @@ class Window(QtGui.QMainWindow):
         _i = 0
         for eq in plt2._e:
 
-            self.dck_param.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
+            self.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
             self.all_data[_i].append(self.dats[_i])
 
             if self.simulated_eq[_i]:
@@ -391,7 +381,7 @@ class Window(QtGui.QMainWindow):
         if name != "":
             if not name.endswith(".edf"):
                 name = name + ".edf"
-            edf.WriteEDF(plt2._y[:self.indexGr,:],plt2._e,1/60,name)
+            edf.WriteEDF(plt2._sol[:self.indexGr,:],plt2._e,1/60,name)
 
 
         #file = open(name, 'w')
@@ -400,9 +390,19 @@ class Window(QtGui.QMainWindow):
         #file.close()
 
     def restart_all(self):
-        if self.dck_widget != []:
-            self.removeDockWidget(self.dck_widget.ui_controls_box_widget)
-            self.removeDockWidget(self.dck_param.ui_controls_box_widget)
+        if self.ui.dck_model_param_properties != []:
+            _i = 0
+            for eq in plt2._e:
+                # if eq.simulate:
+                self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)))
+                _i += 1
+
+            imp.reload(plt2)
+            self.indexGr = 0
+            self.ui.indexGr = self.indexGr  # TODO usar parent
+            self.timeCount = 0
+            self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
+            self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
 
 
     def open_model(self):
@@ -410,15 +410,25 @@ class Window(QtGui.QMainWindow):
         name, _ = QFileDialog.getOpenFileName(self, 'Open XML SERVOGLU model...',"","XML file (*.xml)", options=QFileDialog.DontUseNativeDialog)
         if name != "":
             if name.endswith(".xml"):
-                self.restart_all()
-                self.modelUbic = name
-                plt2.initialize(name)
+                try:
+                    self.restart_all()
+                    self.modelUbic = name
+                    plt2.initialize(name)
 
-                _i = 0
-                self.all_data = []
-                for gr in self.all_curves:
-                    gr.clear()
-                    _i = + 1
+                    self.xDataGraf = plt2.np.linspace(0, self.simulated_cicle_number * self.simulated_cicle_steps - 1
+                                                      , self.simulated_cicle_number * self.simulated_cicle_steps,
+                                                      dtype=plt2.np.int32)
 
-                self.definite_controls()
-                self.definite_graph()
+                    _i = 0
+                    for gr in self.all_curves:
+                        gr.clear()
+                        _i = + 1
+
+                    self.all_data = []
+                    self.definite_controls()
+
+                    self.definite_graph()
+
+
+                except Exception as e:
+                    print("Oops!  That was no valid number.  Try again...", e)
