@@ -1,15 +1,7 @@
 __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
-# import python standard modules
-
-# import 3rd party libraries
 from PyQt5 import QtCore, QtGui
-from pyqtgraph.parametertree import Parameter, ParameterTree
-import types
-
-# TODO: No importar Plot2, pasar por parametro
-import Plot2 as plt2
 
 class Ui_ControlsDockWidget(QtCore.QObject):
 
@@ -20,7 +12,6 @@ class Ui_ControlsDockWidget(QtCore.QObject):
         ControlsBox.setObjectName('General Controls')
         self.ui_controls_box_widget = QtGui.QDockWidget("Model Parameters", ControlsBox)
         self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
-        # self.ui_controls_box_widget.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
         self.parent = ControlsBox
         #
         self.house_layout = QtGui.QVBoxLayout()
@@ -37,7 +28,6 @@ class Ui_ControlsDockWidget(QtCore.QObject):
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
 
-                #
         self.ui_controls_box_widget.setWidget(self.house_widget)
 
     def init_time_label(self):
@@ -58,7 +48,8 @@ class Ui_ControlsDockWidget(QtCore.QObject):
 
     def init_eq_change_control(self):
         _i = 0
-        for eq in plt2._e:
+        self.parent.controller.definite_equation_change_control()
+        for eq in self.parent.controller.model._e:
             hbox = QtGui.QHBoxLayout()
             hbox.addStretch(1)
             self.eqLblList.append(QtGui.QLabel(eq.description + " (" + eq.name + "):"))
@@ -72,20 +63,13 @@ class Ui_ControlsDockWidget(QtCore.QObject):
             hbox.addWidget(self.eqCtrlList[_i])
             hbox.addWidget(self.eqBtnList[_i])
 
-            controlFunc = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
-                                        "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t"\
-                                        "self.parent.changeActualPoint(" + str(_i) + ", self.eqCtrlList[" + str(_i) + "].value())\n\t"
-
-            _c_f_aux = "eqCtrlChangeValue_" + str(_i)
-            exec(controlFunc)
-            exec("self." + _c_f_aux + " = types.MethodType(" + _c_f_aux + ", self)")
-
-            self.eqBtnList[_i].clicked.connect(eval("self.eqCtrlChangeValue_" + str(_i)))
+            self.eqBtnList[_i].clicked.connect(eval("self.parent.controller.eqCtrlChangeValue_" + str(_i)))
 
             self.house_layout.addLayout(hbox)
             self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
 
             _i += 1
+
 
     def init_eq_sliders(self):
         self.slider = []
@@ -93,7 +77,7 @@ class Ui_ControlsDockWidget(QtCore.QObject):
 
         _i = 1
         sliderF = ""
-        for userDef in plt2._u:
+        for userDef in self.parent.controller.model._u:
             if userDef.isSlider:
 
                 s_aux = QtGui.QSlider(QtCore.Qt.Horizontal)

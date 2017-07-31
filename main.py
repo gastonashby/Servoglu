@@ -1,14 +1,9 @@
 __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
-# import python standard modules
 import sys
-
-
-
 from PyQt5.QtWidgets import QApplication, QStyleFactory
-
-from main_window import Window
+from View.main_window import Window
 
 
 def main():

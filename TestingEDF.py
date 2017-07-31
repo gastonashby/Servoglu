@@ -1,11 +1,9 @@
+import numpy as np
+from scipy.integrate import odeint
 
 import ParsingMathML as mp
-from DefineFunction import *
+from Controller import EdfWriter as edf
 
-import numpy as np
-
-from scipy.integrate import odeint
-import EdfWriter as edf
 
 def RunTest(FileName):
     _u,_c,_f,_e = mp.ParseMathml('Glucosafe.xml','LanguageSupport.csv')
