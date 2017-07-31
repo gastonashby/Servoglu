@@ -6,7 +6,6 @@ from libsbml import *
 import xml.etree.ElementTree as ET
 import numpy as np
 import pyedflib
-from DefineFunction import *
 import os
 import numpy as np
 from scipy import signal
@@ -52,6 +51,7 @@ def WriteEDF(DataSet,Equations,Frecuency,FileName):
             _i = _i + 1
 
     f.setSignalHeaders(channel_info)
+
     f.writeSamples(data_list)
     f.writeAnnotation(0, -1, "Simulation Starts")
     #f.writeAnnotation(298, -1, "Test 1")

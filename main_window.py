@@ -61,9 +61,6 @@ class Window(QtGui.QMainWindow):
 
         self.create_toolbars()
 
-
-
-
     def definite_controls(self):
         self.dck_widget = Ui_ControlsBoxDockWidget()
         self.dck_widget.setupUi(self)
