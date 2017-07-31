@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" frequencyHz="1/60" name="Pharmacokinetics Model" >
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" frequencyHz="1/60*60" name="Pharmacokinetics Model" >
 	<parameters>
 		<userDefinedParameters>
 			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False"/>

@@ -1,12 +1,16 @@
 from __future__ import division, print_function, absolute_import
-
+import sys
 import os
 import os.path
-
+from libsbml import *
+import xml.etree.ElementTree as ET
 import numpy as np
 import pyedflib
+from DefineFunction import *
+import os
+import numpy as np
+from scipy import signal
 from scipy import interpolate
-
 
 def Interpolate(DataSet,Frecuency):
 
