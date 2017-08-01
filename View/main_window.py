@@ -2,6 +2,7 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 import pyqtgraph
+from View.edf_dialog import ChildDlg
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -27,6 +28,7 @@ class Window(QtGui.QMainWindow):
         self.ui.ui_menubar.open_action.triggered.connect(self.open_model)
         self.ui.ui_menubar.exit_action.triggered.connect(self.close_app)
         self.ui.ui_menubar.export_action.triggered.connect(self.exportToEDF)
+
 
         self.ui.dck_model_param_properties = []
         self.ui.dck_model_param_controls = []
@@ -125,6 +127,9 @@ class Window(QtGui.QMainWindow):
         self.playAction.setEnabled(enabled)
         self.spboxStep.setEnabled(enabled)
         self.spBoxTimmer.setEnabled(enabled)
+        self.ui.ui_menubar.export_action.setEnabled(enabled)
+
+
 
 
     def close_app(self):
@@ -172,139 +177,20 @@ class Window(QtGui.QMainWindow):
         #    if not name.endswith(".edf"):
         #        name = name + ".edf"
         #    self.controller.handler_edf(name)
+
+
         #pyuic5 prueba.ui -o dialog.py
-        EDFdialog = QtWidgets.QDialog()
-        EDFdialog.setObjectName("EDFdialog")
-        EDFdialog.resize(481, 555)
-        EDFdialog.setToolTipDuration(0)
-        self.buttonBox = QtWidgets.QDialogButtonBox(EDFdialog)
-        self.buttonBox.setGeometry(QtCore.QRect(110, 490, 341, 32))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        self.subjectCodeInput = QtWidgets.QLineEdit(EDFdialog)
-        self.subjectCodeInput.setGeometry(QtCore.QRect(110, 70, 113, 20))
-        self.subjectCodeInput.setObjectName("subjectCodeInput")
-        self.label = QtWidgets.QLabel(EDFdialog)
-        self.label.setGeometry(QtCore.QRect(30, 70, 91, 16))
-        self.label.setObjectName("label")
-        self.SexInput = QtWidgets.QLineEdit(EDFdialog)
-        self.SexInput.setGeometry(QtCore.QRect(110, 110, 113, 20))
-        self.SexInput.setObjectName("SexInput")
-        self.label_2 = QtWidgets.QLabel(EDFdialog)
-        self.label_2.setGeometry(QtCore.QRect(30, 110, 91, 16))
-        self.label_2.setObjectName("label_2")
-        self.patientAdditionalInfoInput = QtWidgets.QLineEdit(EDFdialog)
-        self.patientAdditionalInfoInput.setGeometry(QtCore.QRect(110, 150, 341, 20))
-        self.patientAdditionalInfoInput.setObjectName("patientAdditionalInfoInput")
-        self.label_3 = QtWidgets.QLabel(EDFdialog)
-        self.label_3.setGeometry(QtCore.QRect(30, 150, 91, 16))
-        self.label_3.setObjectName("label_3")
-        self.subjectNameInput = QtWidgets.QLineEdit(EDFdialog)
-        self.subjectNameInput.setGeometry(QtCore.QRect(340, 70, 113, 20))
-        self.subjectNameInput.setObjectName("subjectNameInput")
-        self.label_7 = QtWidgets.QLabel(EDFdialog)
-        self.label_7.setGeometry(QtCore.QRect(260, 70, 91, 16))
-        self.label_7.setObjectName("label_7")
-        self.label_8 = QtWidgets.QLabel(EDFdialog)
-        self.label_8.setGeometry(QtCore.QRect(260, 110, 91, 16))
-        self.label_8.setObjectName("label_8")
-        self.label_4 = QtWidgets.QLabel(EDFdialog)
-        self.label_4.setGeometry(QtCore.QRect(30, 330, 91, 16))
-        self.label_4.setObjectName("label_4")
-        self.label_5 = QtWidgets.QLabel(EDFdialog)
-        self.label_5.setGeometry(QtCore.QRect(30, 290, 91, 16))
-        self.label_5.setObjectName("label_5")
-        self.technicianInput = QtWidgets.QLineEdit(EDFdialog)
-        self.technicianInput.setGeometry(QtCore.QRect(340, 250, 113, 20))
-        self.technicianInput.setObjectName("technicianInput")
-        self.adminCodeInput = QtWidgets.QLineEdit(EDFdialog)
-        self.adminCodeInput.setGeometry(QtCore.QRect(110, 250, 113, 20))
-        self.adminCodeInput.setObjectName("adminCodeInput")
-        self.label_6 = QtWidgets.QLabel(EDFdialog)
-        self.label_6.setGeometry(QtCore.QRect(30, 250, 91, 16))
-        self.label_6.setObjectName("label_6")
-        self.recordingAdditionalInfoInput = QtWidgets.QLineEdit(EDFdialog)
-        self.recordingAdditionalInfoInput.setGeometry(QtCore.QRect(110, 330, 341, 20))
-        self.recordingAdditionalInfoInput.setObjectName("recordingAdditionalInfoInput")
-        self.label_12 = QtWidgets.QLabel(EDFdialog)
-        self.label_12.setGeometry(QtCore.QRect(260, 250, 91, 16))
-        self.label_12.setObjectName("label_12")
-        self.deviceInput = QtWidgets.QLineEdit(EDFdialog)
-        self.deviceInput.setGeometry(QtCore.QRect(110, 290, 113, 20))
-        self.deviceInput.setObjectName("deviceInput")
-        self.birthdateInput = QtWidgets.QDateEdit(EDFdialog)
-        self.birthdateInput.setGeometry(QtCore.QRect(340, 110, 110, 22))
-        self.birthdateInput.setObjectName("birthdateInput")
-        self.groupBox = QtWidgets.QGroupBox(EDFdialog)
-        self.groupBox.setGeometry(QtCore.QRect(20, 40, 441, 151))
-        self.groupBox.setObjectName("groupBox")
-        self.groupBox_2 = QtWidgets.QGroupBox(EDFdialog)
-        self.groupBox_2.setGeometry(QtCore.QRect(20, 220, 441, 151))
-        self.groupBox_2.setObjectName("groupBox_2")
-        self.groupBox_3 = QtWidgets.QGroupBox(EDFdialog)
-        self.groupBox_3.setGeometry(QtCore.QRect(20, 400, 441, 81))
-        self.groupBox_3.setObjectName("groupBox_3")
-        self.durationInput = QtWidgets.QLineEdit(self.groupBox_3)
-        self.durationInput.setGeometry(QtCore.QRect(320, 30, 113, 20))
-        self.durationInput.setObjectName("durationInput")
-        self.simulationStartInput = QtWidgets.QDateTimeEdit(self.groupBox_3)
-        self.simulationStartInput.setGeometry(QtCore.QRect(90, 30, 121, 22))
-        self.simulationStartInput.setObjectName("simulationStartInput")
-        self.label_14 = QtWidgets.QLabel(self.groupBox_3)
-        self.label_14.setGeometry(QtCore.QRect(10, 30, 91, 16))
-        self.label_14.setObjectName("label_14")
-        self.label_16 = QtWidgets.QLabel(self.groupBox_3)
-        self.label_16.setGeometry(QtCore.QRect(240, 30, 91, 16))
-        self.label_16.setObjectName("label_16")
-        self.groupBox_3.raise_()
-        self.groupBox.raise_()
-        self.groupBox_2.raise_()
-        self.buttonBox.raise_()
-        self.subjectCodeInput.raise_()
-        self.label.raise_()
-        self.SexInput.raise_()
-        self.label_2.raise_()
-        self.patientAdditionalInfoInput.raise_()
-        self.label_3.raise_()
-        self.subjectNameInput.raise_()
-        self.label_7.raise_()
-        self.label_8.raise_()
-        self.label_4.raise_()
-        self.label_5.raise_()
-        self.technicianInput.raise_()
-        self.adminCodeInput.raise_()
-        self.label_6.raise_()
-        self.recordingAdditionalInfoInput.raise_()
-        self.label_12.raise_()
-        self.deviceInput.raise_()
-        self.birthdateInput.raise_()
 
-        self.retranslateUi(EDFdialog)
-        self.buttonBox.accepted.connect(EDFdialog.accept)
-        self.buttonBox.rejected.connect(EDFdialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(EDFdialog)
 
+        EDFdialog = ChildDlg(self)
         EDFdialog.show()
-        sys.exit(EDFdialog.exec_())
 
-    def retranslateUi(self, EDFdialog):
-        _translate = QtCore.QCoreApplication.translate
-        EDFdialog.setWindowTitle(_translate("EDFdialog", "EDF - Properties"))
-        self.label.setText(_translate("EDFdialog", "Subject code:"))
-        self.label_2.setText(_translate("EDFdialog", "Sex:"))
-        self.label_3.setText(_translate("EDFdialog", "Additional info:"))
-        self.label_7.setText(_translate("EDFdialog", "Subject name:"))
-        self.label_8.setText(_translate("EDFdialog", "Birthdate:"))
-        self.label_4.setText(_translate("EDFdialog", "Additional info:"))
-        self.label_5.setText(_translate("EDFdialog", "Device:"))
-        self.label_6.setText(_translate("EDFdialog", "Admin code:"))
-        self.label_12.setText(_translate("EDFdialog", "Technician:"))
-        self.label_14.setText(_translate("EDFdialog", "Start:"))
-        self.label_16.setText(_translate("EDFdialog", "Duration:"))
-        self.groupBox.setTitle(_translate("EDFdialog", "Local patient identification"))
-        self.groupBox_2.setTitle(_translate("EDFdialog", "Local recording identification"))
-        self.groupBox_3.setTitle(_translate("EDFdialog", "Simulation info"))
+
+
+
+
+
+
 
 
 
@@ -323,3 +209,4 @@ class Window(QtGui.QMainWindow):
                     msg.setInformativeText(str(e))
                     msg.setWindowTitle("Error")
                     msg.exec_()
+
