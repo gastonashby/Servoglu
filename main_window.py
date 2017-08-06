@@ -73,6 +73,7 @@ class Window(QtGui.QMainWindow):
 
         _i = 1
         sliderF = ""
+        #TODO sacar al controller
         for userDef in plt2._u:
             if userDef.isSlider:
                 # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
@@ -80,7 +81,7 @@ class Window(QtGui.QMainWindow):
                                                                "plt2." + userDef.name + " = int_value / 100\n\tself.dck_param.label[" + str(
                     _i - 1) + "]" \
                               ".setText('" + userDef.description + " ' + str(eval('plt2." + userDef.name + "')) + ' " + userDef.unit + "')\n\t" \
-                                                                                                                                       "plt2.recalculate()\n"
+                              "plt2.recalculate(self.step)\n"
 
                 _s_f_aux = "sliderValueChanged" + str(_i)
                 # print(sliderF)
@@ -107,7 +108,7 @@ class Window(QtGui.QMainWindow):
             _i += 1
 
         self.dats[i] = value
-        plt2.recalculate()
+        plt2.recalculate(self.step)
 
         _i = 0
         for eq in plt2._e:
@@ -160,7 +161,7 @@ class Window(QtGui.QMainWindow):
     def stepChange(self):
         self.step = int(self.spboxStep.value())
         plt2.change_scale(self.step)
-        plt2.recalculate()
+        plt2.recalculate(self.step)
         linX = plt2.np.linspace(self.xDataGraf[self.indexGr]
                         , self.xDataGraf[self.indexGr] + (self.step * ((self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
                         , self.simulated_cicle_number * self.simulated_cicle_steps, dtype=plt2.np.int32)

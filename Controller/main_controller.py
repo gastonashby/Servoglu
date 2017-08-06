@@ -52,8 +52,9 @@ class Controller():
         self.window.timeCount += self.window.step * 1000 * 60  # * 60
         self.window.ui.dck_model_param_controls.timeLbl.setText(self.convertMs(self.window.timeCount))
 
-        # Check end of X axis
+        # Check end of X axis and append new points
         if len(self.window.xDataGraf) - 2 == self.window.indexGr:
+            #TODO: usar createXaxis?
             linX = plt2.np.linspace(self.window.xDataGraf[self.window.indexGr]
                                     , self.window.xDataGraf[self.window.indexGr] + (
                                         self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
@@ -67,7 +68,7 @@ class Controller():
         # Update graph
         _i = 0
         for eq in plt2._e:
-            # Delete legend items
+            # Delete legend old values
             self.window.leyend.removeItem(eq.name + ': ' + str(round(old_dats[_i], self.window.round)))
 
             # Set the equations actual values in the SpinBoxs
@@ -99,7 +100,7 @@ class Controller():
             _i += 1
 
         self.window.dats[i] = value
-        plt2.recalculate()
+        plt2.recalculate(self.window.step)
 
         _i = 0
         for eq in plt2._e:
@@ -138,7 +139,7 @@ class Controller():
                 self.restart_all()
                 imp.reload(plt2)
                 self.window.modelUbic = name
-                plt2.initialize(name)
+                plt2.initialize(name, self.window.step)
                 self.window.xDataGraf = plt2.np.linspace(0, self.window.simulated_cicle_number * self.window.simulated_cicle_steps - 1
                                                   , self.window.simulated_cicle_number * self.window.simulated_cicle_steps,
                                                   dtype=plt2.np.int32)
@@ -212,8 +213,8 @@ class Controller():
     
     def handler_step_change(self):
         self.window.step = int(self.window.spboxStep.value())
-        plt2.change_scale(self.window.step)
-        plt2.recalculate()
+        plt2.change_scale(self.window.step, self.window.indexGr)
+        plt2.recalculate(self.window.step)
         linX = plt2.np.linspace(self.window.xDataGraf[self.window.indexGr]
                         , self.window.xDataGraf[self.window.indexGr] + (self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
                         , self.window.simulated_cicle_number * self.window.simulated_cicle_steps, dtype=plt2.np.int32)
@@ -276,7 +277,7 @@ class Controller():
                 print("plt2." + childName + " = " + data + "")
                 exec("plt2." + childName + " = " + data + "")
                 print(eval("plt2." + childName))
-                plt2.recalculate()
+                plt2.recalculate(self.window.step)
 
     def createParamsUserDef(self):
         # Tree params

@@ -75,7 +75,6 @@ class Window(QtGui.QMainWindow):
 
         self.controller.handler_definite_controls()
 
-
     def create_toolbars(self):
         self.prevAction = QtGui.QAction(QtGui.QIcon('View/img/prev.png'), 'Previous step', self)
         self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'), 'Play/Pause simulation', self)
@@ -131,17 +130,14 @@ class Window(QtGui.QMainWindow):
 
 
 
-
     def close_app(self):
         choice = QtGui.QMessageBox.question(self, 'Exit?', 'Close application?',
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
             sys.exit()
 
-
     def timerChange(self):
         self.timer.setInterval(int(self.spBoxTimmer.value()))
-
 
     def create_curve(self, i, name):
         return self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[i]], symbol='o',
@@ -169,7 +165,6 @@ class Window(QtGui.QMainWindow):
         #TODO: todo
         pass
 
-
     def exportToEDF(self):
         #myFilter = ["EDF file (*.edf)"]
         #name, _ = QFileDialog.getSaveFileName(self, 'Save EDF as',"","EDF file (*.edf)", options=QFileDialog.DontUseNativeDialog)
@@ -183,6 +178,7 @@ class Window(QtGui.QMainWindow):
 
 
         EDFdialog = ChildDlg(self)
+
         EDFdialog.show()
 
 

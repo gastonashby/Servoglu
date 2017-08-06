@@ -58,6 +58,7 @@ modelTime = 0
 top_x = 100
 _xdata = np.linspace(0, top_x - 1, top_x, dtype=np.int32)
 gen = []
+plt_step = 0
 
 def odesys(XX,  tt):
     global _e
@@ -77,9 +78,10 @@ def odesys(XX,  tt):
     return salida
 
 
-def initialize(name):
-    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, model
+def initialize(name, step):
+    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, model, plt_step
     indexGrAux = 0
+    plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
     model = mp.ModelParser(name, 'LanguageSupport.csv')
     _u = model.userDefinedParameters
@@ -115,16 +117,23 @@ def updateCalculatedConstants():
 #         #print(_functionList[_i] + _paramsList[_i])
 #         eval(_functionList[_i] + _paramsList[_i])
 
-def change_scale(step):
-    global _xdata, indexGrAux
-    _xdata = np.linspace(0, (top_x - 1) * step, top_x)
+def change_scale(step, init):
+    global _xdata, indexGrAux, plt_step
+    #TODO dtype
+    _xdata = np.linspace(init, init + (top_x - 1) * step, top_x)
+    plt_step = step
     print("plt2 ", _xdata[:indexGrAux + 10])
 
-def recalculate():
-    global _sol, _aux, _xdata, indexGrAux, _c
+def recalculate(step):
+    global _sol, _aux, _xdata, indexGrAux, _c, top_x
     _aux = _sol[indexGrAux-1]
+    print(_xdata)
+    _xdata = np.linspace(_xdata[indexGrAux-1],
+                    _xdata[indexGrAux-1] + (top_x - 1) * step, top_x)
+    print(_xdata)
     indexGrAux = 1
     updateCalculatedConstants()
+
 #    updateFunctions()
     print(_aux)
     print(_sol[:indexGrAux + 10])
@@ -145,11 +154,12 @@ def restart():
 
 
 def getPoint():
-    global _sol, indexGrAux, top_x
+    global _sol, indexGrAux, top_x, plt_step
     #TODO calcular maximos y minimos por columna para graficar
     # print("indexGrAux", indexGrAux)
-    if indexGrAux == top_x - 2:
-        recalculate()
+    if indexGrAux == top_x:
+        #TODO pasarle los valores iniciales para recalcular el eje x
+        recalculate(plt_step)
 
     out = _sol[indexGrAux]
     indexGrAux += 1

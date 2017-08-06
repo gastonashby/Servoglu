@@ -93,7 +93,7 @@ class DefiniteFunction():
                     "plt2." + u.name + " = int_value / 100\n\tself.window.ui.dck_model_param_controls.label[" \
                     + str(i - 1) + "]" \
                     ".setText('" + u.description + " ' + str(eval('plt2." + u.name + "')) + ' " + u.unit + "')\n\t" \
-                    "plt2.recalculate()\n"
+                    "plt2.recalculate(self.window.step)\n"
 
         _s_f_aux = "sliderValueChanged" + str(i)
 
