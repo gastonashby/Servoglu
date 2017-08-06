@@ -166,28 +166,8 @@ class Window(QtGui.QMainWindow):
         pass
 
     def exportToEDF(self):
-        #myFilter = ["EDF file (*.edf)"]
-        #name, _ = QFileDialog.getSaveFileName(self, 'Save EDF as',"","EDF file (*.edf)", options=QFileDialog.DontUseNativeDialog)
-        #if name != "":
-        #    if not name.endswith(".edf"):
-        #        name = name + ".edf"
-        #    self.controller.handler_edf(name)
-
-
-        #pyuic5 prueba.ui -o dialog.py
-
-
-        EDFdialog = ChildDlg(self)
-
+        EDFdialog = ChildDlg(self,)
         EDFdialog.show()
-
-
-
-
-
-
-
-
 
 
     def open_model(self):

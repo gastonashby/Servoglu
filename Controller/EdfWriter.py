@@ -19,21 +19,21 @@ def Interpolate(DataSet,Frecuency):
 
     x, y = np.meshgrid(X, Y, sparse=True)
 
-    f = interpolate.interp2d(x, y, DataSet, kind='linear')
+    f = interpolate.interp2d(x, y, DataSet, kind='cubic')
     # use linspace so your new range also goes from 0 to 3, with 8 intervals
     Xnew = np.linspace(0, DataSet.shape[1], DataSet.shape[1])
     Ynew = np.linspace(0, DataSet.shape[0]*interpolateCoef, DataSet.shape[0]*interpolateCoef)
     interpolatedDataSet = f(Xnew, Ynew)
     return interpolatedDataSet
 
-def WriteEDF(DataSet,Equations,Frecuency,FileName):
+def WriteEDF(DataSet,Equations,Frecuency,FileName,edf):
     test_data_file = os.path.join('.', FileName)
     numberOfColumns = DataSet.shape[1]
     numberOfRows = DataSet.shape[0]
 
     if Frecuency < 1:
         sampleRate = 1
-        DataSet = Interpolate(DataSet,Frecuency)
+        #DataSet = Interpolate(DataSet,Frecuency)
     else:
         sampleRate = Frecuency
 
@@ -52,6 +52,7 @@ def WriteEDF(DataSet,Equations,Frecuency,FileName):
 
     f.setSignalHeaders(channel_info)
 
+    f.setDatarecordDuration(20)
     f.writeSamples(data_list)
     f.writeAnnotation(0, -1, "Simulation Starts")
     #f.writeAnnotation(298, -1, "Test 1")

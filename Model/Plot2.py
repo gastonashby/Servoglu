@@ -83,11 +83,11 @@ def initialize(name, step):
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
-    model = mp.ModelParser(name, 'LanguageSupport.csv')
-    _u = model.userDefinedParameters
-    _c = model.constants
-    _f = model.functions
-    _e = model.equations
+    simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv')
+    _u = simulatedModel.userDefinedParameters
+    _c = simulatedModel.constants
+    _f = simulatedModel.functions
+    _e = simulatedModel.equations
     gen = df.DefiniteFunction()
 
     print(_e)
