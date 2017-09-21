@@ -97,3 +97,8 @@ class Ui_ControlsDockWidget(QtCore.QObject):
                 self.house_layout.addWidget(s_aux)
                 _i += 1
 
+    def get_sliders_vals(self):
+        out = []
+        for sl in self.slider:
+            out.append(sl.value()/100)
+        return out

@@ -49,6 +49,8 @@ class Controller():
     def handler_update_graph(self):
         # Update counters
         self.window.indexGr += 1
+
+        # TODO: control de tiempo
         self.window.timeCount += self.window.step * 1000 * 60  # * 60
         self.window.ui.dck_model_param_controls.timeLbl.setText(self.convertMs(self.window.timeCount))
 
@@ -64,6 +66,15 @@ class Controller():
         # Get new simulated values
         old_dats = self.window.dats
         self.window.dats = plt2.getPoint()
+        treat = self.window.ui.dck_model_param_controls.get_sliders_vals()
+
+        _i = 0
+        for aux in plt2._u:
+            if aux.isSlider:
+                self.window.treatment[_i].append(treat[_i])
+                self.window.all_treat_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
+                                                         self.window.treatment[_i])
+                _i += 1
 
         # Update graph
         _i = 0
@@ -89,6 +100,8 @@ class Controller():
         # Refresh the X axis range
         self.window.ui.ui_sinc_plot.setXRange(self.window.xDataGraf[self.window.indexGr] - 20,
                                        self.window.xDataGraf[self.window.indexGr] + 10)
+        self.window.ui.ui_treat_plot.setXRange(self.window.xDataGraf[self.window.indexGr] - 20,
+                                              self.window.xDataGraf[self.window.indexGr] + 10)
 
     def handler_change_simulated_value(self, i, value):
         self.window.all_data[i][self.window.indexGr] = value
@@ -187,6 +200,13 @@ class Controller():
         self.window.dats = plt2.getPoint()
         self.window.old_dats = self.window.dats
 
+        sliderVals = self.window.ui.dck_model_param_controls.get_sliders_vals()
+        for aux in plt2._u:
+            if aux.isSlider:
+                self.window.treatment.append([sliderVals[_i]])
+                self.window.all_treat_curves.append(self.window.create_treat_curve(_i, aux.name))
+                _i += 1
+        _i = 0
         for eq in plt2._e:
             if eq.simulate:
                 self.window.simulated_eq.append(True)

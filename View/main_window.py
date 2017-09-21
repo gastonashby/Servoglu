@@ -51,9 +51,11 @@ class Window(QtGui.QMainWindow):
         self.timeCount = 0
         self.all_data = []
         self.all_curves = []
+        self.all_treat_curves = []
         self.indexGr = 0
         self.step = 1
         self.dats = []
+        self.treatment = []
         self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
 
         # TIMMER
@@ -129,7 +131,6 @@ class Window(QtGui.QMainWindow):
         self.ui.ui_menubar.export_action.setEnabled(enabled)
 
 
-
     def close_app(self):
         choice = QtGui.QMessageBox.question(self, 'Exit?', 'Close application?',
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
@@ -142,7 +143,14 @@ class Window(QtGui.QMainWindow):
     def create_curve(self, i, name):
         return self.ui.ui_sinc_plot.plot([self.xDataGraf[0]], [self.dats[i]], symbol='o',
                                          symbolPen='k', symbolBrush=1, name=name,
-                                         symbolSize=3,
+                                         symbolSize=3, antialias=True,
+                                         pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[i],
+                                         width=self.ui.dck_model_param_properties.pen_size[i]))
+
+    def create_treat_curve(self, i, name):
+        return self.ui.ui_treat_plot.plot([0],[1], [self.ui.dck_model_param_controls.get_sliders_vals()[i]], symbol='o',
+                                         symbolPen='k', symbolBrush=1, name=name,
+                                         symbolSize=3, antialias=True,
                                          pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[i],
                                          width=self.ui.dck_model_param_properties.pen_size[i]))
 

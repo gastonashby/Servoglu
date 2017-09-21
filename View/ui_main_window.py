@@ -22,6 +22,11 @@ class Ui_MainWindow(QtCore.QObject):
         self.ui_sinc_plot.setLabel('bottom', 'Time', units='min')
         self.ui_sinc_plot.setXRange(-20, 10)
 
+        self.ui_treat_plot = self.ui_window.addPlot(title='Treatment')
+        self.ui_treat_plot.showGrid(x=True, y=True, alpha=1)
+        self.ui_treat_plot.setLabel('bottom', 'Time', units='min')
+        self.ui_treat_plot.setXRange(-20, 10)
+
 
         # LAYOUT
         self.ui_central_layout = QtGui.QVBoxLayout()
