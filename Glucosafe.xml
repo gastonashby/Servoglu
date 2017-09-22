@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" simulationFrecuency="1/60">
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" frequencyHz="1/60" name="GLUCOSAFE Model by Pielmeier" >
 	<parameters>
 		<userDefinedParameters>
 			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False"/>
-			<userDefined name="H" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
+			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False"/>
 			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False"/>
-			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="5.1" slider="False"/>
+			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="2" slider="False"/>
 
 
 			<!-- Treatments, entered by the user -->
@@ -35,7 +35,7 @@
 								<divide/>
 								<apply>
 									<times/>
-									<ci>H</ci>
+									<ci>Height</ci>
 									<ci>W</ci>
 								</apply>
 								<cn>36</cn>
@@ -82,11 +82,11 @@
 					</apply>
 				</m:math>
 			</constant>
-			<constant name="a" description="" unit="1/min" calculated="True" >
+			<constant name="aa" description="" unit="1/min" calculated="True" >
 				<m:math>
 					<apply>
 						<eq/>
-						<ci>a</ci>
+						<ci>aa</ci>
 						<apply>
 							<divide/>
 							<apply>
@@ -127,10 +127,10 @@
 								<apply>
 									<minus/>
 									<ci> b </ci>
-									<ci> a </ci>
+									<ci> aa </ci>
 								</apply>
 							</apply>
-							<ci> a </ci>
+							<ci> aa </ci>
 						</apply>
 					</apply>
 				</m:math>
@@ -144,7 +144,7 @@
 							<divide/>
 							<apply>
 								<times/>
-								<ci>a</ci>
+								<ci>aa</ci>
 								<ci>b</ci>
 							</apply>
 							<ci>k2</ci>
@@ -159,7 +159,7 @@
 						<ci>k1</ci>
 						<apply>
 							<plus/>
-							<ci> a </ci>
+							<ci> aa </ci>
 							<apply>
 								<minus/>
 								<ci> b </ci>

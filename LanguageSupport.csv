@@ -1,5 +1,4 @@
-lbl.version,"0,0,1",
-lbl.idioma,English,Español
+Label,ENG,ES
 lbl.Sex,Sex,SexES
 "lbl.{Male 0,Female 1}","{Male 0,Female 1}","{Male 0,Female 1}ES"
 lbl.Height,Height,HeightES

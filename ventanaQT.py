@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-from pyqtgraph.Qt import QtCore, QtGui
-#from PyQt5.QtWidgets import QSlider
-
 import pyqtgraph as pg
-
+from pyqtgraph.Qt import QtCore, QtGui
 from pyqtgraph.parametertree import Parameter, ParameterTree
 
-import Plot2 as plt2
+from Model import Plot2 as plt2
 
 ####### Variables #######
 
