@@ -79,7 +79,7 @@ class Window(QtGui.QMainWindow):
 
     def create_toolbars(self):
         self.prevAction = QtGui.QAction(QtGui.QIcon('View/img/prev.png'), 'Previous step', self)
-        self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'), 'Play/Pause simulation', self)
+        self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'), self.controller.languageSupport.languageHash.__getitem__("lbl.PlayPause") , self)
         self.nextAction = QtGui.QAction(QtGui.QIcon('View/img/next.png'), 'Next step', self)
         self.resetAction = QtGui.QAction(QtGui.QIcon('View/img/reset.png'), 'Reset simulation', self)
 
@@ -129,7 +129,6 @@ class Window(QtGui.QMainWindow):
         self.spboxStep.setEnabled(enabled)
         self.spBoxTimmer.setEnabled(enabled)
         self.ui.ui_menubar.export_action.setEnabled(enabled)
-
 
     def close_app(self):
         choice = QtGui.QMessageBox.question(self, 'Exit?', 'Close application?',
@@ -193,4 +192,8 @@ class Window(QtGui.QMainWindow):
                     msg.setInformativeText(str(e))
                     msg.setWindowTitle("Error")
                     msg.exec_()
+
+    def changeSystemLanguage(self):
+        self.controller.languageSupport.changeLanguage("ES")
+
 

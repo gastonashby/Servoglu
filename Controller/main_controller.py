@@ -4,6 +4,8 @@ import sys
 
 import Controller.EdfWriter as edf
 from Model import Plot2 as plt2
+from Model.LanguageParser import LanguageParser
+
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
@@ -15,6 +17,9 @@ class Controller():
         self.model = plt2
         self.window = window
         self.dataFormat = plt2.df
+        #Initialize language hash with English as default language
+        self.languageSupport = LanguageParser("SystemLanguageSupport.csv","ENG")
+
 
     def convertMs(self, mili):
         # ms = mili % 1000
@@ -378,3 +383,12 @@ class Controller():
             exec("self." + _c_f_aux + " = types.MethodType(" + _c_f_aux + ", self)")
 
             _i += 1
+
+    def changeSystemLanguage(self,language):
+        self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "ENG").changeLanguage(language)
+
+
+
+
+
+
