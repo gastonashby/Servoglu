@@ -5,22 +5,21 @@ import sys
 import Controller.EdfWriter as edf
 from Model import Plot2 as plt2
 from Model.LanguageParser import LanguageParser
-
+import types
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
-import types
 
 class Controller():
     def __init__(self, window):
         self.model = plt2
         self.window = window
         self.dataFormat = plt2.df
-        #Initialize language hash with English as default language
+        # Initialize language hash with English as default language
         self.languageSupport = LanguageParser("SystemLanguageSupport.csv","ENG")
 
-
+    # TODO: mover a utils
     def convertMs(self, mili):
         # ms = mili % 1000
         s = (mili / 1000) % 60
@@ -52,61 +51,16 @@ class Controller():
         return d + ":" + h + ":" + m + ":" + s #+ ":" + ms
 
     def handler_update_graph(self):
-        # Update counters
-        self.window.indexGr += 1
-
-        # TODO: control de tiempo
-        self.window.timeCount += self.window.step * 1000 * 60  # * 60
-        self.window.ui.dck_model_param_controls.timeLbl.setText(self.convertMs(self.window.timeCount))
+        # Update the index and time counters
+        self.window.update_time_index()
 
         # Check end of X axis and append new points
-        if len(self.window.xDataGraf) - 2 == self.window.indexGr:
-            #TODO: usar createXaxis?
-            linX = plt2.np.linspace(self.window.xDataGraf[self.window.indexGr]
-                                    , self.window.xDataGraf[self.window.indexGr] + (
-                                        self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
-                                    , self.window.simulated_cicle_number * self.window.simulated_cicle_steps, dtype=plt2.np.int32)
-            self.window.xDataGraf = plt2.np.append(self.window.xDataGraf[:self.window.indexGr], linX)
+        if self.window.is_index_end_axis():
+            self.window.append_new_axis_points()
 
-        # Get new simulated values
-        old_dats = self.window.dats
-        self.window.dats = plt2.getPoint()
-        treat = self.window.ui.dck_model_param_controls.get_sliders_vals()
-
-        _i = 0
-        for aux in plt2._u:
-            if aux.isSlider:
-                self.window.treatment[_i].append(treat[_i])
-                self.window.all_treat_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
-                                                         self.window.treatment[_i])
-                _i += 1
-
-        # Update graph
-        _i = 0
-        for eq in plt2._e:
-            # Delete legend old values
-            self.window.leyend.removeItem(eq.name + ': ' + str(round(old_dats[_i], self.window.round)))
-
-            # Set the equations actual values in the SpinBoxs
-            self.window.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.window.dats[_i], self.window.round))
-
-            # Append the new values
-            self.window.all_data[_i].append(self.window.dats[_i])
-
-            # If simulated equation, add the value to the curve and the legend
-            # Else clear the curve
-            if self.window.simulated_eq[_i]:
-                self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[_i])
-                self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
-            else:
-                self.window.all_curves[_i].clear()
-            _i += 1
-
-        # Refresh the X axis range
-        self.window.ui.ui_sinc_plot.setXRange(self.window.xDataGraf[self.window.indexGr] - 20,
-                                       self.window.xDataGraf[self.window.indexGr] + 10)
-        self.window.ui.ui_treat_plot.setXRange(self.window.xDataGraf[self.window.indexGr] - 20,
-                                              self.window.xDataGraf[self.window.indexGr] + 10)
+        # Update graphs with new points,
+        # old points are needed to update the legends
+        self.window.update_graph(self.window.dats, plt2.getPoint())
 
     def handler_change_simulated_value(self, i, value):
         self.window.all_data[i][self.window.indexGr] = value
@@ -127,49 +81,22 @@ class Controller():
             _i += 1
 
     def handler_restart_graph(self):
-        self.window.timer.stop()
-        plt2.restart()
-        self.window.indexGr = 0
-
-        # TODO: falta restaurar los valores iniciales del XML?
-        self.window.xDataGraf = plt2.np.linspace(0, self.window.simulated_cicle_number * self.window.simulated_cicle_steps -1
-                                          , self.window.simulated_cicle_number * self.window.simulated_cicle_steps, dtype=plt2.np.int32)
-        _i = 0
-        for eq in plt2._e:
-            self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
-            _i += 1
-
-        self.window.dats = plt2.getPoint()
-
-        _i = 0
-        for eq in plt2._e:
-            self.window.all_data[_i] = [self.window.dats[_i]]
-            self.window.all_curves[_i].setData(self.window.all_data[_i])
-
-            self.window.leyend.addItem(self.window.all_curves[_i],
-                                eq.name + ': ' + str(round(self.window.all_data[_i][self.window.indexGr], self.window.round)))
-            _i += 1
-        self.window.leyend.updateSize()
+        try:
+            self.window.timer.stop()
+            self.handler_open_model(self.window.modelUbic)
+        except Exception as e:
+            print(e)
 
     def handler_open_model(self, name):
         if name != "":
             if name.endswith(".xml"):
-                self.restart_all()
-                imp.reload(plt2)
-                self.window.modelUbic = name
-                plt2.initialize(name, self.window.step)
-                self.window.xDataGraf = plt2.np.linspace(0, self.window.simulated_cicle_number * self.window.simulated_cicle_steps - 1
-                                                  , self.window.simulated_cicle_number * self.window.simulated_cicle_steps,
-                                                  dtype=plt2.np.int32)
-                _i = 0
-                for gr in self.window.all_curves:
-                    gr.clear()
-                    _i = + 1
+                self.window.restart_graphs()
 
-                self.window.all_data = []
-                self.window.definite_controls()
-                self.definite_graph()
-                self.window.toggleActivationButtons(True)
+                #TODO Create_new_model, hacer new Model
+                imp.reload(plt2)
+                plt2.initialize(name, self.window.step)
+
+                self.window.initialize_graphs(name)
 
     def handler_definite_controls(self):
         _i = 1
@@ -181,57 +108,9 @@ class Controller():
                 exec(sliderF)
                 exec(sl_met_reg)
 
-                # TODO que entre cuando se suelta el slider
+                # TODO que entre cuando se suelta el slider o poner un boton
                 self.window.ui.dck_model_param_controls.slider[_i - 1].valueChanged.connect(eval(sl_met_nom))
                 _i += 1
-
-    def restart_all(self):
-        if self.window.ui.dck_model_param_properties != []:
-            _i = 0
-            if self.window.dats != []:
-                for eq in plt2._e:
-                    print(self.window.dats[_i])
-                    self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
-                    _i += 1
-
-            self.window.indexGr = 0
-            self.window.timeCount = 0
-            self.window.simulated_eq = []
-            self.window.removeDockWidget(self.window.ui.dck_model_param_properties.ui_controls_box_widget)
-            self.window.removeDockWidget(self.window.ui.dck_model_param_controls.ui_controls_box_widget)
-            
-    def definite_graph(self):
-        _i = 0
-        self.window.dats = plt2.getPoint()
-        self.window.old_dats = self.window.dats
-
-        sliderVals = self.window.ui.dck_model_param_controls.get_sliders_vals()
-        for aux in plt2._u:
-            if aux.isSlider:
-                self.window.treatment.append([sliderVals[_i]])
-                self.window.all_treat_curves.append(self.window.create_treat_curve(_i, aux.name))
-                _i += 1
-        _i = 0
-        for eq in plt2._e:
-            if eq.simulate:
-                self.window.simulated_eq.append(True)
-            else:
-                self.window.simulated_eq.append(False)
-
-            self.window.all_data.append([self.window.dats[_i]])
-            self.window.all_curves.append(self.window.create_curve(_i, eq.name))
-
-            if eq.simulate:
-                self.window.leyend.addItem(self.window.all_curves[_i],
-                        eq.name + ': ' + str(round(self.window.all_data[_i][self.window.indexGr], self.window.round)))
-            else:
-                self.window.all_curves[_i].clear()
-
-            self.window.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.window.dats[_i], self.window.round))
-
-            _i += 1
-        self.window.leyend.setParentItem(self.window.ui.ui_sinc_plot.graphicsItem())
-        self.window.leyend.updateSize()
 
     def create_X_axis(self, init, end, steps):
         return plt2.np.linspace(init, end, steps, dtype=plt2.np.int32)

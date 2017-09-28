@@ -90,7 +90,7 @@ def initialize(name, step):
     _e = simulatedModel.equations
     gen = df.DefiniteFunction()
 
-    print(_e)
+    #print(_e)
 
     exec(gen.defineUserDefinedParameters(_u), globals())
     _constants, _calculated = gen.defineParameters(_c)
@@ -101,7 +101,7 @@ def initialize(name, step):
     _auxIni = _aux
     _sol = odeint(odesys, _aux, _xdata)
     print('Solution created 1st time')
-    print(_sol[:100])
+    #print(_sol[:100])
 
 
 def updateCalculatedConstants():
@@ -122,24 +122,24 @@ def change_scale(step, init):
     #TODO dtype
     _xdata = np.linspace(init, init + (top_x - 1) * step, top_x)
     plt_step = step
-    print("plt2 ", _xdata[:indexGrAux + 10])
+    #print("plt2 ", _xdata[:indexGrAux + 10])
 
 def recalculate(step):
     global _sol, _aux, _xdata, indexGrAux, _c, top_x
     _aux = _sol[indexGrAux-1]
-    print(_xdata)
+    #print(_xdata)
     _xdata = np.linspace(_xdata[indexGrAux-1],
                     _xdata[indexGrAux-1] + (top_x - 1) * step, top_x)
-    print(_xdata)
+    #print(_xdata)
     indexGrAux = 1
     updateCalculatedConstants()
 
 #    updateFunctions()
-    print(_aux)
-    print(_sol[:indexGrAux + 10])
+    #print(_aux)
+    #print(_sol[:indexGrAux + 10])
     print("-- Recalculate --")
     _sol = odeint(odesys, _aux, _xdata)
-    print(_sol[:indexGrAux + 10])
+    #print(_sol[:indexGrAux + 10])
 
 
 def restart():
@@ -147,10 +147,10 @@ def restart():
     indexGrAux = 0
     updateCalculatedConstants()
  #   updateFunctions()
-    print(_sol[:indexGrAux + 10])
+    #print(_sol[:indexGrAux + 10])
     print("-- Restart --")
     _sol = odeint(odesys, _auxIni, _xdata)
-    print(_sol[:indexGrAux + 10])
+    #print(_sol[:indexGrAux + 10])
 
 
 def getPoint():
