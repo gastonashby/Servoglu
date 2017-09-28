@@ -98,6 +98,13 @@ class Controller():
 
                 self.window.initialize_graphs(name)
 
+    def handler_slider_value_changed(self, int_value, name, i, description, unit):
+        print(int_value / 100)
+        plt2.change_value(name, int_value / 100)
+        self.window.ui.dck_model_param_controls.label[(i - 1)]\
+            .setText(description + str(int_value / 100) + " " + unit)
+        plt2.recalculate(self.window.step)
+
     def handler_definite_controls(self):
         _i = 1
         sliderF = ""
@@ -200,6 +207,7 @@ class Controller():
         return _params
 
     def createParamsRest(self):
+        # TODO: Sacar de aca
         # Tree params
         _params = []
         _i = 0
