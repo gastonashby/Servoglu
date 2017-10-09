@@ -10,7 +10,7 @@ class Ui_Menubar(QtGui.QMenuBar):
         super(Ui_Menubar, self).__init__(parent)
         self.controller = Controller(self)
         self.exit_action = QtGui.QAction(QtGui.QIcon('exit.png'), 'E&xit', self)
-        self.export_action = QtGui.QAction(QtGui.QIcon('save.png'), '&Export to EDF', self)
+        self.export_action = QtGui.QAction(QtGui.QIcon('save.png'), '&Export results to PDF', self)
         self.open_action = QtGui.QAction(QtGui.QIcon('open.png'), '&Open model...', self)
 
 

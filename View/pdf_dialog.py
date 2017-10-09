@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
 import collections
 import numpy
+from Controller import PdfWriter as pdf
 
 class ChildDlg(QDialog):
     def __init__(self, parent):
@@ -72,6 +73,7 @@ class ChildDlg(QDialog):
         self.deviceInput.setGeometry(QtCore.QRect(110, 290, 113, 20))
         self.deviceInput.setObjectName("deviceInput")
         self.birthdateInput = QtWidgets.QDateEdit(self)
+        self.birthdateInput.setDisplayFormat("dd.MM.yyyy")
         self.birthdateInput.setGeometry(QtCore.QRect(340, 110, 110, 22))
         self.birthdateInput.setObjectName("birthdateInput")
         self.groupBox = QtWidgets.QGroupBox(self)
@@ -87,6 +89,7 @@ class ChildDlg(QDialog):
         self.durationInput.setGeometry(QtCore.QRect(320, 30, 113, 20))
         self.durationInput.setObjectName("durationInput")
         self.simulationStartInput = QtWidgets.QDateTimeEdit(self.groupBox_3)
+
         self.simulationStartInput.setGeometry(QtCore.QRect(90, 30, 121, 22))
         self.simulationStartInput.setObjectName("simulationStartInput")
         self.label_14 = QtWidgets.QLabel(self.groupBox_3)
@@ -143,29 +146,31 @@ class ChildDlg(QDialog):
     def closeEvent(self, event):
         print("X is clicked")
 
-    def  accept(self):
+    def accept(self):
         try:
-            myFilter = ["EDF file (*.edf)"]
-            name, _ = QFileDialog.getSaveFileName(self, 'Save EDF as',"","EDF file (*.edf)", options=QFileDialog.DontUseNativeDialog)
-            if name != "":
-                if not name.endswith(".edf"):
-                    name = name + ".edf"
-                Edf = collections.namedtuple('Edf',['subjectCode', 'subjectName', 'sex', 'birthdate',
-                                               'patientAdditionalInfo', 'adminCode', 'technician',
-                                               'device', 'adminAdditionalInfo','start','duration'])
-                edfTuple = Edf(self.subjectCodeInput.text(),self.subjectNameInput.text(),self.SexInput.text(),
-                      self.birthdateInput.text(),
-                      self.patientAdditionalInfoInput.text(),
-                      self.adminCodeInput.text(),
-                      self.technicianInput.text(),
-                      self.deviceInput.text(),
-                      self.recordingAdditionalInfoInput.text(),
-                      self.simulationStartInput.text(),
-                      self.durationInput.text())
+                myFilter = ["PDF file (*.pdf)"]
+                name, _ = QFileDialog.getSaveFileName(self, 'Save PDF as',"","PDF file (*.pdf)", options=QFileDialog.DontUseNativeDialog)
+                if name != "":
+                    if not name.endswith(".pdf"):
+                        name = name + ".pdf"
+                    Edf = collections.namedtuple('Pdf',['subjectCode', 'subjectName', 'sex', 'birthdate',
+                                                   'patientAdditionalInfo', 'adminCode', 'technician',
+                                                   'device', 'adminAdditionalInfo','start','duration'])
+                    pdfTuple = Edf(self.subjectCodeInput.text(),self.subjectNameInput.text(),self.SexInput.text(),
+                          self.birthdateInput.text(),
+                          self.patientAdditionalInfoInput.text(),
+                          self.adminCodeInput.text(),
+                          self.technicianInput.text(),
+                          self.deviceInput.text(),
+                          self.recordingAdditionalInfoInput.text(),
+                          self.simulationStartInput.text(),
+                          self.durationInput.text())
 
-                edf.WriteEDF(numpy.asarray(numpy.transpose(self.parent.all_data))[:self.parent.indexGr,:],
-                             self.parent.controller.model._e,
-                             eval(self.parent.controller.model.simulatedModel.simulationFrequency), name, edfTuple)
+                    size = self.parent.indexGr
+                    results = numpy.asarray(numpy.transpose(self.parent.all_data))[:size, :]
+                    xAxe = self.parent.xDataGraf[:size]
+                    pdf.createPdf(results, xAxe, size, self.parent.controller.model._e,name,pdfTuple)
+
         except Exception as e:
                     print(e)
                     msg = QMessageBox()
@@ -174,3 +179,35 @@ class ChildDlg(QDialog):
                     msg.setInformativeText(str(e))
                     msg.setWindowTitle("Error")
                     msg.exec_()
+
+    # def  accept(self):
+    #     try:
+    #         myFilter = ["EDF file (*.pdf)"]
+    #         name, _ = QFileDialog.getSaveFileName(self, 'Save PDF as',"","PDF file (*.pdf)", options=QFileDialog.DontUseNativeDialog)
+    #         if name != "":
+    #             if not name.endswith(".pdf"):
+    #                 name = name + ".pdf"
+    #             Edf = collections.namedtuple('Pdf',['subjectCode', 'subjectName', 'sex', 'birthdate',
+    #                                            'patientAdditionalInfo', 'adminCode', 'technician',
+    #                                            'device', 'adminAdditionalInfo','start','duration'])
+    #             edfTuple = Edf(self.subjectCodeInput.text(),self.subjectNameInput.text(),self.SexInput.text(),
+    #                   self.birthdateInput.text(),
+    #                   self.patientAdditionalInfoInput.text(),
+    #                   self.adminCodeInput.text(),
+    #                   self.technicianInput.text(),
+    #                   self.deviceInput.text(),
+    #                   self.recordingAdditionalInfoInput.text(),
+    #                   self.simulationStartInput.text(),
+    #                   self.durationInput.text())
+    #
+    #             edf.WriteEDF(numpy.asarray(numpy.transpose(self.parent.all_data))[:self.parent.indexGr,:],
+    #                          self.parent.controller.model._e,
+    #                          eval(self.parent.controller.model.simulatedModel.simulationFrequency), name, edfTuple)
+    #     except Exception as e:
+    #                 print(e)
+    #                 msg = QMessageBox()
+    #                 msg.setIcon(QMessageBox.Critical)
+    #                 msg.setText("Error")
+    #                 msg.setInformativeText(str(e))
+    #                 msg.setWindowTitle("Error")
+    #                 msg.exec_()

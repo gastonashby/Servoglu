@@ -2,7 +2,7 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 import pyqtgraph
-from View.edf_dialog import ChildDlg
+from View.pdf_dialog import ChildDlg
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -10,6 +10,8 @@ from Controller.main_controller import *
 from View.ui_main_window import Ui_MainWindow
 from View.ui_controls_widget import Ui_ControlsDockWidget
 from View.ui_properties_widget import Ui_PropertiesDockWidget
+import numpy
+
 
 
 class Window(QtGui.QMainWindow):
@@ -30,7 +32,7 @@ class Window(QtGui.QMainWindow):
         # MENU ACTION
         self.ui.ui_menubar.open_action.triggered.connect(self.open_model)
         self.ui.ui_menubar.exit_action.triggered.connect(self.close_app)
-        self.ui.ui_menubar.export_action.triggered.connect(self.exportToEDF)
+        self.ui.ui_menubar.export_action.triggered.connect(self.exportResultsToPdf)
 
         self.ui.dck_model_param_properties = []
         self.ui.dck_model_param_controls = []
@@ -298,6 +300,10 @@ class Window(QtGui.QMainWindow):
             self.timer.stop()
             self.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
 
+    def stop(self):
+        self.timer.stop()
+        self.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
+
     def next_frame(self):
         self.controller.handler_update_graph()
 
@@ -309,10 +315,10 @@ class Window(QtGui.QMainWindow):
         #TODO: todo
         pass
 
-    def exportToEDF(self):
-        EDFdialog = ChildDlg(self,)
-        EDFdialog.show()
-
+    def exportResultsToPdf(self):
+        self.stop()
+        PDFdialog = ChildDlg(self)
+        PDFdialog.show()
 
     def open_model(self):
         myFilter = ["XML file (*.xml)"]
