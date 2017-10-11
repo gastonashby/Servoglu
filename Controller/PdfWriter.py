@@ -4,6 +4,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from xhtml2pdf import pisa
+import matplotlib.gridspec as gridspec
 
 
 def generateMetaData():
@@ -18,15 +19,31 @@ def generateMetaData():
     resultFile.close()  # close output file
 
 def generatePlots(results,xData,size,equations):
+    pages = 2
+    plotSize = int(xData.size / pages)
+    plotsPerPage = 3
+    grid_size = (plotsPerPage, 1)
+
     with PdfPages('plots.pdf') as pdf:
-        plt.figure(figsize=(8.27,11.69))
+        plt.figure(figsize=(8.27,8.27))#.add_subplot(gs[0,:])
         i = 0
+        plt.subplot2grid(grid_size, (i % plotsPerPage, 0))
         for ec in equations:
-            plt.plot(xData, results[:, i], label=ec.description.format(i=i))
+            plt.plot(xData[0:plotSize], results[0:plotSize, i], label=ec.description.format(i=i))
             i+=1
 
-        plt.legend(loc='best')
+        plt.legend(loc=2, prop={'size': 6})
         plt.title('Model Equations')
+        #pdf.savefig()  # saves the current figure into a pdf page
+
+        #plt.figure(figsize=(8.27, 8.27))#.add_subplot(gs[1,:-1])
+        i = 0
+        plt.subplot2grid(grid_size, (1 % plotsPerPage, 0))
+        for ec in equations:
+            plt.plot(xData[plotSize:], results[plotSize:, i], label=ec.description.format(i=i))
+            i+=1
+        plt.legend(loc=2, prop={'size': 6})
+
         pdf.savefig()  # saves the current figure into a pdf page
         plt.close()
 

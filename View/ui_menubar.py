@@ -13,18 +13,13 @@ class Ui_Menubar(QtGui.QMenuBar):
         self.export_action = QtGui.QAction(QtGui.QIcon('save.png'), '&Export results to PDF', self)
         self.open_action = QtGui.QAction(QtGui.QIcon('open.png'), '&Open model...', self)
 
-
-
-        #self.changeModelLanguage_action = QtGui.QAction(QtGui.QIcon('changeModelLanguage.png'), '&Change Model Language', self)
-        #self.changeSystemLanguage_action = QtGui.QAction(QtGui.QIcon('changeSystemLanguage.png'), '&Change System Language', self)
-
-
     def setupUi(self, Ui_Menubar):
         self.ui_menubar = QtWidgets.QMenuBar()
         #
         # file menu actions:
         # add file menu and file menu actions
-        self.file_menu = self.ui_menubar.addMenu('&File')
+
+        self.file_menu = self.ui_menubar.addMenu(self.controller.languageSupport.languageHash.__getitem__("lbl.File"))
         self.file_menu.addAction(self.open_action)
         self.file_menu.addAction(self.export_action)
         self.file_menu.addAction(self.exit_action)
@@ -42,9 +37,10 @@ class Ui_Menubar(QtGui.QMenuBar):
         self.changeLanguageModel.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.changeLanguageSystem.setLayoutDirection(QtCore.Qt.LeftToRight)
 
-        actions = {}
+        self.systemLanguageActions = {}
 
         d = self.controller.languageSupport.obtainPossibleLanguages()
+        self.systemPossibleLanguages = d
         x=0
         for lang in d:
             # a sub-menu
@@ -52,7 +48,8 @@ class Ui_Menubar(QtGui.QMenuBar):
             # some dummy actions
             self.changeLanguageSystem.addAction(action)
             # keep reference
-            actions[(x)] = action
+            self.systemLanguageActions[(x)] = (action,lang)
             x += 1
+
 
 

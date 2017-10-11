@@ -8,7 +8,7 @@ import numpy as np
 import pyedflib
 import os
 import numpy as np
-import phypno as phy
+
 from scipy import signal
 from scipy import interpolate
 from datetime import datetime, date
