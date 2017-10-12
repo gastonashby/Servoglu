@@ -79,7 +79,7 @@ def odesys(XX,  tt):
 
 
 def initialize(name, step):
-    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, model, plt_step
+    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel, plt_step
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')

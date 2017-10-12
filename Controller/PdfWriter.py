@@ -7,21 +7,31 @@ from xhtml2pdf import pisa
 import matplotlib.gridspec as gridspec
 
 
-def generateMetaData():
+def generateMetaData(pdfTuple):
     # Generate PDF from a html file.
     with open('template.html', 'r') as myfile:
-        data = myfile.read().replace('\n', '')
+        html = myfile.read().replace('\n', '')
 
+    htmlVariables = replaceVariables(html,pdfTuple)
     resultFile = open('meta.pdf', "w+b")
     # convert HTML to PDF
-    pisa.CreatePDF(data,dest=resultFile)
+    pisa.CreatePDF(htmlVariables,dest=resultFile)
     # close output file
     resultFile.close()  # close output file
 
-def generatePlots(results,xData,size,equations):
-    pages = 2
-    plotSize = int(xData.size / pages)
-    plotsPerPage = 3
+def replaceVariables(html,pdfTuple):
+    html = html.replace("{{patientName}}",pdfTuple.patientName)
+    html = html.replace("{{sex}}", pdfTuple.sex)
+    html = html.replace("{{birthdate}}", pdfTuple.birthdate)
+    html = html.replace("{{patientAdditionalInfo}}", pdfTuple.patientAdditionalInfo)
+    html = html.replace("{{technician}}", pdfTuple.technician)
+    html = html.replace("{{simulationInfo}}", pdfTuple.simulationInfo)
+    html = html.replace("{{date}}", datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
+    html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
+    return html
+
+def generatePlots(results,xData,size,equations,plotsPerPage):
+    plotSize = int(xData.size / plotsPerPage)
     grid_size = (plotsPerPage, 1)
 
     with PdfPages('plots.pdf') as pdf:
@@ -42,6 +52,13 @@ def generatePlots(results,xData,size,equations):
         for ec in equations:
             plt.plot(xData[plotSize:], results[plotSize:, i], label=ec.description.format(i=i))
             i+=1
+        plt.legend(loc=2, prop={'size': 6})
+
+        i = 0
+        plt.subplot2grid(grid_size, (2 % plotsPerPage, 0))
+        for ec in equations:
+            plt.plot(xData[plotSize*2:], results[plotSize*2:, i], label=ec.description.format(i=i))
+            i += 1
         plt.legend(loc=2, prop={'size': 6})
 
         pdf.savefig()  # saves the current figure into a pdf page
@@ -65,9 +82,9 @@ def mergePdfs(fileName):
 
 
 
-def createPdf(results,xData,size,equations,fileName,pdfTuple):
-    generateMetaData()
-    generatePlots(results,xData,size,equations)
+def createPdf(results,xData,size,equations,fileName,pdfTuple,plotsPerPage):
+    generateMetaData(pdfTuple)
+    generatePlots(results,xData,size,equations,plotsPerPage)
     mergePdfs(fileName)
 
 
