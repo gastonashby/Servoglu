@@ -22,7 +22,7 @@ class ModelParser():
         #First we get model's general settings
         self.name = model.attrib['name']
         self.defaultLanguage = model.attrib['lang']
-        self.simulationFrequency =  model.attrib['frequencyHz']
+        self.simulationFrequency = model.attrib['frequencyHz']
 
         self.userDefinedParameters = self.parseUserDefinedParameters(model, languageHash)
         self.constants = self.parseConstants(model, languageHash)

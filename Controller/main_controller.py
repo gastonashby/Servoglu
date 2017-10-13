@@ -5,7 +5,7 @@ import sys
 import Controller.EdfWriter as edf
 from Model import Plot2 as plt2
 from Model.LanguageParser import LanguageParser
-import types
+
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
@@ -17,7 +17,7 @@ class Controller():
         self.window = window
         self.dataFormat = plt2.df
         # Initialize language hash with English as default language
-        self.languageSupport = LanguageParser("SystemLanguageSupport.csv","ENG")
+        self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "ENG")
 
     # TODO: mover a utils
     def convertMs(self, mili):
@@ -60,7 +60,7 @@ class Controller():
 
         # Update graphs with new points,
         # old points are needed to update the legends
-        self.window.update_graph(self.window.dats, plt2.getPoint())
+        self.window.update_graph(plt2.getPoint())
 
     def handler_change_simulated_value(self, i, value):
         self.window.all_data[i][self.window.indexGr] = value
@@ -98,13 +98,6 @@ class Controller():
 
                 self.window.initialize_graphs(name)
 
-    def handler_slider_value_changed(self, int_value, name, i, description, unit):
-        print(int_value / 100)
-        plt2.change_value(name, int_value / 100)
-        self.window.ui.dck_model_param_controls.label[(i - 1)]\
-            .setText(description + str(int_value / 100) + " " + unit)
-        plt2.recalculate(self.window.step)
-
     def handler_definite_controls(self):
         _i = 1
         sliderF = ""
@@ -116,7 +109,7 @@ class Controller():
                 exec(sl_met_reg)
 
                 # TODO que entre cuando se suelta el slider o poner un boton
-                self.window.ui.dck_model_param_controls.slider[_i - 1].valueChanged.connect(eval(sl_met_nom))
+                self.window.ui.dck_treat_controls.slider[_i - 1].valueChanged.connect(eval(sl_met_nom))
                 _i += 1
 
     def create_X_axis(self, init, end, steps):
@@ -172,110 +165,5 @@ class Controller():
     def handler_edf(self, name):
         self.controller.handler_edf(edf.WriteEDF(plt2._sol[:self.indexGr, :], plt2._e, 1 / 60, name))
 
-    def handler_change_model_parameter(self, param, changes):
-            print("tree changes:")
-            for param, change, data in changes:
-                # path = __parTr1.childPath(param)
-                # if path is not None:
-                #     childName = '.'.join(path)
-                # else:
-                childName = param.name()
-                print('  parameter: %s' % childName)
-                print('  change:    %s' % change)
-                print('  data:      %s' % str(data))
-                print('  ----------')
-                print(eval("plt2." + childName))
-                print("plt2." + childName + " = " + data + "")
-                exec("plt2." + childName + " = " + data + "")
-                print(eval("plt2." + childName))
-                plt2.recalculate(self.window.step)
-
-    def createParamsUserDef(self):
-        # Tree params
-        _listChildUsrDef = []
-        _params = []
-        for userDef in plt2._u:
-            # nomC = const.value1 + ' ' + const.operator
-            if not userDef.isSlider:
-                _childAuxUsrDef = {'name': userDef.name, 'value': userDef.defaultValue, 'type': 'str',
-                                   'readonly': False,
-                                   'title': userDef.description + " (" + userDef.unit + ") "}#, 'suffix': userDef.unit, 'siPrefix': True}
-                _listChildUsrDef.append(_childAuxUsrDef)
-        _paramAuxUsrDef = {'name': 'User Defined', 'type': 'group', 'children': _listChildUsrDef, 'expanded': True}
-        _params.append(_paramAuxUsrDef)
-
-        return _params
-
-    def createParamsRest(self):
-        # TODO: Sacar de aca
-        # Tree params
-        _params = []
-        _i = 0
-        _listChildAuxEq = []
-        for const in plt2._e:
-            _childAuxEq = []
-            # if const.simulate:
-            _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': const.simulate, 'children': [
-                    {'name': 'Formula', 'type': 'str',
-                        'value': const.equation,
-                        'readonly': True},
-                    {'name': 'Simulated', 'type': 'bool', 'value': const.simulate, 'readonly': False},
-                    {'name': 'Color', 'type': 'color', 'value': self.window.ui.dck_model_param_properties.colors[_i], 'readonly': False},
-                    #TODO: agregar mas atributos
-                    # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},
-                ]}
-            # else:
-            #     _childAuxEq = {'name': const.description, 'type': 'group' , 'expanded': const.simulate, 'children': [
-            #             {'name': 'Formula', 'type': 'str',
-            #                 'value': const.name + ' = ' + const.equation,
-            #                 'readonly': True},
-            #             {'name': 'Simulated', 'type': 'str', 'value': 'No', 'readonly': True},
-            #         ]}
-            _listChildAuxEq.append(_childAuxEq)
-            _i += 1
-            # print(const)
-        _paramAux = {'name': 'Equations', 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
-        _params.append(_paramAux)
-
-        _listChildAuxFunc = []
-        for const in plt2._f:
-            _childAuxFunc = {'name': const.name, 'type': 'str', 'value': const.function, 'siPrefix': False,
-                             'readonly': True}
-            _listChildAuxFunc.append(_childAuxFunc)
-            # print(const)
-        _paramAux = {'name': 'Functions', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': False}
-        _params.append(_paramAux)
-
-        _listChildAuxConst = []
-        for const in plt2._c:
-            nomC = const.value1
-            # nomC = const.value1 + ' ' + const.operator
-            _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
-            _listChildAuxConst.append(_childAuxConst)
-        _paramAuxConst = {'name': 'Constants', 'type': 'group', 'children': _listChildAuxConst, 'expanded': False}
-        _params.append(_paramAuxConst)
-
-        return _params
-
-    def definite_equation_change_control(self):
-        _i = 0
-        for eq in plt2._e:
-            controlFunc = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
-                            "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t"\
-                            "self.handler_change_simulated_value(" + str(_i) +\
-                            ", self.window.ui.dck_model_param_controls.eqCtrlList[" + str(_i) + "].value())\n\t"
-
-            _c_f_aux = "eqCtrlChangeValue_" + str(_i)
-            exec(controlFunc)
-            exec("self." + _c_f_aux + " = types.MethodType(" + _c_f_aux + ", self)")
-
-            _i += 1
-
     def changeSystemLanguage(self,language):
         self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "ENG").changeLanguage(language)
-
-
-
-
-
-

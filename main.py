@@ -10,7 +10,7 @@ def main():
     try:
         app = QApplication(sys.argv)
         app.setApplicationName('SERVOGLU')
-        QApplication.setStyle(QStyleFactory.create('Fusion'))
+        #QApplication.setStyle(QStyleFactory.create('Fusion'))
         window = Window()
         window.show()
         window.showMaximized()

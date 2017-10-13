@@ -14,30 +14,64 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
 
     def setupUi(self, ControlsBox):
         ControlsBox.setObjectName('Controls Box')
-        self.ui_controls_box_widget = QtGui.QDockWidget("Model Controlls", ControlsBox)
+        self.ui_controls_box_widget = QtGui.QDockWidget("Model Properties", ControlsBox)
         self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.parent = ControlsBox
 
         self.house_layout = QtGui.QVBoxLayout()
 
-        ## Create ParameterTree for user def parameters
-        self.parameter_tree1 = ParameterTree()
-        __parTr1 = Parameter.create(name='params1', type='group', children=self.parent.controller.createParamsUserDef())
-        self.parameter_tree1.setParameters(__parTr1, showTop=False)
-
-        __parTr1.sigTreeStateChanged.connect(self.parent.controller.handler_change_model_parameter)
-
-        self.house_layout.addWidget(self.parameter_tree1)
-
         ## Create ParameterTree for the rest of the parameters
         self.parameter_tree = ParameterTree()
-        self.parTr = Parameter.create(name='params', type='group', children=self.parent.controller.createParamsRest()
+        self.parTr = Parameter.create(name='params', type='group', children=self.createParamsRest()
                                       , showHeader=False)
         self.parameter_tree.setParameters(self.parTr, showTop=False)
         #
-        self.house_layout.addSpacing(10)
         self.house_layout.addWidget(self.parameter_tree)
 
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
         self.ui_controls_box_widget.setWidget(self.house_widget)
+        self.house_layout.addSpacing(10)
+
+    def createParamsRest(self):
+        # Tree params
+        _params = []
+        _i = 0
+        _listChildAuxEq = []
+        for const in self.parent.controller.model._e:
+            _childAuxEq = []
+            # if const.simulate:
+            _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': const.simulate, 'children': [
+                    {'name': 'Formula', 'type': 'str',
+                        'value': const.equation,
+                        'readonly': True},
+                    {'name': 'Simulated', 'type': 'bool', 'value': const.simulate, 'readonly': False},
+                    {'name': 'Color', 'type': 'color', 'value': self.colors[_i], 'readonly': False},
+                    #TODO: agregar mas atributos
+                    # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},
+                ]}
+            _listChildAuxEq.append(_childAuxEq)
+            _i += 1
+            # print(const)
+        _paramAux = {'name': 'Equations', 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
+        _params.append(_paramAux)
+
+        _listChildAuxFunc = []
+        for const in self.parent.controller.model._f:
+            _childAuxFunc = {'name': const.name, 'type': 'str', 'value': const.function, 'siPrefix': False,
+                             'readonly': True}
+            _listChildAuxFunc.append(_childAuxFunc)
+            # print(const)
+        _paramAux = {'name': 'Functions', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': False}
+        _params.append(_paramAux)
+
+        _listChildAuxConst = []
+        for const in self.parent.controller.model._c:
+            nomC = const.value1
+            # nomC = const.value1 + ' ' + const.operator
+            _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
+            _listChildAuxConst.append(_childAuxConst)
+        _paramAuxConst = {'name': 'Constants', 'type': 'group', 'children': _listChildAuxConst, 'expanded': False}
+        _params.append(_paramAuxConst)
+
+        return _params

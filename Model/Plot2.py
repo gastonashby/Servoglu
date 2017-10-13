@@ -56,7 +56,7 @@ _calculated = []
 indexGrAux = 0
 modelTime = 0
 top_x = 100
-_xdata = np.linspace(0, top_x - 1, top_x, dtype=np.int32)
+_xdata = np.arange(0, top_x - 1, 1)
 gen = []
 plt_step = 0
 
