@@ -13,6 +13,7 @@ class LanguageParser():
     def parseLanguages(self,LanguageFileName, Language):
         # Open language file
         f = open(LanguageFileName, 'rt')
+
         dictionary = {}
         try:
             reader = csv.reader(f)
@@ -29,6 +30,9 @@ class LanguageParser():
                     dictionary[row[0]] = row[languageIndex]
                 rowNum = rowNum + 1
             return dictionary
+        except Exception as e:
+            print('ERROR: could not read lang csv:')
+            print('  %s' % str(e))
         finally:
             f.close()
 
@@ -47,6 +51,4 @@ class LanguageParser():
         finally:
             f.close()
 
-    def changeLanguage(self,NewLanguage):
-        self.languageHash = self.parseLanguages(self.languageFileName, NewLanguage)
 

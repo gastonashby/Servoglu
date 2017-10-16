@@ -9,15 +9,13 @@ from View.main_window import Window
 def main():
 
     try:
-        currentExitCode = 123
-        while currentExitCode == 123:
-            app = QApplication(sys.argv)
-            app.setApplicationName('SERVOGLU')
-            #QApplication.setStyle(QStyleFactory.create('Fusion'))
-            window = Window()
-            window.show()
-            window.showMaximized()
-            currentExitCode = app.exec_()
+        app = QApplication(sys.argv)
+        app.setApplicationName('SERVOGLU')
+        #QApplication.setStyle(QStyleFactory.create('Fusion'))
+        window = Window()
+        window.show()
+        window.showMaximized()
+        currentExitCode = app.exec_()
     except Exception as e:
         print(e)
         msg = QMessageBox()
@@ -28,7 +26,5 @@ def main():
         msg.exec_()
 
 if __name__ == '__main__':
-    currentExitCode = 123
-    while currentExitCode == 123:
-        main()
-        print("prueba gaston")
+    main()
+

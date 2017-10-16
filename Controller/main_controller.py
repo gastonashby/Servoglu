@@ -17,7 +17,10 @@ class Controller():
         self.window = window
         self.dataFormat = plt2.df
         # Initialize language hash with English as default language
-        self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "ENG")
+        if "systemLanguage" in sys.argv:
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[sys.argv.index("systemLanguage")+1])
+        else:
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "English")
 
     # TODO: mover a utils
     def convertMs(self, mili):
@@ -95,7 +98,6 @@ class Controller():
                 #TODO Create_new_model, hacer new Model
                 imp.reload(plt2)
                 plt2.initialize(name, self.window.step)
-
                 self.window.initialize_graphs(name)
 
     def handler_definite_controls(self):
@@ -161,9 +163,3 @@ class Controller():
                     self.window.ui.dck_model_param_properties.colors[_i] = str(data.name())
                 self.window.all_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
                 self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[_i])
-
-    def handler_edf(self, name):
-        self.controller.handler_edf(edf.WriteEDF(plt2._sol[:self.indexGr, :], plt2._e, 1 / 60, name))
-
-    def changeSystemLanguage(self,language):
-        self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "ENG").changeLanguage(language)

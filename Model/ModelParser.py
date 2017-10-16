@@ -7,7 +7,7 @@ import re
 
 class ModelParser():
 
-    def __init__(self,ModelFileName,LanguageFileName):
+    def __init__(self,ModelFileName,LanguageFileName,Language):
         #Open language file
         languageFile = open(LanguageFileName, 'rt')
         # Open model file
@@ -15,7 +15,7 @@ class ModelParser():
         #Parse XML
         tree = ET.parse(ModelFileName)
 
-        languageHash = self.parseLanguages(LanguageFileName, "ENG")
+        self.languageHash = self.parseLanguages(LanguageFileName, Language)
 
         model = tree.getroot()
 
@@ -24,10 +24,10 @@ class ModelParser():
         self.defaultLanguage = model.attrib['lang']
         self.simulationFrequency = model.attrib['frequencyHz']
 
-        self.userDefinedParameters = self.parseUserDefinedParameters(model, languageHash)
-        self.constants = self.parseConstants(model, languageHash)
-        self.functions = self.parseFunction(model, languageHash)
-        self.equations = self.parseEquations(model, languageHash)
+        self.userDefinedParameters = self.parseUserDefinedParameters(model, self.languageHash)
+        self.constants = self.parseConstants(model, self.languageHash)
+        self.functions = self.parseFunction(model, self.languageHash)
+        self.equations = self.parseEquations(model, self.languageHash)
         self.languages = self.obtainPossibleLanguages(LanguageFileName)
         languageFile.close()
         modelFile.close()

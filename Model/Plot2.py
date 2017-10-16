@@ -1,7 +1,7 @@
 
 #import ParsingMathML as mp
 import numpy as np
-
+import sys
 import Model.DefineFunction as df
 import Model.ModelParser as mp
 
@@ -83,7 +83,12 @@ def initialize(name, step):
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
-    simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv')
+
+    if "modelLanguage" in sys.argv:
+        simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv',sys.argv[sys.argv.index("modelLanguage")+1])
+    else:
+        simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv', "English")
+
     _u = simulatedModel.userDefinedParameters
     _c = simulatedModel.constants
     _f = simulatedModel.functions

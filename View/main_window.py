@@ -345,6 +345,8 @@ class Window(QtGui.QMainWindow):
             if name.endswith(".xml"):
                 try:
                     self.controller.handler_open_model(name)
+                    self.ui.ui_menubar.setPossibleModelLanguages()
+                    self.ui.ui_menubar.changeLanguageModel.setEnabled(True)
                 except Exception as e:
                     print(e)
                     msg = QMessageBox()
@@ -353,8 +355,5 @@ class Window(QtGui.QMainWindow):
                     msg.setInformativeText(str(e))
                     msg.setWindowTitle("Error")
                     msg.exec_()
-
-    def changeSystemLanguage(self):
-        self.controller.languageSupport.changeLanguage("ES")
 
 
