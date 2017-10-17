@@ -2,14 +2,19 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 import pyqtgraph
-from View.edf_dialog import ChildDlg
+from View.pdf_dialog import ChildDlg
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Controller.main_controller import *
 from View.ui_main_window import Ui_MainWindow
 from View.ui_controls_widget import Ui_ControlsDockWidget
+from View.ui_treat_widget import Ui_TreatDockWidget
 from View.ui_properties_widget import Ui_PropertiesDockWidget
+from View.ui_init_val_widget import Ui_InitialValuesDockWidget
+
+import numpy
+import types
 
 
 class Window(QtGui.QMainWindow):
@@ -18,22 +23,24 @@ class Window(QtGui.QMainWindow):
         self.controller = Controller(self)
         self.setWindowTitle('SERVOGLU')
         self.setWindowIcon(QtGui.QIcon('View/img/logo.png'))
-
+        self.types = types
         self.ui = Ui_MainWindow(self)
 
         #self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
         #self.ui.dck_model_param_properties.setupUi(self)
         #self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
 
-        self.mbar = self.setMenuBar(self.ui.ui_menubar.ui_menubar)
+
+        self.setMenuBar(self.ui.ui_menubar.ui_menubar)
 
         # MENU ACTION
         self.ui.ui_menubar.open_action.triggered.connect(self.open_model)
         self.ui.ui_menubar.exit_action.triggered.connect(self.close_app)
-        self.ui.ui_menubar.export_action.triggered.connect(self.exportToEDF)
+        self.ui.ui_menubar.export_action.triggered.connect(self.exportResultsToPdf)
 
         self.ui.dck_model_param_properties = []
         self.ui.dck_model_param_controls = []
+        self.ui.dck_treat_controls = []
 
         self.statusBar = QtGui.QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -41,14 +48,18 @@ class Window(QtGui.QMainWindow):
 
         # INITIAL SETTINGS
         self.round = 4          # General round
+
+        # TODO: cambiar el modo de creacion de los ejes
         self.simulated_cicle_number = 1     # Internal variable
         self.simulated_cicle_steps = 1000   # Cicle
         self.modelUbic = ""
+
+        # TODO: sacar del modelo
         self.simulated_eq = []  # Array of bool to indicate the simulated graph
 
         # X Axis, default 1000 elements from 0 to 999
         self.xDataGraf = self.controller.create_X_axis(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
-                                          , self.simulated_cicle_number * self.simulated_cicle_steps)
+                                          , self.simulated_cicle_number * self.simulated_cicle_steps *2)
 
         self.timeCount = 0
         self.all_data = []
@@ -86,11 +97,12 @@ class Window(QtGui.QMainWindow):
 
         # TODO: control de tiempo
         self.timeCount += self.step * 1000 * 60  # * 60
-        self.ui.dck_model_param_controls.timeLbl.setText(self.controller.convertMs(self.timeCount))
+        self.ui.dck_treat_controls.timeLbl.setText(self.controller.convertMs(self.timeCount))
 
-    def update_graph(self, old_dats, new_dats):
+    def update_graph(self, new_dats):
+        old_dats = self.dats
         self.dats = new_dats
-        treat = self.ui.dck_model_param_controls.get_sliders_vals()
+        treat = self.ui.dck_treat_controls.get_sliders_vals()
 
         _i = 0
         for aux in plt2._u:
@@ -137,24 +149,44 @@ class Window(QtGui.QMainWindow):
 
     def restart_graphs(self):
         # if is open a previous model
-        if self.ui.dck_model_param_properties != []:
-            self.remove_graph_labels()
-            self.indexGr = 0
-            self.timeCount = 0
-            self.simulated_eq = []
-            self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
-            self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
+        try:
+            if self.ui.dck_model_param_properties != []:
+                self.remove_graph_labels()
+                self.indexGr = 0
+                self.timeCount = 0
+                self.simulated_eq = []
+                self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
+                self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
+                self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
+                self.removeDockWidget(self.ui.dck_init_val_controls.ui_controls_box_widget)
+        except Exception as e:
+            print(e)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText(str(e))
+            msg.setWindowTitle("Error")
+            msg.exec_()
 
     def definite_controls(self):
-        self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
-        self.ui.dck_model_param_properties.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
+
+        self.ui.dck_init_val_controls = Ui_InitialValuesDockWidget()
+        self.ui.dck_init_val_controls.setupUi(self)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_init_val_controls.ui_controls_box_widget)
 
         self.ui.dck_model_param_controls = Ui_ControlsDockWidget()
         self.ui.dck_model_param_controls.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_model_param_controls.ui_controls_box_widget)
-        self.ui.dck_model_param_properties.parTr.sigTreeStateChanged.connect(self.controller.handler_change_model_propertie)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_controls.ui_controls_box_widget)
 
+        self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
+        self.ui.dck_model_param_properties.setupUi(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
+        self.ui.dck_model_param_properties.parTr.sigTreeStateChanged.connect(
+            self.controller.handler_change_model_propertie)
+
+        self.ui.dck_treat_controls = Ui_TreatDockWidget()
+        self.ui.dck_treat_controls.setupUi(self)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_treat_controls.ui_controls_box_widget)
         self.controller.handler_definite_controls()
 
     def create_toolbars(self):
@@ -204,11 +236,9 @@ class Window(QtGui.QMainWindow):
 
     def initialize_graphs(self, name):
         self.modelUbic = name
-        self.xDataGraf = plt2.np.linspace(0,
-                                         self.simulated_cicle_number * self.simulated_cicle_steps - 1
-                                         ,
-                                         self.simulated_cicle_number * self.simulated_cicle_steps,
-                                         dtype=plt2.np.int32)
+        self.xDataGraf = plt2.np.arange(0,
+                                         self.simulated_cicle_number * self.simulated_cicle_steps - 1,
+                                         1)
 
         for gr in self.all_curves:
             gr.clear()
@@ -229,7 +259,7 @@ class Window(QtGui.QMainWindow):
         self.dats = plt2.getPoint()
         self.old_dats = self.dats
 
-        sliderVals = self.ui.dck_model_param_controls.get_sliders_vals()
+        sliderVals = self.ui.dck_treat_controls.get_sliders_vals()
         for aux in plt2._u:
             if aux.isSlider:
                 self.treatment.append([sliderVals[_i]])
@@ -284,11 +314,11 @@ class Window(QtGui.QMainWindow):
                                          width=self.ui.dck_model_param_properties.pen_size[i]))
 
     def create_treat_curve(self, i, name):
-        return self.ui.ui_treat_plot.plot([self.xDataGraf[0]], [self.ui.dck_model_param_controls.get_sliders_vals()[i]], symbol='o',
+        return self.ui.ui_treat_plot.plot([self.xDataGraf[0]], [self.ui.dck_treat_controls.get_sliders_vals()[i]], symbol='o',
                                          symbolPen='k', symbolBrush=1, name=name,
                                          symbolSize=3, antialias=True,
-                                         pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[i],
-                                         width=self.ui.dck_model_param_properties.pen_size[i]))
+                                         pen=pyqtgraph.mkPen(self.ui.dck_treat_controls.colors[i],
+                                         width=self.ui.dck_treat_controls.pen_size[i]))
 
     def play_stop(self):
         if not self.timer.isActive():
@@ -297,6 +327,10 @@ class Window(QtGui.QMainWindow):
         else:
             self.timer.stop()
             self.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
+
+    def stop(self):
+        self.timer.stop()
+        self.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
 
     def next_frame(self):
         self.controller.handler_update_graph()
@@ -309,10 +343,10 @@ class Window(QtGui.QMainWindow):
         #TODO: todo
         pass
 
-    def exportToEDF(self):
-        EDFdialog = ChildDlg(self,)
-        EDFdialog.show()
-
+    def exportResultsToPdf(self):
+        self.stop()
+        PDFdialog = ChildDlg(self)
+        PDFdialog.show()
 
     def open_model(self):
         myFilter = ["XML file (*.xml)"]
@@ -321,6 +355,9 @@ class Window(QtGui.QMainWindow):
             if name.endswith(".xml"):
                 try:
                     self.controller.handler_open_model(name)
+                    self.ui.ui_menubar.setPossibleModelLanguages()
+                    self.ui.ui_menubar.changeLanguageModel.setEnabled(True)
+                    self.openModel = name
                 except Exception as e:
                     print(e)
                     msg = QMessageBox()
@@ -329,8 +366,5 @@ class Window(QtGui.QMainWindow):
                     msg.setInformativeText(str(e))
                     msg.setWindowTitle("Error")
                     msg.exec_()
-
-    def changeSystemLanguage(self):
-        self.controller.languageSupport.changeLanguage("ES")
 
 

@@ -7,27 +7,30 @@ import re
 
 class ModelParser():
 
-    def __init__(self,ModelFileName,LanguageFileName):
+    def __init__(self,ModelFileName,LanguageFileName,Language):
         #Open language file
         languageFile = open(LanguageFileName, 'rt')
         # Open model file
         modelFile = open(ModelFileName, 'rt')
         #Parse XML
         tree = ET.parse(ModelFileName)
-
-        languageHash = self.parseLanguages(LanguageFileName, "ENG")
+        if Language != "":
+            self.languageHash = self.parseLanguages(LanguageFileName, Language)
+        else:
+            #TODO: Hacer que el default language sea el primero de la lista
+            self.languageHash = self.parseLanguages(LanguageFileName, "English")
 
         model = tree.getroot()
 
         #First we get model's general settings
         self.name = model.attrib['name']
         self.defaultLanguage = model.attrib['lang']
-        self.simulationFrequency =  model.attrib['frequencyHz']
+        self.simulationFrequency = model.attrib['frequencyHz']
 
-        self.userDefinedParameters = self.parseUserDefinedParameters(model, languageHash)
-        self.constants = self.parseConstants(model, languageHash)
-        self.functions = self.parseFunction(model, languageHash)
-        self.equations = self.parseEquations(model, languageHash)
+        self.userDefinedParameters = self.parseUserDefinedParameters(model, self.languageHash)
+        self.constants = self.parseConstants(model, self.languageHash)
+        self.functions = self.parseFunction(model, self.languageHash)
+        self.equations = self.parseEquations(model, self.languageHash)
         self.languages = self.obtainPossibleLanguages(LanguageFileName)
         languageFile.close()
         modelFile.close()
