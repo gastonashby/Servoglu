@@ -30,18 +30,10 @@ class Ui_InitialValuesDockWidget(QtCore.QObject):
 
         self.house_layout.addWidget(self.parameter_tree1)
 
-        ## Create ParameterTree for the rest of the parameters
-        # self.parameter_tree = ParameterTree()
-        # self.parTr = Parameter.create(name='params', type='group', children=self.parent.controller.createParamsRest()
-        #                               , showHeader=False)
-        # self.parameter_tree.setParameters(self.parTr, showTop=False)
-        # #
-        # self.house_layout.addSpacing(10)
-        # self.house_layout.addWidget(self.parameter_tree)
-
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
         self.ui_controls_box_widget.setWidget(self.house_widget)
+        self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
         self.house_layout.addSpacing(10)
 
     def handler_change_model_parameter(self, param, changes):

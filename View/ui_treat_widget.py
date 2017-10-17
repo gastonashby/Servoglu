@@ -16,12 +16,9 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.parent = ControlsBox
         #
         self.house_layout = QtGui.QVBoxLayout()
+        self.colors = ['#4F347A', '#B35C41', '#B3A641', '#2E7D55', '#B345A1', '#B345A1', '#B345A1']
+        self.pen_size = [3, 3, 3, 3, 3, 3]
 
-        # self.eqLblList = []
-        # self.eqCtrlList = []
-        # self.eqBtnList = []
-        #self.init_eq_change_control()
-        #self.house_layout.addSpacing(10)
         self.init_eq_sliders()
         self.house_layout.addSpacing(10)
         self.init_time_label()
@@ -49,36 +46,12 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.house_layout.addLayout(hbox)
 
 
-    # def init_eq_change_control(self):
-    #     _i = 0
-    #     self.parent.controller.definite_equation_change_control()
-    #     for eq in self.parent.controller.model._e:
-    #         hbox = QtGui.QHBoxLayout()
-    #         hbox.addStretch(1)
-    #         self.eqLblList.append(QtGui.QLabel(eq.description + " (" + eq.name + "):"))
-    #         self.eqCtrlList.append(QtGui.QDoubleSpinBox())
-    #         self.eqBtnList.append(QtGui.QPushButton("Cambiar"))
-    #         myFont = QtGui.QFont()
-    #         myFont.setBold(True)
-    #         self.eqCtrlList[_i].setFont(myFont)
-    #         self.eqCtrlList[_i].setDecimals(self.parent.round)
-    #         hbox.addWidget(self.eqLblList[_i])
-    #         hbox.addWidget(self.eqCtrlList[_i])
-    #         hbox.addWidget(self.eqBtnList[_i])
-    #
-    #         self.eqBtnList[_i].clicked.connect(eval("self.parent.controller.eqCtrlChangeValue_" + str(_i)))
-    #
-    #         self.house_layout.addLayout(hbox)
-    #         self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
-    #
-    #         _i += 1
-
-
     def init_eq_sliders(self):
         self.slider = []
         self.label = []
         _i = 1
 
+        self.definite_slider_change_control()
 
         sliderF = ""
         for userDef in self.parent.controller.model._u:
@@ -91,21 +64,24 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 s_aux.setValue(float(userDef.defaultValue) * 100)
                 s_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
-                # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
-
                 l_aux = QtGui.QLabel()
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
                 l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
+                b_aux = QtGui.QPushButton("...")
+                b_aux.setMaximumWidth(20)
+                b_aux.clicked.connect(eval("self.eqSliderChangeValue_" + str(_i)))
+
                 self.slider.append(s_aux)
                 self.label.append(l_aux)
                 vbox.addWidget(l_aux)
+                vbox.addWidget(b_aux)
                 vbox.addWidget(s_aux)
                 self.house_layout.addLayout(vbox)
                 vbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
                 self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+                self.house_layout.addSpacing(20)
                 _i += 1
-
 
 
     def get_sliders_vals(self):
@@ -114,17 +90,21 @@ class Ui_TreatDockWidget(QtCore.QObject):
             out.append(sl.value()/100)
         return out
 
-    def definite_equation_change_control(self):
-        _i = 0
-        for eq in plt2._e:
-            # TODO: pasar a DefiniteFunciton la creacion del codigo
-            controlFunc = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
-                            "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t"\
-                            "self.parent.controller.handler_change_simulated_value(" + str(_i) +\
-                            ", self.window.ui.dck_treat_controls.eqCtrlList[" + str(_i) + "].value())\n\t"
 
-            _c_f_aux = "eqCtrlChangeValue_" + str(_i)
+    def definite_slider_change_control(self):
+        _i = 0
+        for eq in self.parent.controller.model._u:
+            # TODO: pasar a DefiniteFunciton la creacion del codigo
+            controlFunc = "def eqSliderChangeValue_" + str(_i) + "(self):\n\t" \
+                "print(" + str(_i) + ")\n\t" \
+                "self.show_slider_att_changing(" + str(_i) + ")\n\t"
+
+            _c_f_aux = "eqSliderChangeValue_" + str(_i)
             exec(controlFunc)
             exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
             _i += 1
+
+    def show_slider_att_changing(self, slider_id):
+        self.colors[slider_id] = "#FFFFFF"
+        print(slider_id)

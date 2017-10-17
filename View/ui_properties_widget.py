@@ -8,7 +8,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
 
     def __init__(self):
         self.indexGr = 0
-        self.colors = ['#B38D42', '#4268B3', '#B345A1', '#42B354', '#B345A1', '#B345A1', '#B345A1']
+        self.colors = ['#B38C41', '#8E3469', '#85A73D', '#334977', '#B345A1', '#B345A1', '#B345A1']
         self.pen_size = [3, 3, 3, 3, 3, 3]
         super(Ui_PropertiesDockWidget, self).__init__()
 
@@ -31,6 +31,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
         self.ui_controls_box_widget.setWidget(self.house_widget)
+        self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
         self.house_layout.addSpacing(10)
 
     def createParamsRest(self):

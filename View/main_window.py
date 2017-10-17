@@ -168,22 +168,21 @@ class Window(QtGui.QMainWindow):
             msg.setWindowTitle("Error")
             msg.exec_()
 
-
     def definite_controls(self):
 
         self.ui.dck_init_val_controls = Ui_InitialValuesDockWidget()
         self.ui.dck_init_val_controls.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_init_val_controls.ui_controls_box_widget)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_init_val_controls.ui_controls_box_widget)
+
+        self.ui.dck_model_param_controls = Ui_ControlsDockWidget()
+        self.ui.dck_model_param_controls.setupUi(self)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_controls.ui_controls_box_widget)
 
         self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
         self.ui.dck_model_param_properties.setupUi(self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
         self.ui.dck_model_param_properties.parTr.sigTreeStateChanged.connect(
             self.controller.handler_change_model_propertie)
-
-        self.ui.dck_model_param_controls = Ui_ControlsDockWidget()
-        self.ui.dck_model_param_controls.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_model_param_controls.ui_controls_box_widget)
 
         self.ui.dck_treat_controls = Ui_TreatDockWidget()
         self.ui.dck_treat_controls.setupUi(self)
@@ -318,8 +317,8 @@ class Window(QtGui.QMainWindow):
         return self.ui.ui_treat_plot.plot([self.xDataGraf[0]], [self.ui.dck_treat_controls.get_sliders_vals()[i]], symbol='o',
                                          symbolPen='k', symbolBrush=1, name=name,
                                          symbolSize=3, antialias=True,
-                                         pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[i],
-                                         width=self.ui.dck_model_param_properties.pen_size[i]))
+                                         pen=pyqtgraph.mkPen(self.ui.dck_treat_controls.colors[i],
+                                         width=self.ui.dck_treat_controls.pen_size[i]))
 
     def play_stop(self):
         if not self.timer.isActive():

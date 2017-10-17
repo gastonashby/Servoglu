@@ -171,6 +171,7 @@ class Controller():
                     _i += 1
                     if plt2._e[_i].description in param._parent.name():
                         var = 0
+                self.handler_change_graph_color(_i, "SIMULATION", data)
 
                 self.window.simulated_eq[_i] = data
 
@@ -188,10 +189,21 @@ class Controller():
                     if plt2._e[_i].description in param._parent.name():
                         var = 0
 
-                self.window.all_curves[_i].clear()
-                if str(data)[0] == '#':
-                    self.window.ui.dck_model_param_properties.colors[_i] = str(data)
-                else:
-                    self.window.ui.dck_model_param_properties.colors[_i] = str(data.name())
-                self.window.all_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
-                self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[_i])
+    def handler_change_graph_color(self, _i, wich, data):
+        if wich == "SIMULATION":
+            self.window.all_curves[_i].clear()
+            if str(data)[0] == '#':
+                self.window.ui.dck_model_param_properties.colors[_i] = str(data)
+            else:
+                self.window.ui.dck_model_param_properties.colors[_i] = str(data.name())
+            self.window.all_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
+            self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[_i])
+        elif wich == "TREAT":
+            self.window.all_treat_curves[_i].clear()
+            if str(data)[0] == '#':
+                self.window.ui.dck_model_param_properties.colors[_i] = str(data)
+            else:
+                self.window.ui.dck_model_param_properties.colors[_i] = str(data.name())
+            self.window.all_treat_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
+            self.window.all_treat_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
+                                               self.window.all_data[_i])

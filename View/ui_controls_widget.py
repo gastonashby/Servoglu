@@ -89,36 +89,3 @@ class Ui_ControlsDockWidget(QtCore.QObject):
 
             _i += 1
 
-
-                    #
-    # def init_eq_sliders(self):
-    #     self.slider = []
-    #     self.label = []
-    #
-    #     _i = 1
-    #     sliderF = ""
-    #     for userDef in self.parent.controller.model._u:
-    #         if userDef.isSlider:
-    #
-    #             s_aux = QtGui.QSlider(QtCore.Qt.Horizontal)
-    #             s_aux.setRange(float(userDef.sliderMin) * 100, float(userDef.sliderMax) * 100)
-    #             s_aux.setValue(float(userDef.defaultValue) * 100)
-    #             s_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
-    #
-    #             # sliderF = """def sliderValueChanged""" + str(_i) + """(self, value):\n\tprint(value/100)\n\n"""
-    #
-    #             l_aux = QtGui.QLabel()
-    #             l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
-    #             l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
-    #
-    #             self.slider.append(s_aux)
-    #             self.label.append(l_aux)
-    #             self.house_layout.addWidget(l_aux)
-    #             self.house_layout.addWidget(s_aux)
-    #             _i += 1
-    #
-    # def get_sliders_vals(self):
-    #     out = []
-    #     for sl in self.slider:
-    #         out.append(sl.value()/100)
-    #     return out
