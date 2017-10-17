@@ -59,6 +59,7 @@ top_x = 100
 _xdata = np.arange(0, top_x - 1, 1)
 gen = []
 plt_step = 0
+language = ""
 
 def odesys(XX,  tt):
     global _e
@@ -79,15 +80,13 @@ def odesys(XX,  tt):
 
 
 def initialize(name, step):
-    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel, plt_step
+    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel,language, plt_step
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
 
-    if "modelLanguage" in sys.argv:
-        simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv',sys.argv[sys.argv.index("modelLanguage")+1])
-    else:
-        simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv', "English")
+    simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv',language)
+
 
     _u = simulatedModel.userDefinedParameters
     _c = simulatedModel.constants

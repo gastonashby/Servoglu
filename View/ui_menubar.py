@@ -7,6 +7,7 @@ import sys, os, subprocess
 import Model.Plot2 as plt2
 
 
+
 class Ui_Menubar(QtGui.QMenuBar):
     def __init__(self, parent=None):
         super(Ui_Menubar, self).__init__(parent)
@@ -16,8 +17,9 @@ class Ui_Menubar(QtGui.QMenuBar):
         self.export_action = QtGui.QAction(QtGui.QIcon('save.png'),self.languageHash.__getitem__("lbl.ExportResultsToPDF"), self)
         self.open_action = QtGui.QAction(QtGui.QIcon('open.png'), self.languageHash.__getitem__("lbl.OpenModel"), self)
 
-    def setupUi(self, Ui_Menubar):
+    def setupUi(self, Ui_Menubar,MainWindow):
         self.ui_menubar = QtWidgets.QMenuBar()
+        self.mainWindow = MainWindow
         #
         # file menu actions:
         # add file menu and file menu actions
@@ -72,6 +74,7 @@ class Ui_Menubar(QtGui.QMenuBar):
 
     def setPossibleModelLanguages(self):
         # load model languages
+        self.changeLanguageModel.clear()
         self.modelLanguageActions = {}
         d = plt2.simulatedModel.languages
         self.modelPossibleLanguages = d
@@ -83,7 +86,7 @@ class Ui_Menubar(QtGui.QMenuBar):
             self.changeLanguageModel.addAction(action)
             # keep reference
             # action.triggered.connect(self.changeSystemLanguage)
-            action.triggered.connect(lambda checked, lang=lang: self.changeModelLanguage(lang))
+            action.triggered.connect(lambda checked, lang=lang: self.changeModelLanguage2(lang))
             # self.systemLanguageActions[(x)] = (action,lang)
             x += 1
 
@@ -99,3 +102,23 @@ class Ui_Menubar(QtGui.QMenuBar):
                 print('  %s' % str(e))
             else:
                 QtCore.QCoreApplication.instance().quit()
+
+    def changeModelLanguage2(self, lang):
+        choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),
+                                            self.languageHash.__getitem__("lbl.Restart"),
+                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+        if choice == QtGui.QMessageBox.Yes:
+            try:
+                self.controller = Controller(self.mainWindow)
+                name = "C:/Users/gasto/PycharmProjects/ServogluGit/Glucosafe.xml"
+
+                self.controller.handler_change_language_model(name,lang)
+
+            except Exception as e:
+                print(e)
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setText("Error")
+                msg.setInformativeText(str(e))
+                msg.setWindowTitle("Error")
+                msg.exec_()

@@ -14,8 +14,11 @@ class ModelParser():
         modelFile = open(ModelFileName, 'rt')
         #Parse XML
         tree = ET.parse(ModelFileName)
-
-        self.languageHash = self.parseLanguages(LanguageFileName, Language)
+        if Language != "":
+            self.languageHash = self.parseLanguages(LanguageFileName, Language)
+        else:
+            #TODO: Hacer que el default language sea el primero de la lista
+            self.languageHash = self.parseLanguages(LanguageFileName, "English")
 
         model = tree.getroot()
 

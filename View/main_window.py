@@ -30,6 +30,7 @@ class Window(QtGui.QMainWindow):
         #self.ui.dck_model_param_properties.setupUi(self)
         #self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
 
+
         self.setMenuBar(self.ui.ui_menubar.ui_menubar)
 
         # MENU ACTION
@@ -148,15 +149,25 @@ class Window(QtGui.QMainWindow):
 
     def restart_graphs(self):
         # if is open a previous model
-        if self.ui.dck_model_param_properties != []:
-            self.remove_graph_labels()
-            self.indexGr = 0
-            self.timeCount = 0
-            self.simulated_eq = []
-            self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
-            self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
-            self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
-            #todo el otro self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
+        try:
+            if self.ui.dck_model_param_properties != []:
+                self.remove_graph_labels()
+                self.indexGr = 0
+                self.timeCount = 0
+                self.simulated_eq = []
+                self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
+                self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
+                self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
+                #todo el otro self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
+        except Exception as e:
+            print(e)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText(str(e))
+            msg.setWindowTitle("Error")
+            msg.exec_()
+
 
     def definite_controls(self):
 
@@ -347,6 +358,7 @@ class Window(QtGui.QMainWindow):
                     self.controller.handler_open_model(name)
                     self.ui.ui_menubar.setPossibleModelLanguages()
                     self.ui.ui_menubar.changeLanguageModel.setEnabled(True)
+                    self.openModel = name
                 except Exception as e:
                     print(e)
                     msg = QMessageBox()

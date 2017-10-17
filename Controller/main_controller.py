@@ -5,6 +5,7 @@ import sys
 import Controller.EdfWriter as edf
 from Model import Plot2 as plt2
 from Model.LanguageParser import LanguageParser
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 
 sys.path.append(
@@ -91,14 +92,45 @@ class Controller():
             print(e)
 
     def handler_open_model(self, name):
-        if name != "":
-            if name.endswith(".xml"):
-                self.window.restart_graphs()
+        try:
+            if name != "":
+                if name.endswith(".xml"):
+                    self.window.restart_graphs()
 
-                #TODO Create_new_model, hacer new Model
-                imp.reload(plt2)
-                plt2.initialize(name, self.window.step)
-                self.window.initialize_graphs(name)
+                    #TODO Create_new_model, hacer new Model
+                    imp.reload(plt2)
+                    plt2.initialize(name, self.window.step)
+                    self.window.initialize_graphs(name)
+        except Exception as e:
+            print(e)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText(str(e))
+            msg.setWindowTitle("Error")
+            msg.exec_()
+
+    def handler_change_language_model(self, name,language):
+        try:
+            if name != "":
+                if name.endswith(".xml"):
+                    self.window.restart_graphs()
+
+                    #TODO Create_new_model, hacer new Model
+                    imp.reload(plt2)
+                    plt2.language = language
+                    plt2.initialize(name, self.window.step)
+                    self.window.initialize_graphs(name)
+        except Exception as e:
+            print(e)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText("Error")
+            msg.setInformativeText(str(e))
+            msg.setWindowTitle("Error")
+            msg.exec_()
+
+
 
     def handler_definite_controls(self):
         _i = 1
