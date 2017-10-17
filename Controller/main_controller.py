@@ -110,17 +110,14 @@ class Controller():
             msg.setWindowTitle("Error")
             msg.exec_()
 
-    def handler_change_language_model(self, name,language):
+    def handler_change_language_model(self,language):
         try:
-            if name != "":
-                if name.endswith(".xml"):
-                    self.window.restart_graphs()
-
-                    #TODO Create_new_model, hacer new Model
-                    imp.reload(plt2)
-                    plt2.language = language
-                    plt2.initialize(name, self.window.step)
-                    self.window.initialize_graphs(name)
+            self.window.restart_graphs()
+            #TODO Create_new_model, hacer new Model
+            imp.reload(plt2)
+            plt2.language = language
+            plt2.initialize(self.window.modelUbic, self.window.step)
+            self.window.initialize_graphs(self.window.modelUbic)
         except Exception as e:
             print(e)
             msg = QMessageBox()
