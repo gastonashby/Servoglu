@@ -1,3 +1,13 @@
-Label,ENG,ES
-"lbl.PlayPause","Play/Pause simulation","Iniciar/Pausar la simulaciÃ³n"
+Label,English,Español
+"lbl.PlayPause","Play/Pause simulation","Iniciar/Pausar la simulación"
+"lbl.NextStep","Next step","Siguiente paso"
 "lbl.Stop","Stop","Detener"
+"lbl.File","File","Archivo"
+"lbl.Languages","Languages","Idiomas"
+"lbl.OpenModel","Open model...","Abrir modelo..."
+"lbl.ExportResultsToPDF","Export results to PDF","Exportar resultados a PDF"
+"lbl.Exit","Exit","Salir"
+"lbl.ChangeModelLanguage","Change Model Language","Cambiar Idioma del Modelo"
+"lbl.ChangeSystemLanguage","Change System Language","Cambiar Idioma del Sistema"
+"lbl.Restart","Application must be restarted for changes to take effect. Restart?","La aplicación se debe reiniciar para que los cambios tengan efecto. Reiniciar?"
+"lbl.Restart?","Restart?","Reiniciar?"

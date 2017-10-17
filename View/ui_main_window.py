@@ -40,5 +40,5 @@ class Ui_MainWindow(QtCore.QObject):
         MainWindow.setCentralWidget(self.ui_central_widget)
         #
         # MENUBAR
-        self.ui_menubar = Ui_Menubar()
+        self.ui_menubar = Ui_Menubar(MainWindow)
         self.ui_menubar.setupUi(self)

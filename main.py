@@ -7,14 +7,15 @@ from View.main_window import Window
 
 
 def main():
+
     try:
         app = QApplication(sys.argv)
         app.setApplicationName('SERVOGLU')
-        QApplication.setStyle(QStyleFactory.create('Fusion'))
+        #QApplication.setStyle(QStyleFactory.create('Fusion'))
         window = Window()
         window.show()
         window.showMaximized()
-        app.exec_()
+        currentExitCode = app.exec_()
     except Exception as e:
         print(e)
         msg = QMessageBox()
@@ -26,3 +27,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
