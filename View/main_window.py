@@ -158,7 +158,7 @@ class Window(QtGui.QMainWindow):
                 self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
-                #todo el otro self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
+                self.removeDockWidget(self.ui.dck_init_val_controls.ui_controls_box_widget)
         except Exception as e:
             print(e)
             msg = QMessageBox()
