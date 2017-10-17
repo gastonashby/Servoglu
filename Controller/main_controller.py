@@ -200,10 +200,6 @@ class Controller():
             self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[_i])
         elif wich == "TREAT":
             self.window.all_treat_curves[_i].clear()
-            if str(data)[0] == '#':
-                self.window.ui.dck_model_param_properties.colors[_i] = str(data)
-            else:
-                self.window.ui.dck_model_param_properties.colors[_i] = str(data.name())
-            self.window.all_treat_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
+            self.window.all_treat_curves[_i] = self.window.create_treat_curve(_i, plt2._u[_i].name)
             self.window.all_treat_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
-                                               self.window.all_data[_i])
+                                               self.window.treatment[_i])

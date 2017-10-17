@@ -2,6 +2,8 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QColor
 import types
 
 class Ui_TreatDockWidget(QtCore.QObject):
@@ -49,7 +51,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
     def init_eq_sliders(self):
         self.slider = []
         self.label = []
-        _i = 1
+        _i = 0
 
         self.definite_slider_change_control()
 
@@ -106,5 +108,9 @@ class Ui_TreatDockWidget(QtCore.QObject):
             _i += 1
 
     def show_slider_att_changing(self, slider_id):
-        self.colors[slider_id] = "#FFFFFF"
-        print(slider_id)
+
+        color = QColorDialog.getColor()
+
+        if color.isValid():
+            self.colors[slider_id] = color.name()
+            self.parent.controller.handler_change_graph_color(slider_id, "TREAT", self.colors[slider_id])
