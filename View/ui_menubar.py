@@ -9,17 +9,17 @@ import Model.Plot2 as plt2
 
 
 class Ui_Menubar(QtGui.QMenuBar):
-    def __init__(self, parent=None):
+    def __init__(self,MainWindow, parent=None):
         super(Ui_Menubar, self).__init__(parent)
-        self.controller = Controller(self)
+        self.mainWindow = MainWindow
+        self.controller = Controller(MainWindow)
         self.languageHash = self.controller.languageSupport.languageHash
         self.exit_action = QtGui.QAction(QtGui.QIcon('exit.png'), self.languageHash.__getitem__("lbl.Exit"), self)
         self.export_action = QtGui.QAction(QtGui.QIcon('save.png'),self.languageHash.__getitem__("lbl.ExportResultsToPDF"), self)
         self.open_action = QtGui.QAction(QtGui.QIcon('open.png'), self.languageHash.__getitem__("lbl.OpenModel"), self)
 
-    def setupUi(self, Ui_Menubar,MainWindow):
+    def setupUi(self, Ui_Menubar):
         self.ui_menubar = QtWidgets.QMenuBar()
-        self.mainWindow = MainWindow
         #
         # file menu actions:
         # add file menu and file menu actions
@@ -86,34 +86,18 @@ class Ui_Menubar(QtGui.QMenuBar):
             self.changeLanguageModel.addAction(action)
             # keep reference
             # action.triggered.connect(self.changeSystemLanguage)
-            action.triggered.connect(lambda checked, lang=lang: self.changeModelLanguage2(lang))
+            action.triggered.connect(lambda checked, lang=lang: self.changeModelLanguage(lang))
             # self.systemLanguageActions[(x)] = (action,lang)
             x += 1
 
-    def changeModelLanguage(self,lang):
-        choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),self.languageHash.__getitem__("lbl.Restart"),
-                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-        if choice == QtGui.QMessageBox.Yes:
-            FILEPATH = os.path.abspath("main.py")
-            try:
-                 subprocess.Popen([sys.executable, FILEPATH,"modelLanguage",lang])
-            except Exception as e:
-                print('ERROR: could not restart aplication:')
-                print('  %s' % str(e))
-            else:
-                QtCore.QCoreApplication.instance().quit()
-
-    def changeModelLanguage2(self, lang):
+    def changeModelLanguage(self, lang):
         choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),
                                             self.languageHash.__getitem__("lbl.Restart"),
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
             try:
-                self.controller = Controller(self.mainWindow)
-                name = "C:/Users/gasto/PycharmProjects/ServogluGit/Glucosafe.xml"
-
-                self.controller.handler_change_language_model(name,lang)
-
+                #self.controller = Controller(self.mainWindow)
+                self.controller.handler_change_language_model(lang)
             except Exception as e:
                 print(e)
                 msg = QMessageBox()
