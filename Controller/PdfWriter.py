@@ -30,37 +30,42 @@ def replaceVariables(html,pdfTuple):
     html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
     return html
 
-def generatePlots(results,xData,size,equations,plotsPerPage):
+def generatePlots(results,treatment,xData,size,equations,plotsPerPage):
     plotSize = math.ceil(xData.size / plotsPerPage)
     grid_size = (plotsPerPage, 1)
 
     with PdfPages('plots.pdf') as pdf:
-        plt.figure(figsize=(8.27,8.27))#.add_subplot(gs[0,:])
-        i = 0
-        plt.subplot2grid(grid_size, (i % plotsPerPage, 0))
-        for ec in equations:
-            plt.plot(xData[0:(plotSize+1)], results[0:(plotSize+1), i], label=ec.description.format(i=i))
-            i+=1
+        plt.figure(figsize=(8.27,8.27))
 
-        plt.legend(loc=2, prop={'size': 6})
         plt.title('Model Equations')
-        #pdf.savefig()  # saves the current figure into a pdf page
+        for i in range(0,plotsPerPage):
+            plt.subplot2grid(grid_size, (i % plotsPerPage, 0))
+            j = 0
+            if i < plotsPerPage:
+                for ec in equations:
+                    plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description.format(i=j))
+                    j+=1
+            else:
+                for ec in equations:
+                    plt.plot(xData[i*plotSize:], results[i*plotSize:, j], label=ec.description.format(i=j))
+                    j+=1
+            plt.legend(loc=2, prop={'size': 6})
 
-        #plt.figure(figsize=(8.27, 8.27))#.add_subplot(gs[1,:-1])
-        i = 0
-        plt.subplot2grid(grid_size, (1 % plotsPerPage, 0))
-        for ec in equations:
-            plt.plot(xData[plotSize+2:(plotSize*2+2)], results[plotSize+1:(plotSize*2+1), i], label=ec.description.format(i=i))
-            i+=1
-        plt.legend(loc=2, prop={'size': 6})
 
-        #if last size - (plotsPerPage * plotSize)
-        i = 0
-        plt.subplot2grid(grid_size, (2 % plotsPerPage, 0))
-        for ec in equations:
-            plt.plot(xData[plotSize*2 + 1:], results[plotSize*2 + 1:, i], label=ec.description.format(i=i))
-            i += 1
-        plt.legend(loc=2, prop={'size': 6})
+            # i = 0
+            # plt.subplot2grid(grid_size, (1 % plotsPerPage, 0))
+            # for ec in equations:
+            #     plt.plot(xData[plotSize:(plotSize*2+1)], results[plotSize:(plotSize*2+1), i], label=ec.description.format(i=i))
+            #     i+=1
+            # plt.legend(loc=2, prop={'size': 6})
+            #
+            # #if last size - (plotsPerPage * plotSize)
+            # i = 0
+            # plt.subplot2grid(grid_size, (2 % plotsPerPage, 0))
+            # for ec in equations:
+            #     plt.plot(xData[plotSize*2:], results[plotSize*2:, i], label=ec.description.format(i=i))
+            #     i += 1
+            # plt.legend(loc=2, prop={'size': 6})
 
         pdf.savefig()  # saves the current figure into a pdf page
         plt.close()
@@ -83,9 +88,9 @@ def mergePdfs(fileName):
 
 
 
-def createPdf(results,xData,size,equations,fileName,pdfTuple,plotsPerPage):
+def createPdf(results,treatment,xData,size,equations,fileName,pdfTuple,plotsPerPage):
     generateMetaData(pdfTuple)
-    generatePlots(results,xData,size,equations,plotsPerPage)
+    generatePlots(results,treatment,size,equations,plotsPerPage)
     mergePdfs(fileName)
 
 

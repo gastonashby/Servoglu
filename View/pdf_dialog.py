@@ -111,10 +111,12 @@ class ChildDlg(QDialog):
                           self.recordingAdditionalInfoInput.text(),
                           self.parent.controller.model.simulatedModel.name)
 
-                    size = self.parent.indexGr
+
+                    size = self.parent.indexGr + 1
                     results = numpy.asarray(numpy.transpose(self.parent.all_data))[:size, :]
+                    treatment = numpy.asarray(numpy.transpose(self.parent.treatment))[:size, :]
                     xAxe = self.parent.xDataGraf[:size]
-                    pdf.createPdf(results, xAxe, size, self.parent.controller.model._e,name,pdfTuple,int(self.spinBox.text()))
+                    pdf.createPdf(results, treatment, xAxe, size, self.parent.controller.model._e,name,pdfTuple,int(self.spinBox.text()))
 
         except Exception as e:
                     print(e)

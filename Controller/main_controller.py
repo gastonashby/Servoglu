@@ -18,8 +18,8 @@ class Controller():
         self.window = window
         self.dataFormat = plt2.df
         # Initialize language hash with English as default language
-        if "systemLanguage" in sys.argv:
-            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[sys.argv.index("systemLanguage")+1])
+        if len(sys.argv) > 1:
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[1])
         else:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "English")
 
