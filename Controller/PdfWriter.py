@@ -1,10 +1,11 @@
 import datetime
-import numpy as np
+import numpy
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as plt
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from xhtml2pdf import pisa
 import math
+
 
 
 def generateMetaData(pdfTuple):
@@ -30,18 +31,29 @@ def replaceVariables(html,pdfTuple):
     html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
     return html
 
-def generatePlots(results,treatment,xData,size,equations,plotsPerPage):
-    plotSize = math.ceil(xData.size / plotsPerPage)
+def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefined,plotSections,plotsPerPage):
+
+    numberOfPages = math.ceil((plotSections * 2) / plotsPerPage)
+    plotSize = math.ceil(xData.size / plotSections)
     grid_size = (plotsPerPage, 1)
 
     with PdfPages('plots.pdf') as pdf:
         plt.figure(figsize=(8.27,8.27))
 
-        plt.title('Model Equations')
-        for i in range(0,plotsPerPage):
-            plt.subplot2grid(grid_size, (i % plotsPerPage, 0))
+
+        equationsIndex = 0
+        if plotsPerPage == 1:
+            treatmentsIndex = 0
+        else:
+            treatmentsIndex = 1
+
+        plotCount = 0
+
+        for i in range(0,plotSections):
+            ###PLOT EQUATIONS####
+            plt.subplot2grid(grid_size, (equationsIndex,0))
             j = 0
-            if i < plotsPerPage:
+            if i < plotSections:
                 for ec in equations:
                     plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description.format(i=j))
                     j+=1
@@ -50,25 +62,107 @@ def generatePlots(results,treatment,xData,size,equations,plotsPerPage):
                     plt.plot(xData[i*plotSize:], results[i*plotSize:, j], label=ec.description.format(i=j))
                     j+=1
             plt.legend(loc=2, prop={'size': 6})
+            plt.xlabel("time()") #TODO agregar unidad de tiempo en ejes y labels
 
+            plt.title('Model Equations')
+            equationsIndex += 2
+            if (equationsIndex > plotsPerPage - 1):
+                equationsIndex = 0
+            plotCount +=1
 
-            # i = 0
-            # plt.subplot2grid(grid_size, (1 % plotsPerPage, 0))
-            # for ec in equations:
-            #     plt.plot(xData[plotSize:(plotSize*2+1)], results[plotSize:(plotSize*2+1), i], label=ec.description.format(i=i))
-            #     i+=1
-            # plt.legend(loc=2, prop={'size': 6})
-            #
-            # #if last size - (plotsPerPage * plotSize)
-            # i = 0
-            # plt.subplot2grid(grid_size, (2 % plotsPerPage, 0))
-            # for ec in equations:
-            #     plt.plot(xData[plotSize*2:], results[plotSize*2:, i], label=ec.description.format(i=i))
-            #     i += 1
-            # plt.legend(loc=2, prop={'size': 6})
+            #####PLOT TREATMENT
+            if (plotCount % plotsPerPage == 0):
+                plt.tight_layout()
+                pdf.savefig()  # saves the current figure into a pdf page
+                plt.clf()  # clean page
 
-        pdf.savefig()  # saves the current figure into a pdf page
+            h =0
+            plt.subplot2grid(grid_size, (treatmentsIndex,0))
+            for u in userDefined:
+                plt.plot(xData[i * plotSize:(plotSize * (i + 1)) + 1],
+                         treatment[i * plotSize:(plotSize * (i + 1)) + 1, h], label=u.description.format(i=h))
+                h += 1
+            plt.legend(loc=2, prop={'size': 6})
+            plt.title('Simulated treatment')
+            treatmentsIndex += 2
+            if (treatmentsIndex > plotsPerPage - 1):
+                if plotsPerPage == 1:
+                    treatmentsIndex = 0
+                else:
+                    treatmentsIndex = 1
+            plotCount += 1
+
+            if (plotCount % plotsPerPage == 0):
+                plt.tight_layout()
+                pdf.savefig()  # saves the current figure into a pdf page
+                plt.clf()  # clean page
+
+        if (plotCount % plotsPerPage != 0):
+            plt.tight_layout()
+            pdf.savefig()  # saves the current figure into a pdf page
+
         plt.close()
+
+def generatePlots(results,xData,size,equations,plotSections,plotsPerPage):
+
+    numberOfPages = math.ceil((plotSections * 2) / plotsPerPage)
+    plotSize = math.ceil(xData.size / plotSections)
+    grid_size = (plotsPerPage, 1)
+
+    with PdfPages('plots.pdf') as pdf:
+        plt.figure(figsize=(8.27,8.27))
+
+        equationsIndex = 0
+        plotCount = 0
+
+        for i in range(0,plotSections):
+            ###PLOT EQUATIONS####
+            plt.subplot2grid(grid_size, (equationsIndex,0))
+            j = 0
+            if i < plotSections:
+                for ec in equations:
+                    plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description.format(i=j))
+                    j+=1
+            else:
+                for ec in equations:
+                    plt.plot(xData[i*plotSize:], results[i*plotSize:, j], label=ec.description.format(i=j))
+                    j+=1
+            plt.legend(loc=2, prop={'size': 6})
+            plt.title('Model Equations')
+
+            equationsIndex += 1
+            if (equationsIndex > plotsPerPage - 1):
+                equationsIndex = 0
+            plotCount +=1
+
+            if (plotCount % plotsPerPage == 0):
+                plt.tight_layout()
+                pdf.savefig() # saves the current figure into a pdf page
+                plt.clf() # clean page
+
+
+        if (plotCount % plotsPerPage != 0):
+            plt.tight_layout()
+            pdf.savefig()  # saves the current figure into a pdf page
+
+        plt.close()
+
+def plotEquations(i,plotSections,equations,xData,plotSize,results):
+    j = 0
+    fig = None
+    if i < plotSections:
+        for ec in equations:
+            fig = plt.figure(xData[i * plotSize:(plotSize * (i + 1)) + 1],
+                     results[i * plotSize:(plotSize * (i + 1)) + 1, j], label=ec.description.format(i=j))
+            j += 1
+    else:
+        for ec in equations:
+            fig = plt.figure(xData[i * plotSize:], results[i * plotSize:, j], label=ec.description.format(i=j))
+            j += 1
+    fig.legend(loc=2, prop={'size': 6})
+    return fig
+
+
 
 # Creating a routine that appends files to the output file
 def append_pdf(input, output):
@@ -88,9 +182,13 @@ def mergePdfs(fileName):
 
 
 
-def createPdf(results,treatment,xData,size,equations,fileName,pdfTuple,plotsPerPage):
+def createPdf(results,treatment,xData,size,equations,userDefined,fileName,pdfTuple,plotSections,plotsPerPage):
+
     generateMetaData(pdfTuple)
-    generatePlots(results,treatment,size,equations,plotsPerPage)
+    if (len(treatment) > 0):
+        generatePlotsWithTreatment(results, treatment, xData, size, equations, userDefined, plotSections, plotsPerPage)
+    else:
+        generatePlots(results, xData, size, equations, plotSections, plotsPerPage)
     mergePdfs(fileName)
 
 

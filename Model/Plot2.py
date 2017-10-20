@@ -47,6 +47,7 @@ def quotient(x, y):
 from scipy.integrate import odeint
 
 _u = []
+_t = []
 _c = []
 _f = []
 _e = []
@@ -80,7 +81,7 @@ def odesys(XX,  tt):
 
 
 def initialize(name, step):
-    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel,language, plt_step
+    global _u, _t, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel,language, plt_step
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
@@ -89,6 +90,7 @@ def initialize(name, step):
 
 
     _u = simulatedModel.userDefinedParameters
+    _t = simulatedModel.userDefinedTreatment
     _c = simulatedModel.constants
     _f = simulatedModel.functions
     _e = simulatedModel.equations
