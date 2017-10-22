@@ -25,7 +25,7 @@ class ModelParser():
         #First we get model's general settings
         self.name = model.attrib['name']
         self.defaultLanguage = model.attrib['lang']
-        self.simulationFrequency = model.attrib['frequencyHz']
+        self.timeUnit = model.attrib['timeUnit']
 
         self.userDefinedParameters = self.parseUserDefinedParameters(model, self.languageHash)
         self.userDefinedTreatment = self.filterNonTreatments(self.userDefinedParameters)

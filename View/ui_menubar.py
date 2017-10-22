@@ -96,8 +96,8 @@ class Ui_Menubar(QtGui.QMenuBar):
             x += 1
 
     def changeModelLanguage(self, lang):
-        choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.RestartSimulation?"),
-                                            self.languageHash.__getitem__("lbl.Restart"),
+        choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),
+                                            self.languageHash.__getitem__("lbl.RestartSimulation"),
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
             try:

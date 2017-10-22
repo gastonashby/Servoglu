@@ -140,6 +140,7 @@ class ChildDlg(QDialog):
                     size = self.parent.indexGr + 1
                     results = numpy.asarray(numpy.transpose(self.parent.all_data))[:size, :]
                     userDefinedTreatment = self.parent.controller.model._t
+                    timeUnit = self.parent.controller.model._timeUnit
                     equations = self.parent.controller.model._e
                     xAxe = self.parent.xDataGraf[:size]
 
@@ -147,8 +148,11 @@ class ChildDlg(QDialog):
                         treatment = numpy.asarray(numpy.transpose(self.parent.treatment))[:size, :]
                     else:#TODO Arreglar esta mierda
                         treatment = []
+                    sections = int(self.spinBox.text())
+                    plotsPerPage =  int(self.spinBox_2.text())
 
-                    pdf.createPdf(results, treatment, xAxe, size, equations,userDefinedTreatment,name,pdfTuple,int(self.spinBox.text()),int(self.spinBox_2.text()))
+                    pdf.createPdf(results, treatment, xAxe, size, equations,userDefinedTreatment,
+                                  name,pdfTuple,sections,plotsPerPage,timeUnit)
 
         except Exception as e:
                     print(e)
