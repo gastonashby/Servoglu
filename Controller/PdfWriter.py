@@ -9,19 +9,29 @@ import locale
 
 
 
-def generateMetaData(pdfTuple,equations):
+def generateMetaData(pdfTuple,equations,constants):
     # Generate PDF from a html file.
     with open('template.html', 'r') as myfile:
         html = myfile.read().replace('\n', '')
 
-    htmlVariables = replaceVariables(html,pdfTuple)
+    equationsDescription = "<strong>Equations:</strong> </br>"
+    for e in equations:
+        equationsDescription+= e.name + " = " + e.equation + "</br>"
+
+    constantsDescription = "<strong>Constants:</strong> </br>"
+    for c in constants:
+        constantsDescription += c.name + " : " + c.value1 + " = " + c.value2 +"</br>"
+
+    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,constantsDescription)
     resultFile = open('meta.pdf', "w+b")
+
     # convert HTML to PDF
     pisa.CreatePDF(htmlVariables,dest=resultFile)
     # close output file
     resultFile.close()  # close output file
 
-def replaceVariables(html,pdfTuple):
+
+def replaceVariables(html,pdfTuple,equationsDescription,constantsDescription):
     html = html.replace("{{patientName}}",pdfTuple.patientName)
     html = html.replace("{{sex}}", pdfTuple.sex)
     html = html.replace("{{birthdate}}", pdfTuple.birthdate)
@@ -32,6 +42,8 @@ def replaceVariables(html,pdfTuple):
     locale.setlocale(locale.LC_TIME, '')
     html = html.replace("{{date}}", datetime.datetime.now().strftime("%I:%M%p de %B %d, %Y"))
     html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
+    html = html.replace("{{equations}}",equationsDescription)
+    html = html.replace("{{constants}}", constantsDescription)
     return html
 
 def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefined,plotSections,plotsPerPage,timeUnit):
@@ -191,9 +203,9 @@ def mergePdfs(fileName):
 
 
 
-def createPdf(results,treatment,xData,size,equations,userDefined,fileName,pdfTuple,plotSections,plotsPerPage,timeUnit):
+def createPdf(results,treatment,xData,size,equations,userDefined,constants,fileName,pdfTuple,plotSections,plotsPerPage,timeUnit):
 
-    generateMetaData(pdfTuple,equations)
+    generateMetaData(pdfTuple,equations,constants)
     if (len(treatment) > 0):
         generatePlotsWithTreatment(results, treatment, xData, size, equations, userDefined, plotSections, plotsPerPage,timeUnit)
     else:

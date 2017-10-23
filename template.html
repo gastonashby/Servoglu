@@ -1,6 +1,30 @@
 <html>
 <head>
+<style type="text/css">
+        @page {
+            margin: 1.0in 0.25in 0.5in 0.25in;
+            padding: 0;
+			
 
+            @frame header {
+                -pdf-frame-content: headerContent;
+                width: 8in;
+                top: 0.5in;
+                margin-left: 0.5in;
+                margin-right: 0.5in;
+                height: 1.0in;
+            }
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                width: 8in;
+                bottom: 0in;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 1cm;
+            }
+        }         
+        h1 { text-align: middle; font-size: 18px; }
+</style>
 </head>
 
 <body>
@@ -41,6 +65,11 @@
 <td style="width: 660.8px; height: 118.075px; text-align: left; vertical-align: top;"><strong>Descripci&oacute;n del modelo:&nbsp;</strong>{{modelInfo}}<strong>&nbsp;</strong></td>
 </tr>
 </tbody>
+</table>
+<table>
+<tr style="height: 17px;">
+<td style="width: 660.8px; height: 118.075px; text-align: left; vertical-align: top;">&nbsp;{{equations}}&nbsp;</td><td style="width: 660.8px; height: 118.075px; text-align: left; vertical-align: top;">&nbsp;{{constants}}&nbsp;</td>
+</tr>
 </table>
 <p style="text-align: center;">&nbsp;</p>
 </body>

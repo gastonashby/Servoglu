@@ -4,7 +4,8 @@ import numpy as np
 import sys
 import Model.DefineFunction as df
 import Model.ModelParser as mp
-
+from PyQt5 import QtGui,QtCore,QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 def piecewise(*args):
     trueIndex = 0
@@ -70,6 +71,8 @@ def odesys(XX,  tt):
     _i = 0
     salida = []
 
+    #modifyTreatment(modelTime)
+
     for ec in _e:
         #print(eval('XX[' + str(_i) + ']'))
         auux = ec.name + '= XX[' + str(_i) + ']'
@@ -80,6 +83,20 @@ def odesys(XX,  tt):
         salida.append(eval(eq.equation))
     return salida
 
+
+def modifyTreatment(modelTime):
+    if (modelTime < 60):
+        z = 0 #parenteral
+        ecf = 0 #enteral
+        Ex = 260  #insulin
+    elif (modelTime >= 60 and modelTime < 120):
+        z = 0.018  # parenteral
+        ecf = 0  # enteral
+        Ex = 110  # insulin
+    else:
+        z = 0.012  # parenteral
+        ecf = 0  # enteral
+        Ex = 25  # insulin
 
 def initialize(name, step):
     global _u, _t, _c, _f, _e, _timeUnit, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel,language, plt_step
