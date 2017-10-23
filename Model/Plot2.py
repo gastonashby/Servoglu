@@ -166,7 +166,7 @@ def getPoint():
     global _sol, indexGrAux, top_x, plt_step
     #TODO calcular maximos y minimos por columna para graficar
     # print("indexGrAux", indexGrAux)
-    if indexGrAux == top_x:
+    if indexGrAux == top_x - 1:
         #TODO pasarle los valores iniciales para recalcular el eje x
         recalculate(plt_step)
 
