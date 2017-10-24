@@ -54,6 +54,9 @@ class Controller():
 
         return d + ":" + h + ":" + m + ":" + s #+ ":" + ms
 
+    def change_treat_slider(self, i, value):
+        self.window.ui.dck_treat_controls.slider[i].setValue(value)
+
     def handler_update_graph(self):
         # Update the index and time counters
         self.window.update_time_index()
@@ -61,6 +64,9 @@ class Controller():
         # Check end of X axis and append new points
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
+
+        # if self.window.indexGr == 10:
+        #     self.change_treat_slider(0, 10)
 
         # Update graphs with new points,
         # old points are needed to update the legends
@@ -168,7 +174,7 @@ class Controller():
                     _i += 1
                     if plt2._e[_i].description in param._parent.name():
                         var = 0
-                self.handler_change_graph_color(_i, "SIMULATION", data)
+
 
                 self.window.simulated_eq[_i] = data
 
@@ -185,6 +191,7 @@ class Controller():
                     _i += 1
                     if plt2._e[_i].description in param._parent.name():
                         var = 0
+                self.handler_change_graph_color(_i, "SIMULATION", data)
 
     def handler_change_graph_color(self, _i, wich, data):
         if wich == "SIMULATION":

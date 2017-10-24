@@ -165,7 +165,7 @@ def recalculate(step):
     #print(_sol[:indexGrAux + 10])
     print("-- Recalculate --")
     _sol = odeint(odesys, _aux, _xdata)
-    #print(_sol[:indexGrAux + 10])
+    print(_sol[:indexGrAux + 10])
 
 
 def restart():
