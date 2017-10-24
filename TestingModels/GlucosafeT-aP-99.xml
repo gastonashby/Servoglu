@@ -12,7 +12,7 @@
 
 
 			<!-- Treatments, entered by the user -->
-			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939" graphAsTreatment="true"/>
+			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0" slider="True" sliderMin="0.0" sliderMax="0.5" color="#AA3939" graphAsTreatment="true"/>
 			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="260" slider="True" sliderMin="0.0" sliderMax="300.0" color="#AA6C39" graphAsTreatment="true"/>
 			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg/min" type="real" defaultValue ="0" slider="True" sliderMin="0.0" sliderMax="0.1" color="#2D882D" graphAsTreatment="true"/>
 

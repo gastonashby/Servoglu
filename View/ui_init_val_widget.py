@@ -33,8 +33,7 @@ class Ui_InitialValuesDockWidget(QtCore.QObject):
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
         self.ui_controls_box_widget.setWidget(self.house_widget)
-        self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
-        self.house_layout.addSpacing(10)
+        self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
 
     def handler_change_model_parameter(self, param, changes):
             print("tree changes:")
