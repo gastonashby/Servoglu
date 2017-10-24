@@ -698,15 +698,19 @@
 					<max/>
 					<cn>0</cn>
 					<apply>
-						<minus/>
+						<divide/>
 						<apply>
-							<times/>
-							<ci>FG</ci>
-							<ci>BG</ci>
+							<minus/>
+							<apply>
+								<times/>
+								<ci>FG</ci>
+								<ci>BG</ci>
+							</apply>
+							<ci>Tmax</ci>
 						</apply>
-						<ci>Tmax</ci>						
-					</apply>				
-				</apply>				
+						<ci>W</ci>
+					</apply>
+				</apply>
 			</m:math>
 		</function>		
 		<function  name="E" parameters="H,R,Pglut4,Pglut1plus3" description="lbl.Endogenous glucose balance" unit="mmol/kg/min">
