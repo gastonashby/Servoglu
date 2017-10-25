@@ -10,4 +10,5 @@ Label,English,Español
 "lbl.ChangeModelLanguage","Change Model Language","Cambiar Idioma del Modelo"
 "lbl.ChangeSystemLanguage","Change System Language","Cambiar Idioma del Sistema"
 "lbl.Restart","Application must be restarted for changes to take effect. Restart?","La aplicación se debe reiniciar para que los cambios tengan efecto. Reiniciar?"
+"lbl.RestartSimulation","Simulation must be restarted for changes to take effect. Restart?","La aplicación se debe reiniciar para que los cambios tengan efecto. Reiniciar?"
 "lbl.Restart?","Restart?","Reiniciar?"

@@ -18,8 +18,8 @@ class Controller():
         self.window = window
         self.dataFormat = plt2.df
         # Initialize language hash with English as default language
-        if "systemLanguage" in sys.argv:
-            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[sys.argv.index("systemLanguage")+1])
+        if len(sys.argv) > 1:
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[1])
         else:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "English")
 
@@ -54,6 +54,42 @@ class Controller():
 
         return d + ":" + h + ":" + m + ":" + s #+ ":" + ms
 
+    def change_treatment(self, treatment, t):
+        const = 100
+        if treatment == "a":
+            if t < 60:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+            elif t >= 60 and t < 120:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0.02 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(110 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+            else:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(25 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.5*const)  # Insulin sensitivity
+                #0.5 anduvo bien
+        if treatment == "b":
+            if t < 60:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
+            elif t >= 60 and t < 120:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(0 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.8     * const)
+            else:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(60 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.7*const)  # Insulin sensitivity
+                #0.5 anduvo bien
+
+
     def handler_update_graph(self):
         # Update the index and time counters
         self.window.update_time_index()
@@ -61,6 +97,8 @@ class Controller():
         # Check end of X axis and append new points
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
+
+        self.change_treatment("b",self.window.indexGr -1 )
 
         # Update graphs with new points,
         # old points are needed to update the legends
@@ -168,7 +206,7 @@ class Controller():
                     _i += 1
                     if plt2._e[_i].description in param._parent.name():
                         var = 0
-                self.handler_change_graph_color(_i, "SIMULATION", data)
+
 
                 self.window.simulated_eq[_i] = data
 
@@ -185,6 +223,7 @@ class Controller():
                     _i += 1
                     if plt2._e[_i].description in param._parent.name():
                         var = 0
+                self.handler_change_graph_color(_i, "SIMULATION", data)
 
     def handler_change_graph_color(self, _i, wich, data):
         if wich == "SIMULATION":

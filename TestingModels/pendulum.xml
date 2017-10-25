@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="hs" name="Pharmacokinetics Model : Most therapeutic drugs are ingested orally and then enter the blood stream via gastrointestinal (GI) absorption. For a therapeutic drug to be effective, it is of course important to know how fast the drug enters the blood stream, and how the drug concentration changes depending on time" >
+	<parameters>
+		<userDefinedParameters>
+
+		</userDefinedParameters>
+		<constants>
+			<constant name="b" description="Constant b" unit="" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>b</ci>
+						<cn type="real">0.25</cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="c" description="Constant c" unit="" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>c</ci>
+						<cn type="real">5.0</cn>
+					</apply>
+				</m:math>
+			</constant>
+		</constants>
+	</parameters>
+
+	<equations>
+		<!-- theta'(t) = omega(t) -->
+		<equation name="theta" defaultValue="3.0415926535897932384626433832795" simulate="True"
+				  description="" unit="">
+			<m:math>
+
+			</m:math>
+		</equation>
+
+		<!-- omega'(t) = -b*omega(t) - c*sin(theta(t))  -->
+		<equation name="omega" defaultValue="0" simulate="True"
+				  description="" unit="">
+			<m:math>
+
+			</m:math>
+		</equation>
+	</equations>
+</servoglu>

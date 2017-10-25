@@ -25,15 +25,23 @@ class ModelParser():
         #First we get model's general settings
         self.name = model.attrib['name']
         self.defaultLanguage = model.attrib['lang']
-        self.simulationFrequency = model.attrib['frequencyHz']
+        self.timeUnit = model.attrib['timeUnit']
 
         self.userDefinedParameters = self.parseUserDefinedParameters(model, self.languageHash)
+        self.userDefinedTreatment = self.filterNonTreatments(self.userDefinedParameters)
         self.constants = self.parseConstants(model, self.languageHash)
         self.functions = self.parseFunction(model, self.languageHash)
         self.equations = self.parseEquations(model, self.languageHash)
         self.languages = self.obtainPossibleLanguages(LanguageFileName)
         languageFile.close()
         modelFile.close()
+
+    def filterNonTreatments(self,userDefinedParameters):
+        d = collections.deque()
+        for u in userDefinedParameters:
+            if u.graphAsTreatment == "True" or u.graphAsTreatment == "true":
+                d.append(u)
+        return d
 
     def parseLanguages(self,LanguageFileName, language):
         f = open(LanguageFileName, 'rt')
@@ -100,11 +108,11 @@ class ModelParser():
         userDefinedParameters = xmlroot.find('parameters').find('userDefinedParameters')
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
-                                              'sliderMin', 'sliderMax'])
+                                              'sliderMin', 'sliderMax','graphAsTreatment'])
         d = collections.deque()
         for userdp in userDefinedParameters:
             name = userdp.attrib['name']
-
+            graphAsTreatment = userdp.attrib['graphAsTreatment']
             if userdp.attrib['description'].startswith("lbl."):
                 description = languageHash[userdp.attrib['description']]
             else:
@@ -125,7 +133,7 @@ class ModelParser():
                 sliderMin = float(userdp.attrib['sliderMin'])
                 sliderMax = float(userdp.attrib['sliderMax'])
 
-            u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax)
+            u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax,graphAsTreatment)
             d.append(u)
         return d
 
