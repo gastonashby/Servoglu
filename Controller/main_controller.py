@@ -54,8 +54,41 @@ class Controller():
 
         return d + ":" + h + ":" + m + ":" + s #+ ":" + ms
 
-    def change_treat_slider(self, i, value):
-        self.window.ui.dck_treat_controls.slider[i].setValue(value)
+    def change_treatment(self, treatment, t):
+        const = 100
+        if treatment == "a":
+            if t < 60:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+            elif t >= 60 and t < 120:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0.02 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(110 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+            else:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(25 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.5*const)  # Insulin sensitivity
+                #0.5 anduvo bien
+        if treatment == "b":
+            if t < 60:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
+            elif t >= 60 and t < 120:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(0 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.8     * const)
+            else:
+                self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
+                self.window.ui.dck_treat_controls.slider[1].setValue(60 * const) #Exogenic insulin supply
+                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                self.window.ui.dck_treat_controls.slider[3].setValue(0.7*const)  # Insulin sensitivity
+                #0.5 anduvo bien
+
 
     def handler_update_graph(self):
         # Update the index and time counters
@@ -65,8 +98,7 @@ class Controller():
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
 
-        # if self.window.indexGr == 10:
-        #     self.change_treat_slider(0, 10)
+        self.change_treatment("b",self.window.indexGr -1 )
 
         # Update graphs with new points,
         # old points are needed to update the legends
