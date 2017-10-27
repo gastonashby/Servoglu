@@ -802,7 +802,7 @@
 			<m:math>								
 				<piecewise>
                 	<piece>					
-						<cn> 0 </cn> 							
+						<cn> 42 </cn>
         				<apply>
 							<eq/>
 							<ci> DiabetesTypeOne </ci>
@@ -810,7 +810,7 @@
 						</apply>
 					</piece>
 					<piece>					
-						<cn> 42 </cn> 							
+						<cn> 0 </cn>
         				<apply>
 							<eq/>
 							<ci> DiabetesTypeOne </ci>
