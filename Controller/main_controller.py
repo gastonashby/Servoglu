@@ -54,56 +54,108 @@ class Controller():
 
         return d + ":" + h + ":" + m + ":" + s #+ ":" + ms
 
-    def change_treatment(self, treatment, t):
+    def change_treatment(self, case,treatment, t):
         const = 100
-        if treatment == "a":
-            if t < 60:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
-            elif t >= 60 and t < 120:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0.02 * const) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(110 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
-            else:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(25 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(0.5*const)  # Insulin sensitivity
-                #0.5 anduvo bien
-        if treatment == "b":
-            if t < 60:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
-            elif t >= 60 and t < 120:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0 * const) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(0 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)
-            else:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(60 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(1*const)  # Insulin sensitivity
-                #0.5 anduvo bien
-        if treatment == "c":
-            if t < 60:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(25 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0*const) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)
-            elif t >= 60 and t < 120:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0 * const) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(0 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0*const) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)
-            else:
-                self.window.ui.dck_treat_controls.slider[0].setValue(0 * const) #Parenteral feeding
-                self.window.ui.dck_treat_controls.slider[1].setValue(0 * const) #Exogenic insulin supply
-                self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
-                self.window.ui.dck_treat_controls.slider[3].setValue(1*const)  # Insulin sensitivity
+        if case == 99:
+            if treatment == "a":
+                if t < 60:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                elif t >= 60 and t < 120:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.02 * const) #Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(110 * const) #Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                else:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(25 * const) #Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5*const)  # Insulin sensitivity
+                    #0.5 anduvo bien
+            if treatment == "b":
+                if t < 60:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0) #Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(260 * const) #Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
+                elif t >= 60 and t < 120:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0 * const) #Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(0 * const) #Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0.051*const) #Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.8     * const)
+                else:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.012 * const) #Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(60 * const) #Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0) #Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.7*const)  # Insulin sensitivity
+                    #0.5 anduvo bien
+            if treatment == "c":
+                if t < 60:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(25 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)
+                elif t >= 60 and t < 120:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(0 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
+                else:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(0 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)  # Insulin sensitivity
+        elif case == 93:
+            if treatment == "a":
+                if t < 60:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(30 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.65 * const)  # Insulin sensitivity
+                elif t >= 60 and t < 120:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(55 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)  # Insulin sensitivity
+                else:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(30 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)  # Insulin sensitivity
+
+            if treatment == "b":
+                if t < 60:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(65 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0.0 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.65 * const)
+                elif t >= 60 and t < 120:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(80 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0.0 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)
+                else:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.0 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(50 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)  # Insulin sensitivity
+                    # 0.5 anduvo bien
+            if treatment == "c":
+                if t < 60:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.0103)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(110 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(1 * const)
+                elif t >= 60 and t < 120:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.013 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(90 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)
+                else:
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.0103 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[1].setValue(75 * const)  # Exogenic insulin supply
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)  # Insulin sensitivity
 
 
     def handler_update_graph(self):
@@ -114,7 +166,7 @@ class Controller():
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
 
-        self.change_treatment("c",self.window.indexGr -1 )
+        self.change_treatment(93,"c",self.window.indexGr -1 )
 
         # Update graphs with new points,
         # old points are needed to update the legends
