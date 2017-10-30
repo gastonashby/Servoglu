@@ -143,7 +143,7 @@ class ChildDlg(QDialog):
                     timeUnit = self.parent.controller.model._timeUnit
                     equations = self.parent.controller.model._e
                     constants = self.parent.controller.model._c
-                    templateFile = self.parent.controller.model.template
+                    templateFile = self.parent.controller.model._template
                     xAxe = self.parent.xDataGraf[:size]
 
                     if (len(self.parent.treatment) > 0):
@@ -154,7 +154,7 @@ class ChildDlg(QDialog):
                     plotsPerPage =  int(self.spinBox_2.text())
 
                     pdf.createPdf(results, treatment, xAxe, size, equations,userDefinedTreatment,
-                                  constants,name,pdfTuple,sections,plotsPerPage,timeUnit,)
+                                  constants,name,pdfTuple,sections,plotsPerPage,timeUnit,templateFile)
 
         except Exception as e:
                     print(e)
