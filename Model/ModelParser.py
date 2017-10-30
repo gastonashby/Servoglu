@@ -7,19 +7,12 @@ import re
 
 class ModelParser():
 
-    def __init__(self,ModelFileName,LanguageFileName,Language):
-        #Open language file
-        languageFile = open(LanguageFileName, 'rt')
+    def __init__(self,ModelFileName,Language):
+
         # Open model file
         modelFile = open(ModelFileName, 'rt')
         #Parse XML
         tree = ET.parse(ModelFileName)
-        if Language != "":
-            self.languageHash = self.parseLanguages(LanguageFileName, Language)
-        else:
-            #TODO: Hacer que el default language sea el primero de la lista
-            self.languageHash = self.parseLanguages(LanguageFileName, "English")
-
         model = tree.getroot()
 
         #First we get model's general settings
@@ -27,13 +20,33 @@ class ModelParser():
         self.defaultLanguage = model.attrib['lang']
         self.timeUnit = model.attrib['timeUnit']
 
+        if ('languageSupport' in model.attrib):
+            self.languageSupport = model.attrib['languageSupport']
+            # Open language file
+            languageFile = open(self.languageSupport, 'rt')
+
+            if Language != "":
+                self.languageHash = self.parseLanguages(self.languageSupport, Language)
+            else:
+                # TODO: Hacer que el default language sea el primero de la lista
+                self.languageHash = self.parseLanguages(self.languageSupport, "English")
+
+            self.languages = self.obtainPossibleLanguages(self.languageSupport)
+            languageFile.close()
+        else:
+            self.languageSupport = "LanguageSupport.csv" #Default language support
+
+        if ('template' in model.attrib):
+            self.template = model.attrib['template']
+        else:
+            self.template = "template.html" #Default template
+
         self.userDefinedParameters = self.parseUserDefinedParameters(model, self.languageHash)
         self.userDefinedTreatment = self.filterNonTreatments(self.userDefinedParameters)
         self.constants = self.parseConstants(model, self.languageHash)
         self.functions = self.parseFunction(model, self.languageHash)
         self.equations = self.parseEquations(model, self.languageHash)
-        self.languages = self.obtainPossibleLanguages(LanguageFileName)
-        languageFile.close()
+
         modelFile.close()
 
     def filterNonTreatments(self,userDefinedParameters):

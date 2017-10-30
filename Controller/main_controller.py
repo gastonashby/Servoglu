@@ -166,7 +166,7 @@ class Controller():
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
 
-        self.change_treatment(93,"c",self.window.indexGr -1 )
+        #self.change_treatment(93,"c",self.window.indexGr -1 )
 
         # Update graphs with new points,
         # old points are needed to update the legends

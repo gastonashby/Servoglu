@@ -22,6 +22,7 @@ def gt(x, y):
 
 
 def eq(x, y):
+
     return x == y
 
 def neq(x, y):
@@ -82,22 +83,12 @@ def odesys(XX,  tt):
 
     for eq in _e:
         salida.append(eval(eq.equation))
+    # print(N)
+    # if FG * BG - Tmax > 0:
+    #     print(float(FG * BG - Tmax))
+
     return salida
 
-
-def modifyTreatment(modelTime):
-    if (modelTime < 60):
-        z = 0 #parenteral
-        ecf = 0 #enteral
-        Ex = 260  #insulin
-    elif (modelTime >= 60 and modelTime < 120):
-        z = 0.018  # parenteral
-        ecf = 0  # enteral
-        Ex = 110  # insulin
-    else:
-        z = 0.012  # parenteral
-        ecf = 0  # enteral
-        Ex = 25  # insulin
 
 def initialize(name, step):
     global _u, _t, _c, _f, _e, _timeUnit, _constants, _calculated, _sol, _aux, _xdata, _auxIni,\
@@ -106,7 +97,7 @@ def initialize(name, step):
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
 
-    simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv',language)
+    simulatedModel = mp.ModelParser(name, language)
 
 
     _u = simulatedModel.userDefinedParameters

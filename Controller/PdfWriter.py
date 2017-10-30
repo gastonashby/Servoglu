@@ -9,9 +9,9 @@ import locale
 
 
 
-def generateMetaData(pdfTuple,equations,constants):
+def generateMetaData(pdfTuple,equations,constants,templateFile):
     # Generate PDF from a html file.
-    with open('template.html', 'r') as myfile:
+    with open(templateFile, 'r') as myfile:
         html = myfile.read().replace('\n', '')
 
     equationsDescription = "<strong>Equations:</strong> </br>"
@@ -93,7 +93,10 @@ def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefine
                 pdf.savefig()  # saves the current figure into a pdf page
                 plt.clf()  # clean page
                 treatmentsIndex = 0
-                equationsIndex = 1
+                if (plotsPerPage == 1):
+                    equationsIndex = 0
+                else:
+                    equationsIndex = 1
 
             h =0
             plt.subplot2grid(grid_size, (treatmentsIndex,0))
@@ -203,9 +206,10 @@ def mergePdfs(fileName):
 
 
 
-def createPdf(results,treatment,xData,size,equations,userDefined,constants,fileName,pdfTuple,plotSections,plotsPerPage,timeUnit):
+def createPdf(results,treatment,xData,size,equations,userDefined,constants,fileName,pdfTuple,plotSections,plotsPerPage,timeUnit,templateFile):
 
-    generateMetaData(pdfTuple,equations,constants)
+    generateMetaData(pdfTuple,equations,constants,templateFile)
+
     if (len(treatment) > 0):
         generatePlotsWithTreatment(results, treatment, xData, size, equations, userDefined, plotSections, plotsPerPage,timeUnit)
     else:
