@@ -913,25 +913,28 @@
 				<apply>
 					<plus/>
 					<apply>
-						<times/>
+						<minus/>
 						<apply>
-							<minus/>
-							<ci>nkl</ci>							
-						</apply>
-						<ci> I </ci>
-					</apply>
-					<apply>
-						<times/>
-						<apply>
-							<divide/>
-							<ci> nI </ci>
-							<ci> VP </ci>
-						</apply>
-						<apply>
-							<minus/>
+							<times/>
+							<apply>
+								<minus/>
+								<ci>nkl</ci>
+							</apply>
 							<ci> I </ci>
-							<ci> Q </ci>
-						</apply>						
+						</apply>
+						<apply>
+							<times/>
+							<apply>
+								<divide/>
+								<ci> nI </ci>
+								<ci> VP </ci>
+							</apply>
+							<apply>
+								<minus/>
+								<ci> I </ci>
+								<ci> Q </ci>
+							</apply>
+						</apply>
 					</apply>
 					<apply>
 						<divide/>
@@ -940,9 +943,9 @@
 							<ci> Ex </ci> <!-- Ex = P depending on literature -->
 							<apply>
 								<ci> U </ci>
-							</apply>							
+							</apply>
 						</apply>
-						<ci> VP </ci>						
+						<ci> VP </ci>
 					</apply>
 				</apply>
 			</m:math>
