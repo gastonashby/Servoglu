@@ -1,0 +1,1079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier" languageSupport="GlucosafeLanguageSupport.csv" template="GlucosafeTemplate.html" >
+	<parameters>
+		<userDefinedParameters>
+			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
+			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
+			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
+			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="5.1" slider="False" graphAsTreatment="false"/>
+
+
+			<!-- Treatments, entered by the user -->
+			<!--userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0" slider="True" sliderMin="0.0" sliderMax="0.15" color="#AA3939" graphAsTreatment="true"/>
+			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="0" slider="True" sliderMin="0" sliderMax="300" color="#AA6C39" graphAsTreatment="true"/>
+			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg/min" type="real" defaultValue ="0" slider="True" sliderMin="0.0" sliderMax="0.2" color="#2D882D" graphAsTreatment="true"/-->
+			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0.5" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939" graphAsTreatment="true"/>
+			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0" color="#AA6C39" graphAsTreatment="true"/>
+			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="0.1" color="#2D882D" graphAsTreatment="true"/>
+
+
+
+			<!-- End of treatments, entered by the user -->
+			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real" defaultValue ="0.45" slider="True" sliderMin="0.0" sliderMax="1.0" color="#226666" graphAsTreatment="true"/>
+		</userDefinedParameters>
+		<constants>
+
+			<constant name="ABSA" description="lbl.Body surface area" unit="m2" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>ABSA</ci>
+						<apply>
+							<root/>
+							<degree>
+								<cn>2</cn>
+							</degree>
+							<apply>
+								<divide/>
+								<apply>
+									<times/>
+									<ci>Height</ci>
+									<ci>W</ci>
+								</apply>
+								<cn>36</cn>
+							</apply>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+
+
+			<!-- Van cauter parameters -->
+			<constant name="F" description="lbl.Fraction(Van Cauter), normal=0.76,obese=0.78,NIDDM=0.78" unit="" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>F</ci>
+						<cn type="real">0.76</cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="lhl" description="lbl.Long Half life(Van Cauter)" unit="minutes" calculated="True" >
+				<m:math>
+					<apply>
+						<eq />
+						<ci>lhl</ci>
+						<apply>
+							<plus />
+							<cn type="real">29.2</cn>
+							<apply>
+								<times />
+								<cn type="real">0.14</cn>
+								<ci>Age</ci>
+							</apply>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="shl" description="lbl.Short Half life(Van Cauter), normal=4.95,obese=4.55,NIDDM=4.52" unit="minutes" calculated="True" >
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>shl</ci>
+						<cn type="real">4.95</cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="aa" description="" unit="1/min" calculated="True" >
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>aa</ci>
+						<apply>
+							<divide/>
+							<apply>
+								<ln/>
+								<cn>2</cn>
+							</apply>
+							<ci>shl</ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="b" description="" unit="1/min" calculated="True" >
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>b</ci>
+						<apply>
+							<divide/>
+							<apply>
+								<ln/>
+								<cn>2</cn>
+							</apply>
+							<ci>lhl</ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="k2" description="lbl.fractional turnover rate" unit="1/min" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>k2</ci>
+						<apply>
+							<plus/>
+							<apply>
+								<times/>
+								<ci> F </ci>
+								<apply>
+									<minus/>
+									<ci> b </ci>
+									<ci> aa </ci>
+								</apply>
+							</apply>
+							<ci> aa </ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="nk" description="lbl.Peripheral insulin distribution" unit="l" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>nk</ci>
+						<apply>
+							<divide/>
+							<apply>
+								<times/>
+								<ci>aa</ci>
+								<ci>b</ci>
+							</apply>
+							<ci>k2</ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="k1" description="lbl.fractional turnover rate" unit="1/min" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>k1</ci>
+						<apply>
+							<plus/>
+							<ci> aa </ci>
+							<apply>
+								<minus/>
+								<ci> b </ci>
+								<ci> k2 </ci>
+								<ci> nk </ci>
+							</apply>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="VP" description="lbl.Plasma insulin distribution volume" unit="l" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>VP</ci>
+						<piecewise>
+								<piece><!-- Females -->
+									<apply>
+										<plus/>
+										<apply>
+											<times/>
+											<cn type="real"> 1.11 </cn>
+											<ci>ABSA</ci>
+										</apply>
+										<cn type="real"> 2.04 </cn>
+									</apply>
+									<apply>
+										<eq/>
+										<ci> Sex </ci>
+										<cn type="integer"> 1 </cn>
+									</apply>
+								</piece>
+								<piece><!-- Males -->
+									<apply>
+										<plus/>
+										<apply>
+											<times/>
+											<cn type="real"> 1.92 </cn>
+											<ci>ABSA</ci>
+										</apply>
+										<cn type="real"> 0.64 </cn>
+									</apply>
+									<apply>
+										<eq/>
+										<ci> Sex </ci>
+										<cn type="integer"> 0 </cn>
+									</apply>
+								</piece>
+							</piecewise>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="VQ" description="lbl.Peripheral insulin distribution" unit="l" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>VQ</ci>
+						<apply>
+							<times/>
+							<apply>
+								<divide/>
+								<ci>k1</ci>
+								<ci>k2</ci>
+							</apply>
+							<ci>VP</ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+
+			<!-- End of Van cauter parameters -->
+
+
+
+			<constant name="mgut" description="lbl.Impaired gut absorption coefficient" unit="" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>mgut</ci>
+						<cn type="rational">1<sep/>2</cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="J1plus3" description="lbl.GLUT 1 and GLUT 3 maximal uptake rate" unit="mmol/kg/min" calculated="False" >
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>J1plus3</ci>
+							<cn type="real"> 0.0093 </cn>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="Km1plus3" description="lbl.Combined GLUT 1 and GLUT 3 carrier affinity" unit="mmol/l" calculated="False" >
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>Km1plus3</ci>
+							<cn type="real"> 1.5 </cn>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="J4" description="lbl.GLUT 4 maximal uptake rate" unit="mmol/kg/min" calculated="False" >
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>J4</ci>
+							<cn type="real"> 0.0848 </cn>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="BGthresh" description="lbl.BG concentration threshold" unit="mmol/l" calculated="False" >
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>BGthresh</ci>
+							<cn type="real"> 11.98 </cn>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="Ah" description="lbl.Coeficient Ah" unit="l/kg/min" calculated="False">
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>Ah</ci>
+							<apply>
+								<minus/>
+								<cn type="real"> 0.0007.67 </cn>
+							</apply>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="Bh" description="lbl.Coeficient Bh" unit="mmol/kg/min" calculated="False">
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>Bh</ci>
+							<apply>
+								<minus/>
+								<cn type="real"> 0.0247 </cn>
+							</apply>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="Ch" description="lbl.Coeficient Ch" unit="mmol/kg/min" calculated="False">
+				<m:math>
+						<apply>
+							<eq/>
+							<ci>Ch</ci>
+							<cn type="real"> 0.0223 </cn>
+						</apply>
+				</m:math>
+			</constant>
+			<constant name="Vbg" description="lbl.Glucose distribution volume" unit="l" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>Vbg</ci>
+						<apply>
+							<times/>
+							<ci>W</ci>
+							<cn type="real"> 0.19 </cn>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="k" description="lbl.Coeficient k" unit="mU/kg/min" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>k</ci>
+						<cn type="real"> 0.539 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="C" description="lbl.Conversion factor between steady state plasma insulin concentration and exogenous insulin infusion" unit="kg.min/l" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>C</ci>
+						<cn type="real"> 98.1 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="gamma" description="lbl.Peripheral/plasma steady state concentration ratio" unit="" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>gamma</ci>
+						<cn type="rational">5<sep/>3</cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="d" description="d" unit="" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>d</ci>
+						<cn type="real"> 1.77 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="p0" description="p0" unit="mU/kg/min" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>p0</ci>
+						<cn type="real"> 0.083 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="mC" description="lbl.Molecular mass of C-peptide" unit="kDa" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>mC</ci>
+						<cn type="real"> 2.75 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="mI" description="lbl.Molecular mass of insulin" unit="kDa" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>mI</ci>
+						<cn type="real"> 5.8 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="nI" description="lbl.Insulin diffusion constant between plasma and peripheral compartments" unit="l/min" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>nI</ci>
+						<apply>
+							<times/>
+							<ci>VP</ci>
+							<ci>k1</ci>
+							<apply>
+								<divide/>
+								<ci>mC</ci>
+								<ci>mI</ci>
+							</apply>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="nkl" description="lbl.Insulin removal from plasma" unit="" calculated="True" >
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>nkl</ci>
+						<apply>
+							<times/>
+							<apply>
+								<divide/>
+								<ci>W</ci>
+								<apply>
+									<minus/>
+									<ci>C</ci>
+									<apply>
+										<times/>
+										<apply>
+											<minus/>
+											<cn>1</cn>
+											<ci>gamma</ci>
+										</apply>
+										<ci>nI</ci>
+									</apply>
+								</apply>
+							</apply>
+							<apply>
+								<divide/>
+								<cn>1</cn>
+								<ci>VP</ci>
+							</apply>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="nC" description="lbl.Insulin clearance rate, peripheral insulin binding" unit="1/min" calculated="True" >
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>nC</ci>
+						<apply>
+							<divide/>
+							<apply>
+								<times/>
+								<apply>
+									<minus/>
+									<ci>gamma</ci>
+									<cn>1</cn>
+								</apply>
+								<ci>nI</ci>
+							</apply>
+							<ci>VQ</ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="FG" description="lbl.Glomerular filtration rate" unit="l/min m2" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>FG</ci>
+						<apply>
+							<times/>
+							<cn type="real"> 0.0694 </cn>
+							<ci>ABSA</ci>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="Tmax" description="lbl.Maximal reabsorption rate" unit="mmol/min" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>Tmax</ci>
+						<cn type="real"> 2.0 </cn>
+					</apply>
+				</m:math>
+			</constant>
+			<constant name="KM4" description="lbl.GLUT 4 carrier affinity" unit="mmol/l" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>KM4</ci>
+						<cn type="real"> 5.0 </cn>
+					</apply>
+				</m:math>
+			</constant>
+
+
+			<!-- It is necesary for i and p inial values to be defined as constants -->
+			<constant  name="pInitial0" description="lbl.p initial value" unit="" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>pInitial0</ci>
+						<apply>
+							<times/>
+							<apply>
+								<divide/>
+								<ci>gamma</ci>
+								<ci>C</ci>
+							</apply>
+							<cn type="real" >18</cn> <!-- Q initial value -->
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+
+			<constant name="iaster0" description="lbl.i function initial value" unit="" calculated="True">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>iaster0</ci>
+						<apply>
+							<divide/>
+							<apply>
+								<minus/>
+								<ci>pInitial0</ci>
+								<ci>p0</ci>
+							</apply>
+							<apply>
+								<root/>
+								<degree>
+									<ci>d</ci>
+								</degree>
+								<apply>
+									<plus/>
+									<apply>
+										<power/>
+										<apply>
+											<minus/>
+											<ci>pInitial0</ci>
+											<ci>p0</ci>
+										</apply>
+										<ci>d</ci>
+									</apply>
+									<apply>
+										<power/>
+										<ci>k</ci>
+										<ci>d</ci>
+									</apply>
+								</apply>
+							</apply>
+						</apply>
+					</apply>
+				</m:math>
+			</constant>
+
+
+
+		</constants>
+
+
+
+	</parameters>
+
+	<functions>
+        <function name="zFunction" parameters="x" description="Parenteral feeding" outputType="int">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<cn>0</cn>
+        				<apply>
+							<lt/>
+                            <ci> x </ci>
+							<cn>60</cn>
+						</apply>
+					</piece>
+					<piece>
+						<cn>18</cn>
+        				<apply>
+							<lt/>
+                            <ci> x </ci>
+							<cn>120</cn>
+						</apply>
+					</piece>
+                    <piece>
+						<cn>12</cn>
+        				<apply>
+							<gt/>
+                            <ci> x </ci>
+							<cn>120</cn>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+        <function name="ExFunction" parameters="x" description="Exogenic insulin supply" outputType="int">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<cn>260</cn>
+        				<apply>
+							<lt/>
+                            <ci> x </ci>
+							<cn>60</cn>
+						</apply>
+					</piece>
+					<piece>
+						<cn>110</cn>
+        				<apply>
+							<lt/>
+                            <ci> x </ci>
+							<cn>120</cn>
+						</apply>
+					</piece>
+                    <piece>
+						<cn>25</cn>
+        				<apply>
+							<gt/>
+                            <ci> x </ci>
+							<cn>120</cn>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+        <function name="EcfFunction" parameters="x" description="Enteral feeding" outputType="int">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<cn>0</cn>
+        				<apply>
+							<lt/>
+                            <ci> x </ci>
+							<cn>60</cn>
+						</apply>
+					</piece>
+					<piece>
+						<cn>0</cn>
+        				<apply>
+							<lt/>
+                            <ci> x </ci>
+							<cn>120</cn>
+						</apply>
+					</piece>
+                    <piece>
+						<cn>0</cn>
+        				<apply>
+							<gt/>
+                            <ci> x </ci>
+							<cn>120</cn>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+
+		<function name="e" parameters="N" description="lbl.Glucose gut absorption">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<apply>
+							<times/>
+							<cn> 0.03245 </cn>
+							<ci>mgut</ci>
+						</apply>
+        				<apply>
+							<gt/>
+							<ci> N </ci>
+							<cn type="real"> 8.65 </cn>
+						</apply>
+					</piece>
+					<piece>
+						<apply>
+							<times/>
+							<apply>
+								<plus/>
+								<apply>
+									<times/>
+									<cn> 0.000433 </cn>
+									<apply>
+										<power/>
+										<ci>N</ci>
+										<cn>2</cn>
+									</apply>
+								</apply>
+								<apply>
+									<times/>
+									<cn> 0.0075 </cn>
+									<ci>N</ci>
+								</apply>
+							</apply>
+							<ci>mgut</ci>
+						</apply>
+						<apply>
+							<leq/>
+							<ci> N </ci>
+							<cn type="real"> 8.65 </cn>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+		<function name="H" parameters="BG,a" description="lbl.Hepatic balance">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<apply>
+							<plus/>
+								<apply>
+									<times/>
+									<ci> Ah </ci>
+									<ci> BG </ci>
+								</apply>
+								<apply>
+									<times/>
+									<ci> Bh </ci>
+									<ci> a </ci>
+								</apply>
+								<ci> Ch </ci>
+						</apply>
+        				<apply>
+							<leq/>
+							<ci> BG </ci>
+							<ci> BGthresh </ci>
+						</apply>
+					</piece>
+					<piece>
+						<apply>
+							<plus/>
+								<apply>
+									<times/>
+									<ci> Ah </ci>
+									<ci> BGthresh </ci>
+								</apply>
+								<apply>
+									<times/>
+									<ci> Bh </ci>
+									<ci> a </ci>
+								</apply>
+								<ci> Ch </ci>
+						</apply>
+        				<apply>
+							<gt/>
+							<ci> BG </ci>
+							<ci> BGthresh </ci>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+		<function  name="Pglut1plus3" parameters="BG" description="lbl.Peripheral glucose uptake: GLUT 1 and GLUT 3 mediated glucose uptake">
+			<m:math>
+				<apply>
+					<divide/>
+					<apply>
+						<times/>
+						<ci>J1plus3</ci>
+						<ci>BG</ci>
+					</apply>
+					<apply>
+						<plus/>
+						<ci>BG</ci>
+						<ci>Km1plus3</ci>
+					</apply>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="Pglut4" parameters="BG,a" description="lbl.Peripheral glucose uptake: GLUT 4 mediated glucose uptake">
+			<m:math>
+				<apply>
+					<times/>
+					<apply>
+						<divide/>
+						<apply>
+							<times/>
+							<ci>J4</ci>
+							<ci>BG</ci>
+						</apply>
+						<apply>
+							<plus/>
+							<ci>BG</ci>
+							<ci>KM4</ci>
+						</apply>
+					</apply>
+					<ci>a</ci>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="R" parameters="BG" description="lbl.Renal glucose balance" unit="mmol/l">
+			<m:math>
+				<apply>
+					<max/>
+					<cn>0</cn>
+					<apply>
+						<divide/>
+						<apply>
+							<minus/>
+							<apply>
+								<times/>
+								<ci>FG</ci>
+								<ci>BG</ci>
+							</apply>
+							<ci>Tmax</ci>
+						</apply>
+						<ci>W</ci>
+					</apply>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="E" parameters="H,R,Pglut4,Pglut1plus3" description="lbl.Endogenous glucose balance" unit="mmol/kg/min">
+			<m:math>
+				<apply>
+					<minus/>
+					<ci>H</ci>
+					<ci>R</ci>
+					<ci>Pglut4</ci>
+					<ci>Pglut1plus3</ci>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="a" parameters="i" description="lbl.Fraction of insulin effect">
+			<m:math>
+				<apply>
+					<times/>
+					<ci>i</ci>
+					<ci>s</ci>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="i" parameters="iaster" description="lbl.i* normalized to lie between 0 and 1">
+			<m:math>
+				<apply>
+					<divide/>
+					<apply>
+						<minus/>
+						<ci>iaster</ci>
+						<ci>iaster0</ci>
+					</apply>
+					<apply>
+						<minus/>
+						<cn>1</cn>
+						<ci>iaster0</ci>
+					</apply>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="iaster" parameters="p" description="lbl.Insulin action on glucose uptake">
+			<m:math>
+				<apply>
+					<divide/>
+					<apply>
+						<minus/>
+						<ci>p</ci>
+						<ci>p0</ci>
+					</apply>
+					<apply>
+						<root/>
+						<degree>
+							<ci>d</ci>
+						</degree>
+						<apply>
+							<plus/>
+							<apply>
+								<power/>
+								<apply>
+									<minus/>
+									<ci>p</ci>
+									<ci>p0</ci>
+								</apply>
+								<ci>d</ci>
+							</apply>
+							<apply>
+								<power/>
+								<ci>k</ci>
+								<ci>d</ci>
+							</apply>
+						</apply>
+					</apply>
+				</apply>
+			</m:math>
+		</function>
+		<function  name="p" parameters="Q" description="lbl.Steady-state insulin infusion rate per kg body mass">
+			<m:math>
+				<apply>
+					<times/>
+					<apply>
+						<divide/>
+						<ci>gamma</ci>
+						<ci>C</ci>
+					</apply>
+					<ci>Q</ci>
+				</apply>
+			</m:math>
+		</function>
+		<function name="U" parameters="" description="lbl.Endogenous insulin appearancerate">
+			<m:math>
+				<piecewise>
+                	<piece>
+						<cn> 42 </cn>
+        				<apply>
+							<eq/>
+							<ci> DiabetesTypeOne </ci>
+							<cn> 0 </cn>
+						</apply>
+					</piece>
+					<piece>
+						<cn> 0 </cn>
+        				<apply>
+							<eq/>
+							<ci> DiabetesTypeOne </ci>
+							<cn> 1 </cn>
+						</apply>
+					</piece>
+				</piecewise>
+			</m:math>
+		</function>
+
+	</functions>
+	<equations>
+		<!-- dNdt= -e(t) + ecf(t) -->
+		<equation name="N" defaultValue="0.774" simulate="False" description="lbl.Bioavailable glucose" unit="mmol/kg">
+			<m:math>
+				<apply>
+					<plus/>
+					<apply>
+						<minus/>
+						<apply>
+							<ci>e</ci>
+							<ci>N</ci>
+						</apply>
+					</apply>
+					<ci>ecf</ci>
+				</apply>
+			</m:math>
+		</equation>
+
+		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
+		<equation name="BG" defaultValue="GlucoseInitialValue" simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/l">
+			<m:math>
+				<apply>
+					<divide/>
+					<apply>
+						<times/>
+						<apply>
+							<plus/>
+							<apply>
+								<ci>e</ci>
+								<ci>N</ci>
+							</apply>
+							<ci>z</ci>
+							<apply>
+								<ci>E</ci>
+								<apply>
+									<ci>H</ci>
+									<ci>BG</ci>
+									<apply>
+										<ci>a</ci>
+										<apply>
+											<ci>i</ci>
+											<apply>
+												<ci>iaster</ci>
+												<apply>
+													<ci>p</ci>
+													<ci>Q</ci>
+												</apply>
+											</apply>
+										</apply>
+									</apply>
+								</apply>
+								<apply>
+									<ci>R</ci>
+									<ci>BG</ci>
+								</apply>
+								<apply>
+									<ci>Pglut4</ci>
+									<ci>BG</ci>
+									<apply>
+										<ci>a</ci>
+										<apply>
+											<ci>i</ci>
+											<apply>
+												<ci>iaster</ci>
+												<apply>
+													<ci>p</ci>
+													<ci>Q</ci>
+												</apply>
+											</apply>
+										</apply>
+									</apply>
+								</apply>
+								<apply>
+									<ci>Pglut1plus3</ci>
+									<ci>BG</ci>
+								</apply>
+							</apply>
+						</apply>
+						<ci> W </ci>
+					</apply>
+					<ci> Vbg </ci>
+				</apply>
+			</m:math>
+		</equation>
+
+		<!-- dIdt= -nkl*I(t) - nI/VP*(I(t) - Q(t)) + (P(t) + U(t))/Vp  -->
+		<equation name="I" defaultValue="30" simulate="False" description="lbl.Plasma Insulin concentration" unit="mU/l">
+			<m:math>
+				<apply>
+					<plus/>
+					<apply>
+						<times/>
+						<apply>
+							<minus/>
+							<ci>nkl</ci>
+						</apply>
+						<ci> I </ci>
+					</apply>
+					<apply>
+						<times/>
+						<apply>
+							<divide/>
+							<ci> nI </ci>
+							<ci> VP </ci>
+						</apply>
+						<apply>
+							<minus/>
+							<ci> I </ci>
+							<ci> Q </ci>
+						</apply>
+					</apply>
+					<apply>
+						<divide/>
+						<apply>
+							<plus/>
+							<ci> Ex </ci> <!-- Ex = P depending on literature -->
+							<apply>
+								<ci> U </ci>
+							</apply>
+						</apply>
+						<ci> VP </ci>
+					</apply>
+				</apply>
+			</m:math>
+		</equation>
+
+
+		<equation name="Q" defaultValue="18" simulate="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
+			<m:math>
+				<apply>
+					<plus/>
+					<apply>
+						<times/>
+						<apply>
+							<minus/>
+							<ci>nC</ci>
+						</apply>
+						<ci>Q</ci>
+					</apply>
+					<apply>
+						<times/>
+						<apply>
+							<divide/>
+							<ci> nI </ci>
+							<ci> VQ </ci>
+						</apply>
+						<apply>
+							<minus/>
+							<ci> I </ci>
+							<ci> Q </ci>
+						</apply>
+					</apply>
+				</apply>
+			</m:math>
+		</equation>
+
+	</equations>
+</servoglu>

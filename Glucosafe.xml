@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" frequencyHz="1/60" name="GLUCOSAFE Model by Pielmeier" >
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier" languageSupport="GlucosafeLanguageSupport.csv" template="GlucosafeTemplate.html" >
 	<parameters>
 		<userDefinedParameters>
-			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False"/>
-			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
-			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"/>
-			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False"/>
-			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False"/>
-			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="2" slider="False"/>
+			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
+			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
+			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
+			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="2" slider="False" graphAsTreatment="false"/>
 
 
 			<!-- Treatments, entered by the user -->
-			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0.5" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939"/>
-			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0" color="#AA6C39"/>
-			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="0.1" color="#2D882D"/>
+			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0.5" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939" graphAsTreatment="true"/>
+			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0" color="#AA6C39" graphAsTreatment="true"/>
+			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="0.1" color="#2D882D" graphAsTreatment="true"/>
 			
 			<!-- End of treatments, entered by the user -->
-			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real" defaultValue ="0.3" slider="True" sliderMin="0.0" sliderMax="1.0" color="#226666"/>
+			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real" defaultValue ="0.3" slider="True" sliderMin="0.0" sliderMax="1.0" color="#226666" graphAsTreatment="true"/>
 		</userDefinedParameters>
 		<constants>
 			
@@ -698,15 +698,19 @@
 					<max/>
 					<cn>0</cn>
 					<apply>
-						<minus/>
+						<divide/>
 						<apply>
-							<times/>
-							<ci>FG</ci>
-							<ci>BG</ci>
+							<minus/>
+							<apply>
+								<times/>
+								<ci>FG</ci>
+								<ci>BG</ci>
+							</apply>
+							<ci>Tmax</ci>
 						</apply>
-						<ci>Tmax</ci>						
-					</apply>				
-				</apply>				
+						<ci>W</ci>
+					</apply>
+				</apply>
 			</m:math>
 		</function>		
 		<function  name="E" parameters="H,R,Pglut4,Pglut1plus3" description="lbl.Endogenous glucose balance" unit="mmol/kg/min">
@@ -798,7 +802,7 @@
 			<m:math>								
 				<piecewise>
                 	<piece>					
-						<cn> 0 </cn> 							
+						<cn> 42 </cn>
         				<apply>
 							<eq/>
 							<ci> DiabetesTypeOne </ci>
@@ -806,7 +810,7 @@
 						</apply>
 					</piece>
 					<piece>					
-						<cn> 42 </cn> 							
+						<cn> 0 </cn>
         				<apply>
 							<eq/>
 							<ci> DiabetesTypeOne </ci>
@@ -820,7 +824,7 @@
 	</functions>	
 	<equations>
 		<!-- dNdt= -e(t) + ecf(t) -->
-		<equation name="N" defaultValue="0.774" simulate="False" description="lbl.Bioavailable glucose" unit="mmol/kg">
+		<equation name="N" defaultValue="0.828" simulate="False" description="lbl.Bioavailable glucose" unit="mmol/kg">
 			<m:math>
 				<apply>
 					<plus/>

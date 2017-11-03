@@ -21,32 +21,12 @@ class Ui_ControlsDockWidget(QtCore.QObject):
         self.eqCtrlList = []
         self.eqBtnList = []
         self.init_eq_change_control()
-        # self.house_layout.addSpacing(10)
-        # self.init_eq_sliders()
-        # self.house_layout.addSpacing(10)
-        # self.init_time_label()
 
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
 
         self.ui_controls_box_widget.setWidget(self.house_widget)
         self.house_layout.addSpacing(10)
-
-    # def init_time_label(self):
-    #     hbox = QtGui.QHBoxLayout()
-    #     hbox.addStretch(1)
-    #     label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
-    #     self.timeLbl = QtGui.QLabel("0:00:00:00")
-    #     myFont = QtGui.QFont()
-    #     myFont.setBold(True)
-    #     myFont.setPointSize(11)
-    #     self.timeLbl.setFont(myFont)
-    #
-    #     hbox.addWidget(label)
-    #     hbox.addWidget(self.timeLbl)
-    #
-    #     self.house_layout.addLayout(hbox)
-
 
     def init_eq_change_control(self):
         _i = 0
@@ -62,6 +42,8 @@ class Ui_ControlsDockWidget(QtCore.QObject):
             self.eqBtnList[_i].setMaximumWidth(20)
             self.eqCtrlList[_i].setFont(myFont)
             self.eqCtrlList[_i].setDecimals(self.parent.round)
+            self.eqCtrlList[_i].setSuffix(" " + eq.unit)
+            self.eqCtrlList[_i].setMaximum(10000000)
             hbox.addWidget(self.eqLblList[_i])
             hbox.addWidget(self.eqCtrlList[_i])
             hbox.addWidget(self.eqBtnList[_i])
@@ -70,7 +52,7 @@ class Ui_ControlsDockWidget(QtCore.QObject):
 
             self.house_layout.addLayout(hbox)
             hbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
-            self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+            self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
 
             _i += 1
 

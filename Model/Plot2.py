@@ -4,7 +4,8 @@ import numpy as np
 import sys
 import Model.DefineFunction as df
 import Model.ModelParser as mp
-
+from PyQt5 import QtGui,QtCore,QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 def piecewise(*args):
     trueIndex = 0
@@ -21,6 +22,7 @@ def gt(x, y):
 
 
 def eq(x, y):
+
     return x == y
 
 def neq(x, y):
@@ -47,6 +49,7 @@ def quotient(x, y):
 from scipy.integrate import odeint
 
 _u = []
+_t = []
 _c = []
 _f = []
 _e = []
@@ -60,6 +63,9 @@ _xdata = np.arange(0, top_x - 1, 1)
 gen = []
 plt_step = 0
 language = ""
+_timeUnit = ""
+_modelName = ""
+_template = ""
 
 def odesys(XX,  tt):
     global _e
@@ -67,6 +73,8 @@ def odesys(XX,  tt):
     modelTime = int(tt)
     _i = 0
     salida = []
+
+    #modifyTreatment(modelTime)
 
     for ec in _e:
         #print(eval('XX[' + str(_i) + ']'))
@@ -76,22 +84,32 @@ def odesys(XX,  tt):
 
     for eq in _e:
         salida.append(eval(eq.equation))
+    # print(N)
+    # if FG * BG - Tmax > 0:
+    #     print(float(FG * BG - Tmax))
+
     return salida
 
 
 def initialize(name, step):
-    global _u, _c, _f, _e, _constants, _calculated, _sol, _aux, _xdata, _auxIni, gen, indexGrAux, simulatedModel,language, plt_step
+    global _u, _t, _c, _f, _e, _timeUnit, _constants, _calculated, _sol, _aux, _xdata, _auxIni,\
+        gen, indexGrAux, simulatedModel,language, plt_step, _modelName,_template
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
 
-    simulatedModel = mp.ModelParser(name, 'LanguageSupport.csv',language)
+    simulatedModel = mp.ModelParser(name, language)
 
 
     _u = simulatedModel.userDefinedParameters
+    _t = simulatedModel.userDefinedTreatment
     _c = simulatedModel.constants
     _f = simulatedModel.functions
     _e = simulatedModel.equations
+    _timeUnit = simulatedModel.timeUnit
+    _modelName = simulatedModel.name
+    _template = simulatedModel.template
+
     gen = df.DefiniteFunction()
 
     #print(_e)
@@ -143,7 +161,7 @@ def recalculate(step):
     #print(_sol[:indexGrAux + 10])
     print("-- Recalculate --")
     _sol = odeint(odesys, _aux, _xdata)
-    #print(_sol[:indexGrAux + 10])
+    print(_sol[:indexGrAux + 10])
 
 
 def restart():
@@ -161,7 +179,7 @@ def getPoint():
     global _sol, indexGrAux, top_x, plt_step
     #TODO calcular maximos y minimos por columna para graficar
     # print("indexGrAux", indexGrAux)
-    if indexGrAux == top_x:
+    if indexGrAux == top_x - 1:
         #TODO pasarle los valores iniciales para recalcular el eje x
         recalculate(plt_step)
 

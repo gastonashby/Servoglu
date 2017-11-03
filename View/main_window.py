@@ -53,9 +53,11 @@ class Window(QtGui.QMainWindow):
         self.simulated_cicle_number = 1     # Internal variable
         self.simulated_cicle_steps = 1000   # Cicle
         self.modelUbic = ""
+        self.modelTimeUnit = ""
 
         # TODO: sacar del modelo
         self.simulated_eq = []  # Array of bool to indicate the simulated graph
+        self.simulated_tr = [True, True, True, True]  # Array of bool to indicate the simulated graph
 
         # X Axis, default 1000 elements from 0 to 999
         self.xDataGraf = self.controller.create_X_axis(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
@@ -108,8 +110,11 @@ class Window(QtGui.QMainWindow):
         for aux in plt2._u:
             if aux.isSlider:
                 self.treatment[_i].append(treat[_i])
-                self.all_treat_curves[_i].setData(self.xDataGraf[:self.indexGr + 1],
-                                                         self.treatment[_i])
+                if self.simulated_tr[_i]:
+                    self.all_treat_curves[_i].setData(self.xDataGraf[:self.indexGr + 1],
+                                                             self.treatment[_i])
+                else:
+                    self.all_treat_curves[_i].clear()
                 _i += 1
 
         # Update graph
@@ -189,6 +194,7 @@ class Window(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_treat_controls.ui_controls_box_widget)
         self.controller.handler_definite_controls()
 
+
     def create_toolbars(self):
         self.prevAction = QtGui.QAction(QtGui.QIcon('View/img/prev.png'), 'Previous step', self)
         self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'), self.controller.languageSupport.languageHash.__getitem__("lbl.PlayPause") , self)
@@ -214,20 +220,20 @@ class Window(QtGui.QMainWindow):
         label1 = QtGui.QLabel("Step ")
         self.spboxStep = QtGui.QSpinBox()
         self.spboxStep.setValue(1)
+        self.spboxStep.setMinimum(1)
 
         # TODO sacar unidad de xml
-        label2 = QtGui.QLabel(" min every ")
+        label2 = QtGui.QLabel(" every ")
         self.spBoxTimmer = QtGui.QSpinBox()
-        self.spBoxTimmer.setRange(1, 60000)
+        self.spBoxTimmer.setRange(50, 60000)
         self.spBoxTimmer.setValue(500)
-
-        label3 = QtGui.QLabel(" ms")
+        self.spBoxTimmer.setSingleStep(50)
+        self.spBoxTimmer.setSuffix(" ms")
 
         self.eventToolBar.addWidget(label1)
         self.eventToolBar.addWidget(self.spboxStep)
         self.eventToolBar.addWidget(label2)
         self.eventToolBar.addWidget(self.spBoxTimmer)
-        self.eventToolBar.addWidget(label3)
 
         self.spBoxTimmer.valueChanged.connect(self.timerChange)
         self.spboxStep.valueChanged.connect(self.controller.handler_step_change)
@@ -253,6 +259,7 @@ class Window(QtGui.QMainWindow):
         self.definite_controls()
         self.toggleActivationButtons(True)
         self.definite_graph()
+
         
     def definite_graph(self):
         _i = 0
@@ -265,6 +272,10 @@ class Window(QtGui.QMainWindow):
                 self.treatment.append([sliderVals[_i]])
                 self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
                 _i += 1
+
+        self.ui.ui_sinc_plot.setLabel('bottom', 'Time', units=self.controller.model._timeUnit)
+        self.ui.ui_sinc_plot.setTitle(self.controller.model._modelName[0:50])
+        self.ui.ui_treat_plot.setLabel('bottom', 'Time', units=self.controller.model._timeUnit)
 
         _i = 0
         for eq in plt2._e:
@@ -287,6 +298,9 @@ class Window(QtGui.QMainWindow):
             _i += 1
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
         self.leyend.updateSize()
+        self.modelTimeUnit = self.controller.model._timeUnit
+        self.spboxStep.setSuffix(" " + self.modelTimeUnit)
+
     
     def toggleActivationButtons(self, enabled):
         self.nextAction.setEnabled(enabled)

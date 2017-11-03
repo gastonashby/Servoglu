@@ -5,6 +5,7 @@ from PyQt5 import QtGui,QtCore,QtWidgets
 from Controller.main_controller import *
 import sys, os, subprocess
 import Model.Plot2 as plt2
+import time
 
 
 
@@ -51,12 +52,9 @@ class Ui_Menubar(QtGui.QMenuBar):
         for lang in d:
             # a sub-menu
             action = QtGui.QAction(QtGui.QIcon('changeSystemLanguage.png'), lang, self)
-            # some dummy actions
             self.changeLanguageSystem.addAction(action)
             # keep reference
-            #action.triggered.connect(self.changeSystemLanguage)
             action.triggered.connect(lambda checked, lang=lang: self.changeSystemLanguage(lang))
-            #self.systemLanguageActions[(x)] = (action,lang)
             x += 1
 
     def changeSystemLanguage(self,lang):
@@ -65,12 +63,19 @@ class Ui_Menubar(QtGui.QMenuBar):
         if choice == QtGui.QMessageBox.Yes:
             FILEPATH = os.path.abspath("main.py")
             try:
-                subprocess.Popen([sys.executable, FILEPATH,"systemLanguage",lang])
+                # QtCore.QCoreApplication.instance().quit()
+                print(sys.executable)
+                exitSignal = os.spawnv(os.P_OVERLAY, sys.executable, [lang])
+                print(exitSignal)
+                #subprocess.Popen([sys.executable, FILEPATH,lang])
+
             except Exception as e:
                 print('ERROR: could not restart aplication:')
                 print('  %s' % str(e))
-            else:
+            finally:
                 QtCore.QCoreApplication.instance().quit()
+                sys.exit(99)
+
 
     def setPossibleModelLanguages(self):
         # load model languages
@@ -92,7 +97,7 @@ class Ui_Menubar(QtGui.QMenuBar):
 
     def changeModelLanguage(self, lang):
         choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),
-                                            self.languageHash.__getitem__("lbl.Restart"),
+                                            self.languageHash.__getitem__("lbl.RestartSimulation"),
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
             try:
@@ -106,3 +111,11 @@ class Ui_Menubar(QtGui.QMenuBar):
                 msg.setInformativeText(str(e))
                 msg.setWindowTitle("Error")
                 msg.exec_()
+
+    def restart_program(self):
+        """Restarts the current program.
+        Note: this function does not return. Any cleanup action (like
+        saving data) must be done before calling this function."""
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
+

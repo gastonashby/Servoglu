@@ -7,33 +7,54 @@ import re
 
 class ModelParser():
 
-    def __init__(self,ModelFileName,LanguageFileName,Language):
-        #Open language file
-        languageFile = open(LanguageFileName, 'rt')
+    def __init__(self,ModelFileName,Language):
+
         # Open model file
         modelFile = open(ModelFileName, 'rt')
         #Parse XML
         tree = ET.parse(ModelFileName)
-        if Language != "":
-            self.languageHash = self.parseLanguages(LanguageFileName, Language)
-        else:
-            #TODO: Hacer que el default language sea el primero de la lista
-            self.languageHash = self.parseLanguages(LanguageFileName, "English")
-
         model = tree.getroot()
 
         #First we get model's general settings
         self.name = model.attrib['name']
         self.defaultLanguage = model.attrib['lang']
-        self.simulationFrequency = model.attrib['frequencyHz']
+        self.timeUnit = model.attrib['timeUnit']
+
+        if ('languageSupport' in model.attrib):
+            self.languageSupport = model.attrib['languageSupport']
+            # Open language file
+            languageFile = open(self.languageSupport, 'rt')
+
+            if Language != "":
+                self.languageHash = self.parseLanguages(self.languageSupport, Language)
+            else:
+                # TODO: Hacer que el default language sea el primero de la lista
+                self.languageHash = self.parseLanguages(self.languageSupport, "English")
+
+            self.languages = self.obtainPossibleLanguages(self.languageSupport)
+            languageFile.close()
+        else:
+            self.languageSupport = "LanguageSupport.csv" #Default language support
+
+        if ('template' in model.attrib):
+            self.template = model.attrib['template']
+        else:
+            self.template = "template.html" #Default template
 
         self.userDefinedParameters = self.parseUserDefinedParameters(model, self.languageHash)
+        self.userDefinedTreatment = self.filterNonTreatments(self.userDefinedParameters)
         self.constants = self.parseConstants(model, self.languageHash)
         self.functions = self.parseFunction(model, self.languageHash)
         self.equations = self.parseEquations(model, self.languageHash)
-        self.languages = self.obtainPossibleLanguages(LanguageFileName)
-        languageFile.close()
+
         modelFile.close()
+
+    def filterNonTreatments(self,userDefinedParameters):
+        d = collections.deque()
+        for u in userDefinedParameters:
+            if u.graphAsTreatment == "True" or u.graphAsTreatment == "true":
+                d.append(u)
+        return d
 
     def parseLanguages(self,LanguageFileName, language):
         f = open(LanguageFileName, 'rt')
@@ -100,11 +121,11 @@ class ModelParser():
         userDefinedParameters = xmlroot.find('parameters').find('userDefinedParameters')
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
-                                              'sliderMin', 'sliderMax'])
+                                              'sliderMin', 'sliderMax','graphAsTreatment'])
         d = collections.deque()
         for userdp in userDefinedParameters:
             name = userdp.attrib['name']
-
+            graphAsTreatment = userdp.attrib['graphAsTreatment']
             if userdp.attrib['description'].startswith("lbl."):
                 description = languageHash[userdp.attrib['description']]
             else:
@@ -125,7 +146,7 @@ class ModelParser():
                 sliderMin = float(userdp.attrib['sliderMin'])
                 sliderMax = float(userdp.attrib['sliderMax'])
 
-            u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax)
+            u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax,graphAsTreatment)
             d.append(u)
         return d
 

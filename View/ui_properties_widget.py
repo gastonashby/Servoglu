@@ -31,7 +31,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
         self.ui_controls_box_widget.setWidget(self.house_widget)
-        self.house_layout.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+        self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         self.house_layout.addSpacing(10)
 
     def createParamsRest(self):
@@ -42,7 +42,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
         for const in self.parent.controller.model._e:
             _childAuxEq = []
             # if const.simulate:
-            _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': const.simulate, 'children': [
+            _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': True, 'children': [
                     {'name': 'Formula', 'type': 'str',
                         'value': const.equation,
                         'readonly': True},

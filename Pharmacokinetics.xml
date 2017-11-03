@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" frequencyHz="1/3600" name="Pharmacokinetics Model : Most therapeutic drugs are ingested orally and then enter the blood stream via gastrointestinal (GI) absorption. For a therapeutic drug to be effective, it is of course important to know how fast the drug enters the blood stream, and how the drug concentration changes depending on time" >
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="hs" name="Pharmacokinetics Model" >
 	<parameters>
 		<userDefinedParameters>
-			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False"/>
-			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False"/>
-			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"/>
-			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False"/>
-			<userDefined name="Dosage" description="Dosage per hour" unit="hrs" type="integer" defaultValue ="6" slider="False"/>
+			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
+			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Dosage" description="Dosage per hour" unit="hrs" type="integer" defaultValue ="6" slider="False" graphAsTreatment="false"/>
+
+
 		</userDefinedParameters>
 		<constants>
 			<constant name="a" description="Constant of proportionality" unit="" calculated="True">
@@ -72,7 +74,7 @@
 			<m:math>
 				<piecewise>
                 	<piece>
-						<cn>2</cn>
+						<cn>1</cn>
         				<apply>
 							<eq/>
 							<apply>
