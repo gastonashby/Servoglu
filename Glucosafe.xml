@@ -560,7 +560,7 @@
 		
 	</parameters>
 	<functions>
-		<function name="e" parameters="N" description="lbl.Glucose gut absorption">
+		<function name="e" parameters="" description="lbl.Glucose gut absorption">
 			<m:math>								
 				<piecewise>
                 	<piece>					
@@ -606,7 +606,7 @@
 				</piecewise>				
 			</m:math>
 		</function>
-		<function name="H" parameters="BG,a" description="lbl.Hepatic balance">
+		<function name="H" parameters="" description="lbl.Hepatic balance">
 			<m:math>								
 				<piecewise>
                 	<piece>					
@@ -620,7 +620,9 @@
 								<apply>
 									<times/>
 									<ci> Bh </ci>
-									<ci> a </ci>									
+									<apply>
+										<ci> a </ci>
+									</apply>
 								</apply>
 								<ci> Ch </ci>
 						</apply>						
@@ -640,8 +642,10 @@
 								</apply>
 								<apply>
 									<times/>
-									<ci> Bh </ci>									
-									<ci> a </ci>									
+									<ci> Bh </ci>
+									<apply>
+										<ci> a </ci>
+									</apply>
 								</apply>
 								<ci> Ch </ci>
 						</apply>						
@@ -654,7 +658,7 @@
 				</piecewise>				
 			</m:math>
 		</function>
-		<function  name="Pglut1plus3" parameters="BG" description="lbl.Peripheral glucose uptake: GLUT 1 and GLUT 3 mediated glucose uptake">
+		<function  name="Pglut1plus3" parameters="" description="lbl.Peripheral glucose uptake: GLUT 1 and GLUT 3 mediated glucose uptake">
 			<m:math>
 				<apply>
 					<divide/>
@@ -671,7 +675,7 @@
 				</apply>  
 			</m:math>		
 		</function>
-		<function  name="Pglut4" parameters="BG,a" description="lbl.Peripheral glucose uptake: GLUT 4 mediated glucose uptake">
+		<function  name="Pglut4" parameters="" description="lbl.Peripheral glucose uptake: GLUT 4 mediated glucose uptake">
 			<m:math>
 				<apply>
 					<times/>					
@@ -687,12 +691,14 @@
 							<ci>BG</ci>
 							<ci>KM4</ci>
 						</apply>
-					</apply>					
-					<ci>a</ci>					
+					</apply>
+					<apply>
+						<ci>a</ci>
+					</apply>
 				</apply>
 			</m:math>		
 		</function>       
-		<function  name="R" parameters="BG" description="lbl.Renal glucose balance" unit="mmol/l">
+		<function  name="R" parameters="" description="lbl.Renal glucose balance" unit="mmol/l">
 			<m:math>
 				<apply>
 					<max/>
@@ -713,33 +719,45 @@
 				</apply>
 			</m:math>
 		</function>		
-		<function  name="E" parameters="H,R,Pglut4,Pglut1plus3" description="lbl.Endogenous glucose balance" unit="mmol/kg/min">
+		<function  name="E" parameters="" description="lbl.Endogenous glucose balance" unit="mmol/kg/min">
 			<m:math>
 				<apply>
-					<minus/>					
-					<ci>H</ci>
-					<ci>R</ci>
-					<ci>Pglut4</ci>
-					<ci>Pglut1plus3</ci>
+					<minus/>
+					<apply>
+						<ci>H</ci>
+					</apply>
+					<apply>
+						<ci>R</ci>
+					</apply>
+					<apply>
+						<ci>Pglut4</ci>
+					</apply>
+					<apply>
+						<ci>Pglut1plus3</ci>
+					</apply>
 				</apply>				
 			</m:math>
 		</function>
-		<function  name="a" parameters="i" description="lbl.Fraction of insulin effect">
+		<function  name="a" parameters="" description="lbl.Fraction of insulin effect">
 			<m:math>
 				<apply>
 					<times/>					
-					<ci>i</ci>					
+					<apply>
+						<ci>i</ci>
+					</apply>
 					<ci>s</ci>					
 				</apply>				
 			</m:math>
 		</function>
-		<function  name="i" parameters="iaster" description="lbl.i* normalized to lie between 0 and 1">
+		<function  name="i" parameters="" description="lbl.i* normalized to lie between 0 and 1">
 			<m:math>
 				<apply>
 					<divide/>
 					<apply>
 						<minus/>
-						<ci>iaster</ci>						
+						<apply>
+							<ci>iaster</ci>
+						</apply>
 						<ci>iaster0</ci>
 					</apply>
 					<apply>
@@ -750,13 +768,15 @@
 				</apply>				
 			</m:math>
 		</function>
-		<function  name="iaster" parameters="p" description="lbl.Insulin action on glucose uptake">
+		<function  name="iaster" parameters="" description="lbl.Insulin action on glucose uptake">
 			<m:math>
 				<apply>
 					<divide/>
 					<apply>
-						<minus/>						
-						<ci>p</ci>						
+						<minus/>
+						<apply>
+							<ci>p</ci>
+						</apply>
 						<ci>p0</ci>
 					</apply>
 					<apply>
@@ -769,8 +789,10 @@
 							<apply>
 								<power/>
 								<apply>
-									<minus/>									
-									<ci>p</ci>									
+									<minus/>
+									<apply>
+										<ci>p</ci>
+									</apply>
 									<ci>p0</ci>
 								</apply>
 								<ci>d</ci>
@@ -785,7 +807,7 @@
 				</apply>
 			</m:math>
 		</function>
-		<function  name="p" parameters="Q" description="lbl.Steady-state insulin infusion rate per kg body mass">
+		<function  name="p" parameters="" description="lbl.Steady-state insulin infusion rate per kg body mass">
 			<m:math>
 				<apply>
 					<times/>
@@ -832,7 +854,6 @@
 						<minus/>
 						<apply>
 							<ci>e</ci>
-							<ci>N</ci>
 						</apply>
 					</apply>					
 					<ci>ecf</ci>					
@@ -851,53 +872,10 @@
 							<plus/>
 							<apply>
 								<ci>e</ci>
-								<ci>N</ci>								
 							</apply>
 							<ci>z</ci>
 							<apply>
 								<ci>E</ci>
-								<apply>
-									<ci>H</ci>
-									<ci>BG</ci>
-									<apply>
-										<ci>a</ci>
-										<apply>
-											<ci>i</ci>
-											<apply>
-												<ci>iaster</ci>
-												<apply>
-													<ci>p</ci>
-													<ci>Q</ci>
-												</apply>
-											</apply>
-										</apply>
-									</apply>									
-								</apply>
-								<apply>
-									<ci>R</ci>
-									<ci>BG</ci>
-								</apply>
-								<apply>
-									<ci>Pglut4</ci>
-									<ci>BG</ci>
-									<apply>
-										<ci>a</ci>
-										<apply>
-											<ci>i</ci>
-											<apply>
-												<ci>iaster</ci>
-												<apply>
-													<ci>p</ci>
-													<ci>Q</ci>
-												</apply>
-											</apply>
-										</apply>
-									</apply>									
-								</apply>
-								<apply>
-									<ci>Pglut1plus3</ci>
-									<ci>BG</ci>
-								</apply>
 							</apply>
 						</apply>
 						<ci> W </ci>
