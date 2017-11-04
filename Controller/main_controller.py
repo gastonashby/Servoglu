@@ -3,10 +3,10 @@ import os.path
 import sys
 
 import Controller.EdfWriter as edf
-from Model import Plot2 as plt2
+#from Model import Plot2 as self.model
 from Model.LanguageParser import LanguageParser
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-
+from Model.Model import Model
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
@@ -14,9 +14,9 @@ sys.path.append(
 
 class Controller():
     def __init__(self, window):
-        self.model = plt2
+        self.model = Model()
         self.window = window
-        self.dataFormat = plt2.df
+        self.dataFormat = self.model.code
         # Initialize language hash with English as default language
         if len(sys.argv) > 1:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[1])
@@ -127,18 +127,18 @@ class Controller():
                 if t < 60:
                     self.window.ui.dck_treat_controls.slider[0].setValue(0)  # Parenteral feeding
                     self.window.ui.dck_treat_controls.slider[1].setValue(65 * const)  # Exogenic insulin supply
-                    self.window.ui.dck_treat_controls.slider[2].setValue(0.0 * const)  # Enteral tube feeding
-                    self.window.ui.dck_treat_controls.slider[3].setValue(0.65 * const)
+                    self.window.ui.dck_treat_controls.slider[2].setValue(0.051 * const)  # Enteral tube feeding
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
                 elif t >= 60 and t < 120:
                     self.window.ui.dck_treat_controls.slider[0].setValue(0 * const)  # Parenteral feeding
                     self.window.ui.dck_treat_controls.slider[1].setValue(80 * const)  # Exogenic insulin supply
                     self.window.ui.dck_treat_controls.slider[2].setValue(0.0 * const)  # Enteral tube feeding
-                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
                 else:
                     self.window.ui.dck_treat_controls.slider[0].setValue(0.0 * const)  # Parenteral feeding
                     self.window.ui.dck_treat_controls.slider[1].setValue(50 * const)  # Exogenic insulin supply
                     self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
-                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)  # Insulin sensitivity
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)  # Insulin sensitivity
                     # 0.5 anduvo bien
             if treatment == "c":
                 if t < 60:
@@ -166,26 +166,26 @@ class Controller():
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
 
-        #self.change_treatment(93,"c",self.window.indexGr -1 )
+        #self.change_treatment(99,"a",self.window.indexGr -1 )
 
         # Update graphs with new points,
         # old points are needed to update the legends
-        self.window.update_graph(plt2.getPoint())
+        self.window.update_graph(self.model.getPoint())
 
     def handler_change_simulated_value(self, i, value):
         self.window.all_data[i][self.window.indexGr] = value
         self.window.all_curves[i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[i])
 
         _i = 0
-        for eq in plt2._e:
+        for eq in self.model._e:
             self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
             _i += 1
 
-        self.window.dats[i] = value
-        plt2.recalculate(self.window.step)
+        self.window.dats[i] = value #/ self.model.eq_convert_factors[i]
+        self.model.recalculate(self.window.step)
 
         _i = 0
-        for eq in plt2._e:
+        for eq in self.model._e:
             self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
 
             _i += 1
@@ -204,8 +204,8 @@ class Controller():
                     self.window.restart_graphs()
 
                     #TODO Create_new_model, hacer new Model
-                    imp.reload(plt2)
-                    plt2.initialize(name, self.window.step)
+                    self.model = Model()
+                    self.model.initialize(name, self.window.step)
                     self.window.initialize_graphs(name)
         except Exception as e:
             print(e)
@@ -220,9 +220,9 @@ class Controller():
         try:
             self.window.restart_graphs()
             #TODO Create_new_model, hacer new Model
-            imp.reload(plt2)
-            plt2.language = language
-            plt2.initialize(self.window.modelUbic, self.window.step)
+            imp.reload(self.model)
+            self.model.language = language
+            self.model.initialize(self.window.modelUbic, self.window.step)
             self.window.initialize_graphs(self.window.modelUbic)
         except Exception as e:
             print(e)
@@ -238,9 +238,9 @@ class Controller():
     def handler_definite_controls(self):
         _i = 1
         sliderF = ""
-        for userDef in plt2._u:
+        for userDef in self.model._u:
             if userDef.isSlider:
-                sliderF, sl_met_reg, sl_met_nom = self.model.gen.definiteSlider(userDef, _i)
+                sliderF, sl_met_reg, sl_met_nom = self.model.code.definiteSlider(userDef, _i, self.model.tr_convert_factors[_i-1])
 
                 exec(sliderF)
                 exec(sl_met_reg)
@@ -250,17 +250,17 @@ class Controller():
                 _i += 1
 
     def create_X_axis(self, init, end, steps):
-        return plt2.np.linspace(init, end, steps, dtype=plt2.np.int32)
+        return self.model.np.linspace(init, end, steps, dtype=self.model.np.int32)
     
     def handler_step_change(self):
         self.window.step = int(self.window.spboxStep.value())
-        plt2.change_scale(self.window.step, self.window.indexGr)
-        plt2.recalculate(self.window.step)
-        linX = plt2.np.linspace(self.window.xDataGraf[self.window.indexGr]
+        self.model.change_scale(self.window.step, self.window.indexGr)
+        self.model.recalculate(self.window.step)
+        linX = self.model.np.linspace(self.window.xDataGraf[self.window.indexGr]
                         , self.window.xDataGraf[self.window.indexGr] + (self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
-                        , self.window.simulated_cicle_number * self.window.simulated_cicle_steps, dtype=plt2.np.int32)
-        #plt2.np.concatenate((arr1, arr2), axis=0)
-        self.window.xDataGraf = plt2.np.append(self.window.xDataGraf[:self.window.indexGr], linX)
+                        , self.window.simulated_cicle_number * self.window.simulated_cicle_steps, dtype=self.model.np.int32)
+        #self.model.np.concatenate((arr1, arr2), axis=0)
+        self.window.xDataGraf = self.model.np.append(self.window.xDataGraf[:self.window.indexGr], linX)
 
         print("Main ", self.window.xDataGraf[:self.window.indexGr +10])
         
@@ -272,14 +272,14 @@ class Controller():
                 print("change simulated")
                 while (var):
                     _i += 1
-                    if plt2._e[_i].description in param._parent.name():
+                    if self.model._e[_i].description in param._parent.name():
                         var = 0
 
 
                 self.window.simulated_eq[_i] = data
 
                 if data:
-                    self.window.all_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
+                    self.window.all_curves[_i] = self.window.create_curve(_i, self.model._e[_i].name)
                     self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
                                                        self.window.all_data[_i])
                 else:
@@ -289,7 +289,7 @@ class Controller():
                 print("change color")
                 while (var):
                     _i += 1
-                    if plt2._e[_i].description in param._parent.name():
+                    if self.model._e[_i].description in param._parent.name():
                         var = 0
                 self.handler_change_graph_color(_i, "SIMULATION", data)
 
@@ -300,10 +300,10 @@ class Controller():
                 self.window.ui.dck_model_param_properties.colors[_i] = str(data)
             else:
                 self.window.ui.dck_model_param_properties.colors[_i] = str(data.name())
-            self.window.all_curves[_i] = self.window.create_curve(_i, plt2._e[_i].name)
+            self.window.all_curves[_i] = self.window.create_curve(_i, self.model._e[_i].name)
             self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1], self.window.all_data[_i])
         elif wich == "TREAT":
             self.window.all_treat_curves[_i].clear()
-            self.window.all_treat_curves[_i] = self.window.create_treat_curve(_i, plt2._u[_i].name)
+            self.window.all_treat_curves[_i] = self.window.create_treat_curve(_i, self.model._u[_i].name)
             self.window.all_treat_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
                                                self.window.treatment[_i])

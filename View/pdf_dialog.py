@@ -1,6 +1,5 @@
 import sys
 import Controller.EdfWriter as edf
-import Model.Plot2 as plt2
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QLabel
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
@@ -136,7 +135,7 @@ class ChildDlg(QDialog):
                           self.patientAdditionalInfoInput.toPlainText(),
                           self.technicianInput.text(),
                           self.recordingAdditionalInfoInput.toPlainText(),
-                          self.parent.controller.model.simulatedModel.name)
+                          self.parent.controller.model._modelName)
 
 
                     size = self.parent.indexGr + 1

@@ -85,13 +85,13 @@ class Window(QtGui.QMainWindow):
 
     def append_new_axis_points(self):
         # TODO: usar createXaxis?
-        linX = plt2.np.linspace(self.xDataGraf[self.indexGr]
+        linX = self.controller.model.np.linspace(self.xDataGraf[self.indexGr]
                                 , self.xDataGraf[self.indexGr] + (
                                     self.step * (
                                         (self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
                                 , self.simulated_cicle_number * self.simulated_cicle_steps,
-                                dtype=plt2.np.int32)
-        self.xDataGraf = plt2.np.append(self.xDataGraf[:self.indexGr], linX)
+                                dtype=self.controller.model.np.int32)
+        self.xDataGraf = self.controller.model.np.append(self.xDataGraf[:self.indexGr], linX)
 
     def update_time_index(self):
         # Update counters
@@ -107,7 +107,7 @@ class Window(QtGui.QMainWindow):
         treat = self.ui.dck_treat_controls.get_sliders_vals()
 
         _i = 0
-        for aux in plt2._u:
+        for aux in self.controller.model._u:
             if aux.isSlider:
                 self.treatment[_i].append(treat[_i])
                 if self.simulated_tr[_i]:
@@ -119,7 +119,7 @@ class Window(QtGui.QMainWindow):
 
         # Update graph
         _i = 0
-        for eq in plt2._e:
+        for eq in self.controller.model._e:
             # Delete legend old values
             self.leyend.removeItem(eq.name + ': ' + str(round(old_dats[_i], self.round)))
 
@@ -147,7 +147,7 @@ class Window(QtGui.QMainWindow):
     def remove_graph_labels(self):
         _i = 0
         if self.dats != []:
-            for eq in plt2._e:
+            for eq in self.controller.model._e:
                 # print(self.dats[_i])
                 self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)))
                 _i += 1
@@ -242,7 +242,7 @@ class Window(QtGui.QMainWindow):
 
     def initialize_graphs(self, name):
         self.modelUbic = name
-        self.xDataGraf = plt2.np.arange(0,
+        self.xDataGraf = self.controller.model.np.arange(0,
                                          self.simulated_cicle_number * self.simulated_cicle_steps - 1,
                                          1)
 
@@ -263,11 +263,11 @@ class Window(QtGui.QMainWindow):
         
     def definite_graph(self):
         _i = 0
-        self.dats = plt2.getPoint()
+        self.dats = self.controller.model.getPoint()
         self.old_dats = self.dats
 
         sliderVals = self.ui.dck_treat_controls.get_sliders_vals()
-        for aux in plt2._u:
+        for aux in self.controller.model._u:
             if aux.isSlider:
                 self.treatment.append([sliderVals[_i]])
                 self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
@@ -278,7 +278,7 @@ class Window(QtGui.QMainWindow):
         self.ui.ui_treat_plot.setLabel('bottom', 'Time', units=self.controller.model._timeUnit)
 
         _i = 0
-        for eq in plt2._e:
+        for eq in self.controller.model._e:
             if eq.simulate:
                 self.simulated_eq.append(True)
             else:

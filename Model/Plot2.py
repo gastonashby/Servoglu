@@ -66,6 +66,8 @@ language = ""
 _timeUnit = ""
 _modelName = ""
 _template = ""
+eq_convert_factors = []
+tr_convert_factors = []
 
 def odesys(XX,  tt):
     global _e
@@ -93,7 +95,7 @@ def odesys(XX,  tt):
 
 def initialize(name, step):
     global _u, _t, _c, _f, _e, _timeUnit, _constants, _calculated, _sol, _aux, _xdata, _auxIni,\
-        gen, indexGrAux, simulatedModel,language, plt_step, _modelName,_template
+        gen, indexGrAux, simulatedModel,language, plt_step, _modelName,_template, eq_convert_factors, tr_convert_factors
     indexGrAux = 0
     plt_step = step
     # model = mp.ModelParser('Pharmacokinetics.xml', 'LanguageSupport.csv')
@@ -112,18 +114,26 @@ def initialize(name, step):
 
     gen = df.DefiniteFunction()
 
+    for eq in _e:
+        eq_convert_factors.append(eq.convertFactor)
+
+
+    for u in _u:
+        if u.graphAsTreatment:
+            tr_convert_factors.append(u.convertFactor)
+
     #print(_e)
 
     exec(gen.defineUserDefinedParameters(_u), globals())
     _constants, _calculated = gen.defineParameters(_c)
     exec(_constants, globals())
     # _functionList, _paramsList = defineFunctionList(_f)
-    exec(gen.defineFunctions(_f), globals())
+    exec(gen.defineFunctions(_f, [], []), globals())
     exec(gen.defineEquations(_e), globals())
     _auxIni = _aux
     _sol = odeint(odesys, _aux, _xdata)
     print('Solution created 1st time')
-    #print(_sol[:100])
+    #print(_sol)
 
 
 def updateCalculatedConstants():
@@ -161,7 +171,7 @@ def recalculate(step):
     #print(_sol[:indexGrAux + 10])
     print("-- Recalculate --")
     _sol = odeint(odesys, _aux, _xdata)
-    print(_sol[:indexGrAux + 10])
+    print(_sol)
 
 
 def restart():
@@ -185,5 +195,6 @@ def getPoint():
 
     out = _sol[indexGrAux]
     indexGrAux += 1
+    #return np.multiply(out, eq_convert_factors)
     return out
 

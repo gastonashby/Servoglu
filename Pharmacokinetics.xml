@@ -70,7 +70,7 @@
 				</piecewise>				
 			</m:math>
 		</function>
-		<function name="D" parameters="x" description="Heaviside step function" outputType="int">
+		<function name="D" parameters="" description="Heaviside step function" outputType="int">
 			<m:math>
 				<piecewise>
                 	<piece>
@@ -79,7 +79,7 @@
 							<eq/>
 							<apply>
 								<quotient/>
-							  	<ci> x </ci>
+							  	<ci> modelTime </ci>
 							  	<ci> Dosage </ci>
 							</apply>
 							<cn>0</cn>
@@ -91,7 +91,7 @@
 							<neq/>
 							<apply>
 								<quotient/>
-							  	<ci> x </ci>
+							  	<ci> modelTime </ci>
 							  	<ci> Dosage </ci>
 							</apply>
 							<cn>0</cn>
@@ -512,7 +512,6 @@
 					</apply>
 					<apply>					
 						<ci>D</ci>
-						<ci>modelTime</ci>
 					</apply>
 				</apply>  
 			</m:math>

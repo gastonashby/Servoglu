@@ -4,7 +4,6 @@ __version__ = '0.0.1'
 from PyQt5 import QtGui,QtCore,QtWidgets
 from Controller.main_controller import *
 import sys, os, subprocess
-import Model.Plot2 as plt2
 import time
 
 
@@ -13,6 +12,7 @@ class Ui_Menubar(QtGui.QMenuBar):
     def __init__(self,MainWindow, parent=None):
         super(Ui_Menubar, self).__init__(parent)
         self.mainWindow = MainWindow
+        # TODO no hacer esto de abajo porque crea otro controlador, asociar el del parent
         self.controller = Controller(MainWindow)
         self.languageHash = self.controller.languageSupport.languageHash
         self.exit_action = QtGui.QAction(QtGui.QIcon('exit.png'), self.languageHash.__getitem__("lbl.Exit"), self)
@@ -81,7 +81,7 @@ class Ui_Menubar(QtGui.QMenuBar):
         # load model languages
         self.changeLanguageModel.clear()
         self.modelLanguageActions = {}
-        d = plt2.simulatedModel.languages
+        d = self.controller.model.languages
         self.modelPossibleLanguages = d
         x = 0
         for lang in d:
