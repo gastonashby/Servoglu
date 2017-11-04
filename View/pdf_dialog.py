@@ -140,9 +140,12 @@ class ChildDlg(QDialog):
 
                     size = self.parent.indexGr + 1
                     results = numpy.asarray(numpy.transpose(self.parent.all_data))[:size, :]
-                    userDefinedTreatment = self.parent.controller.model._t
+                    self.simulated_eq = self.parent.simulated_eq  # Array of bool to indicate the simulated graph
+                    self.simulated_tr = self.parent.simulated_tr
+                    userDefinedTreatment = self.getSimulatedTreatment(self.parent.controller.model._t,self.simulated_tr)
+                    equations = self.getSimulatedEquations(self.parent.controller.model._e,self.simulated_eq)
                     timeUnit = self.parent.controller.model._timeUnit
-                    equations = self.parent.controller.model._e
+
                     constants = self.parent.controller.model._c
                     templateFile = self.parent.controller.model._template
                     xAxe = self.parent.xDataGraf[:size]
@@ -165,3 +168,21 @@ class ChildDlg(QDialog):
                     msg.setInformativeText(str(e))
                     msg.setWindowTitle("Error")
                     msg.exec_()
+
+    def getSimulatedTreatment(self, treatments,simulatedTreatment):
+        d = collections.deque()
+        i = 0
+        for t in treatments:
+            if simulatedTreatment[i]:
+                d.append(t)
+            i += 1
+        return d
+
+    def getSimulatedEquations(self, equations, simulatedEquations):
+        d = collections.deque()
+        i = 0
+        for e in equations:
+            if simulatedEquations[i]:
+                d.append(e)
+            i+=1
+        return d
