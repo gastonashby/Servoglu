@@ -21,7 +21,7 @@ class Controller():
         if len(sys.argv) > 1:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[1])
         else:
-            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "English")
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "Español")
 
     # TODO: mover a utils
     def convertMs(self, mili):
