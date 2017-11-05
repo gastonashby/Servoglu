@@ -57,7 +57,7 @@ class Window(QtGui.QMainWindow):
 
         # TODO: sacar del modelo
         self.simulated_eq = []  # Array of bool to indicate the simulated graph
-        self.simulated_tr = [True, True, True, True]  # Array of bool to indicate the simulated graph
+        self.simulated_tr = []  # Array of bool to indicate the treat graph
 
         # X Axis, default 1000 elements from 0 to 999
         self.xDataGraf = self.controller.create_X_axis(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
@@ -108,7 +108,7 @@ class Window(QtGui.QMainWindow):
 
         _i = 0
         for aux in self.controller.model._u:
-            if aux.isSlider:
+            if aux.graphAsTreatment:
                 self.treatment[_i].append(treat[_i])
                 if self.simulated_tr[_i]:
                     self.all_treat_curves[_i].setData(self.xDataGraf[:self.indexGr + 1],
@@ -160,6 +160,7 @@ class Window(QtGui.QMainWindow):
                 self.indexGr = 0
                 self.timeCount = 0
                 self.simulated_eq = []
+                self.simulated_tr = []
                 self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
@@ -255,6 +256,7 @@ class Window(QtGui.QMainWindow):
         self.treatment = []
         self.all_treat_curves = []
         self.simulated_eq = []
+        self.simulated_tr = []
 
         self.definite_controls()
         self.toggleActivationButtons(True)
@@ -268,7 +270,8 @@ class Window(QtGui.QMainWindow):
 
         sliderVals = self.ui.dck_treat_controls.get_sliders_vals()
         for aux in self.controller.model._u:
-            if aux.isSlider:
+            if aux.graphAsTreatment:
+                self.simulated_tr.append(True)
                 self.treatment.append([sliderVals[_i]])
                 self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
                 _i += 1

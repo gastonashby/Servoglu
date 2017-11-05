@@ -2,7 +2,7 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtWidgets import QColorDialog, QFrame
 from PyQt5.QtGui import QColor
 import types
 
@@ -83,20 +83,24 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 self.color_buttons.append(b_aux)
 
                 ch_aux = QtGui.QCheckBox("Visible")
+                ch_aux.setChecked(1)
                 ch_aux.stateChanged.connect(eval("self.eqSliderChangeVisibleValue_" + str(_i)))
                 self.tr_checks.append(ch_aux)
 
+                h_box_aux = QtGui.QHBoxLayout()
+                h_box_aux.addWidget(b_aux)
+                h_box_aux.addWidget(ch_aux)
 
                 self.slider.append(s_aux)
                 self.label.append(l_aux)
                 vbox.addWidget(l_aux)
-                vbox.addWidget(b_aux)
-                vbox.addWidget(ch_aux)
+                vbox.addLayout(h_box_aux)
                 vbox.addWidget(s_aux)
+
                 self.house_layout.addLayout(vbox)
                 vbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
                 self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
-                self.house_layout.addSpacing(20)
+                self.house_layout.addSpacing(5)
                 _i += 1
 
 
