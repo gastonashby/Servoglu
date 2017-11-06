@@ -56,7 +56,6 @@ class Ui_InitialValuesDockWidget(QtCore.QObject):
     def createParamsUserDef(self):
         # Tree params
         _listChildUsrDef = []
-        _params = []
         for userDef in self.parent.controller.model._u:
             # nomC = const.value1 + ' ' + const.operator
             if not userDef.isSlider:
@@ -64,7 +63,5 @@ class Ui_InitialValuesDockWidget(QtCore.QObject):
                                    'readonly': False,
                                    'title': userDef.description + " (" + userDef.unit + ") "}#, 'suffix': userDef.unit, 'siPrefix': True}
                 _listChildUsrDef.append(_childAuxUsrDef)
-        _paramAuxUsrDef = {'name': 'User Defined', 'type': 'group', 'children': _listChildUsrDef, 'expanded': True}
-        _params.append(_paramAuxUsrDef)
 
-        return _params
+        return _listChildUsrDef

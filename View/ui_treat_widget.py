@@ -2,7 +2,7 @@ __author__ = 'Gastón Ashby & Ignacio Ferrer'
 __version__ = '0.0.1'
 
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtWidgets import QColorDialog, QFrame
 from PyQt5.QtGui import QColor
 import types
 
@@ -25,29 +25,13 @@ class Ui_TreatDockWidget(QtCore.QObject):
 
         self.init_eq_sliders()
         self.house_layout.addSpacing(10)
-        self.init_time_label()
+        # self.init_time_label()
 
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
 
         self.ui_controls_box_widget.setWidget(self.house_widget)
         self.house_layout.addSpacing(10)
-
-
-    def init_time_label(self):
-        hbox = QtGui.QHBoxLayout()
-        hbox.addStretch(1)
-        label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
-        self.timeLbl = QtGui.QLabel("0:00:00:00")
-        myFont = QtGui.QFont()
-        myFont.setBold(True)
-        myFont.setPointSize(11)
-        self.timeLbl.setFont(myFont)
-
-        hbox.addWidget(label)
-        hbox.addWidget(self.timeLbl)
-
-        self.house_layout.addLayout(hbox)
 
 
     def init_eq_sliders(self):
@@ -68,10 +52,12 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 s_aux.setRange(float(userDef.sliderMin) * 100, float(userDef.sliderMax) * 100)
                 s_aux.setValue(float(userDef.defaultValue) * 100)
                 s_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+                s_aux.setToolTip(userDef.detailedDescription)
 
                 l_aux = QtGui.QLabel()
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
                 l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+                l_aux.setToolTip(userDef.detailedDescription)
 
                 hbox = QtGui.QHBoxLayout()
 
@@ -83,20 +69,24 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 self.color_buttons.append(b_aux)
 
                 ch_aux = QtGui.QCheckBox("Visible")
+                ch_aux.setChecked(1)
                 ch_aux.stateChanged.connect(eval("self.eqSliderChangeVisibleValue_" + str(_i)))
                 self.tr_checks.append(ch_aux)
 
+                h_box_aux = QtGui.QHBoxLayout()
+                h_box_aux.addWidget(b_aux)
+                h_box_aux.addWidget(ch_aux)
 
                 self.slider.append(s_aux)
                 self.label.append(l_aux)
                 vbox.addWidget(l_aux)
-                vbox.addWidget(b_aux)
-                vbox.addWidget(ch_aux)
+                vbox.addLayout(h_box_aux)
                 vbox.addWidget(s_aux)
+
                 self.house_layout.addLayout(vbox)
                 vbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
                 self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
-                self.house_layout.addSpacing(20)
+                self.house_layout.addSpacing(5)
                 _i += 1
 
 

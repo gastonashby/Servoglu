@@ -1,4 +1,5 @@
 Label,English,Español
+lbl.Version,Version 1.0 , Versión 1.0
 "lbl.PlayPause","Play/Pause simulation","Iniciar/Pausar la simulación"
 "lbl.NextStep","Next step","Siguiente paso"
 "lbl.Stop","Stop","Detener"
@@ -12,3 +13,15 @@ Label,English,Español
 "lbl.Restart","Application must be restarted for changes to take effect. Restart?","La aplicación se debe reiniciar para que los cambios tengan efecto. Reiniciar?"
 "lbl.RestartSimulation","Simulation must be restarted for changes to take effect. Restart?","La aplicación se debe reiniciar para que los cambios tengan efecto. Reiniciar?"
 "lbl.Restart?","Restart?","Reiniciar?"
+"lbl.PatientName","Patient name:","Nombre del paciente:"
+"lbl.BirthDate","Birthdate:","Fecha de nacimiento:"
+"lbl.Sex","Sex:","Sexo:"
+"lbl.AddPatienceInfo","Additional patient info:","Información adicional del paciente:"
+"lbl.TecName","Technician name:","Nombre del técnico:"
+"lbl.AddSimInfo","Additional simulation info:   ","Información adicional de la simulación:"
+"lbl.DividePlotInto","Divide plots into","Dividir plots en"
+"lbl.Sections","sections","secciones"
+"lbl.NumberOfPlots","Number of plots per page:","Número de plots por página:"
+"lbl.PDFproperties","PDF - Properties","PDF - Propiedades"
+"lbl.ExportInformation","PDF export information","PDF información de exportación"
+"lbl.PlotConfiguration","Plot configuration","Configuración de gráficos"

@@ -33,9 +33,12 @@ class Ui_MainWindow(QtCore.QObject):
         self.ui_central_layout.addWidget(self.ui_window_treat)
         self.ui_central_widget.setLayout(self.ui_central_layout)
 
+        self.ui_treat_plot.setXLink(self.ui_sinc_plot)
+
         #
         MainWindow.setCentralWidget(self.ui_central_widget)
         #
         # MENUBAR
         self.ui_menubar = Ui_Menubar(MainWindow)
         self.ui_menubar.setupUi(self)
+
