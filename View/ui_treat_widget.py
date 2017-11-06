@@ -52,6 +52,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 s_aux.setRange(float(userDef.sliderMin) * 100, float(userDef.sliderMax) * 100)
                 s_aux.setValue(float(userDef.defaultValue) * 100)
                 s_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+                s_aux.setToolTip(userDef.detailedDescription)
 
                 l_aux = QtGui.QLabel()
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)

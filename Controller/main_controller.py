@@ -23,7 +23,8 @@ class Controller():
         else:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "Español")
 
-    # TODO: mover a utils
+        self.version = self.languageSupport.languageHash.__getitem__("lbl.Version")
+
     def convertMs(self, mili):
         # ms = mili % 1000
         s = (mili / 1000) % 60
@@ -250,20 +251,20 @@ class Controller():
                 _i += 1
 
     def create_X_axis(self, init, end, steps):
-        return self.model.np.linspace(init, end, steps, dtype=self.model.np.int32)
-    
+        return self.model.np.linspace(init, end, steps)
+
     def handler_step_change(self):
         self.window.step = int(self.window.spboxStep.value())
         self.model.change_scale(self.window.step, self.window.indexGr)
         self.model.recalculate(self.window.step)
         linX = self.model.np.linspace(self.window.xDataGraf[self.window.indexGr]
                         , self.window.xDataGraf[self.window.indexGr] + (self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
-                        , self.window.simulated_cicle_number * self.window.simulated_cicle_steps, dtype=self.model.np.int32)
+                        , self.window.simulated_cicle_number * self.window.simulated_cicle_steps)
         #self.model.np.concatenate((arr1, arr2), axis=0)
         self.window.xDataGraf = self.model.np.append(self.window.xDataGraf[:self.window.indexGr], linX)
 
         print("Main ", self.window.xDataGraf[:self.window.indexGr +10])
-        
+
     def handler_change_model_propertie(self, param, changes):
         for param, change, data in changes:
             _i = -1

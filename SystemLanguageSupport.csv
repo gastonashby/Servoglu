@@ -1,4 +1,5 @@
 Label,English,Español
+lbl.Version,Version 1.0 , Versión 1.0
 "lbl.PlayPause","Play/Pause simulation","Iniciar/Pausar la simulación"
 "lbl.NextStep","Next step","Siguiente paso"
 "lbl.Stop","Stop","Detener"

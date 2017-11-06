@@ -43,6 +43,8 @@ class Window(QtGui.QMainWindow):
         self.ui.dck_treat_controls = []
 
         self.statusBar = QtGui.QStatusBar()
+
+        self.statusBar.addPermanentWidget(QtGui.QLabel(self.controller.version))
         self.setStatusBar(self.statusBar)
 
 
@@ -89,8 +91,7 @@ class Window(QtGui.QMainWindow):
                                 , self.xDataGraf[self.indexGr] + (
                                     self.step * (
                                         (self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
-                                , self.simulated_cicle_number * self.simulated_cicle_steps,
-                                dtype=self.controller.model.np.int32)
+                                , self.simulated_cicle_number * self.simulated_cicle_steps)
         self.xDataGraf = self.controller.model.np.append(self.xDataGraf[:self.indexGr], linX)
 
     def update_time_index(self):
