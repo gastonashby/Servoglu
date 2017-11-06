@@ -25,29 +25,13 @@ class Ui_TreatDockWidget(QtCore.QObject):
 
         self.init_eq_sliders()
         self.house_layout.addSpacing(10)
-        self.init_time_label()
+        # self.init_time_label()
 
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
 
         self.ui_controls_box_widget.setWidget(self.house_widget)
         self.house_layout.addSpacing(10)
-
-
-    def init_time_label(self):
-        hbox = QtGui.QHBoxLayout()
-        hbox.addStretch(1)
-        label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
-        self.timeLbl = QtGui.QLabel("0:00:00:00")
-        myFont = QtGui.QFont()
-        myFont.setBold(True)
-        myFont.setPointSize(11)
-        self.timeLbl.setFont(myFont)
-
-        hbox.addWidget(label)
-        hbox.addWidget(self.timeLbl)
-
-        self.house_layout.addLayout(hbox)
 
 
     def init_eq_sliders(self):
@@ -72,6 +56,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 l_aux = QtGui.QLabel()
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
                 l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+                l_aux.setToolTip(userDef.detailedDescription)
 
                 hbox = QtGui.QHBoxLayout()
 

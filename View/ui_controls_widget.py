@@ -35,6 +35,7 @@ class Ui_ControlsDockWidget(QtCore.QObject):
             hbox = QtGui.QHBoxLayout()
             # hbox.addStretch(1)
             self.eqLblList.append(QtGui.QLabel(eq.description + " (" + eq.name + "):"))
+            self.eqLblList[_i].setToolTip(eq.detailedDescription)
             self.eqCtrlList.append(QtGui.QDoubleSpinBox())
             self.eqBtnList.append(QtGui.QPushButton(">"))
             myFont = QtGui.QFont()

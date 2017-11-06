@@ -6,7 +6,8 @@
     </alarms>
     <parameters>
 		<userDefinedParameters>
-			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Sex" description="lbl.Sex" detailedDescription="lbl.sexDescription"
+						 unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
@@ -15,9 +16,15 @@
 
 
 			<!-- Treatments, entered by the user -->
-			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min" type="real" defaultValue ="0.0" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939" graphAsTreatment="true"/>
-			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate" unit="mU/min" type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0" color="#AA6C39" graphAsTreatment="true"/>
-			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate" unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="1" color="#2D882D" graphAsTreatment="true"/>
+			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
+						 detailedDescription="Represents the Intravenous Glucose rate"
+						 type="real" defaultValue ="0.0" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939" graphAsTreatment="true"/>
+			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate"
+						 	detailedDescription="lbl.ExDescription"
+						 	unit="mU/min"
+						 	type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0" color="#AA6C39" graphAsTreatment="true"/>
+			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate"
+						 unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="1" color="#2D882D" graphAsTreatment="true"/>
 
 			<!-- End of treatments, entered by the user -->
 			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real" defaultValue ="1.0" slider="True" sliderMin="0.0" sliderMax="1.0" color="#226666" graphAsTreatment="true"/>
@@ -849,7 +856,9 @@
 	</functions>	
 	<equations>
 		<!-- dNdt= -e(t) + ecf(t) -->
-		<equation name="N" defaultValue="0.828" simulate="False" description="lbl.Bioavailable glucose" unit="mmol/kg">
+		<equation name="N" defaultValue="0.828" simulate="False"
+				  detailedDescription="lbl.Bioavailable glucoseDD"
+				  description="lbl.Bioavailable glucose" unit="mmol/kg">
 			<m:math>
 				<apply>
 					<plus/>
@@ -858,14 +867,15 @@
 						<apply>
 							<ci>e</ci>
 						</apply>
-					</apply>					
-					<ci>ecf</ci>					
-				</apply>  
+					</apply>
+					<ci>ecf</ci>
+				</apply>
 			</m:math>
 		</equation>
 
 		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
-		<equation name="BG" defaultValue="GlucoseInitialValue" simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/l">
+		<equation name="BG" defaultValue="GlucoseInitialValue" detailedDescription="lbl.Blood GlucoseDD"
+				  simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/l">
 			<m:math>
 				<apply>
 					<divide/>

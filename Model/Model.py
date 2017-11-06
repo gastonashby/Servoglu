@@ -117,7 +117,7 @@ class Model:
 
         print("-- Recalculate --")
         self._sol = odeint(self.odesys, self._aux, self._xdata)
-        print(self._sol)
+        #print(self._sol)
 
 
     def restart(self):

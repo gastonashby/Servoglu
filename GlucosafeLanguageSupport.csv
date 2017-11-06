@@ -65,3 +65,7 @@ lbl.Blood Glucose concentration,Blood Glucose concentration,Blood Glucose concen
 lbl.Plasma Insulin concentration,Plasma Insulin concentration,Plasma Insulin concentrationES
 lbl.Peripheral insulin concentration,Peripheral insulin concentration,Peripheral insulin concentrationES
 lbl.alarmBG,Alarm BG, Alarma BG
+lbl.sexDescription,Patient Sex, Sexo del paciente
+lbl.ExDescription,Represents Exogenous insulin appearance rate, Representa la tasa de inyeccion de insulina exogena
+lbl.Bioavailable glucoseDD,Concentration of Glucose Bioavailable,Conentración de Glucosa biodisponible
+lbl.Blood GlucoseDD,Concentration of Blood Glucose,Conentración de Glucosa en Sangre

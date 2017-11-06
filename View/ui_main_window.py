@@ -39,3 +39,4 @@ class Ui_MainWindow(QtCore.QObject):
         # MENUBAR
         self.ui_menubar = Ui_Menubar(MainWindow)
         self.ui_menubar.setupUi(self)
+

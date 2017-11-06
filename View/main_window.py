@@ -97,9 +97,14 @@ class Window(QtGui.QMainWindow):
         # Update counters
         self.indexGr += 1
 
-        # TODO: control de tiempo
-        self.timeCount += self.step * 1000 * 60  # * 60
-        self.ui.dck_treat_controls.timeLbl.setText(self.controller.convertMs(self.timeCount))
+        if self.controller.model._timeUnit == 's':
+            self.timeCount += self.step * 1000
+        elif self.controller.model._timeUnit == 'min':
+            self.timeCount += self.step * 1000 * 60
+        elif self.controller.model._timeUnit == 'hs':
+            self.timeCount += self.step * 1000 * 60  * 60
+
+        self.timeLbl.setText(self.controller.convertMs(self.timeCount))
 
     def update_graph(self, new_dats):
         old_dats = self.dats
@@ -121,7 +126,7 @@ class Window(QtGui.QMainWindow):
         _i = 0
         for eq in self.controller.model._e:
             # Delete legend old values
-            self.leyend.removeItem(eq.name + ': ' + str(round(old_dats[_i], self.round)))
+            self.leyend.removeItem(eq.name + ': ' + str(round(old_dats[_i], self.round)) + ' ' + eq.unit)
 
             # Set the equations actual values in the SpinBoxs
             self.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
@@ -133,7 +138,7 @@ class Window(QtGui.QMainWindow):
             # Else clear the curve
             if self.simulated_eq[_i]:
                 self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
-                self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)))
+                self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)) + ' ' + eq.unit)
             else:
                 self.all_curves[_i].clear()
             _i += 1
@@ -149,7 +154,7 @@ class Window(QtGui.QMainWindow):
         if self.dats != []:
             for eq in self.controller.model._e:
                 # print(self.dats[_i])
-                self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)))
+                self.leyend.removeItem(eq.name + ': ' + str(round(self.dats[_i], self.round)) + ' ' + eq.unit)
                 _i += 1
 
     def restart_graphs(self):
@@ -240,6 +245,19 @@ class Window(QtGui.QMainWindow):
         self.spboxStep.valueChanged.connect(self.controller.handler_step_change)
         self.toggleActivationButtons(False)
 
+        self.init_time_label()
+
+    def init_time_label(self):
+        label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
+        self.timeLbl = QtGui.QLabel("0:00:00:00")
+        myFont = QtGui.QFont()
+        myFont.setBold(True)
+        myFont.setPointSize(11)
+        self.timeLbl.setFont(myFont)
+
+        self.eventToolBar.addWidget(QtGui.QLabel("   "))
+        self.eventToolBar.addWidget(label)
+        self.eventToolBar.addWidget(self.timeLbl)
 
     def initialize_graphs(self, name):
         self.modelUbic = name
@@ -257,12 +275,12 @@ class Window(QtGui.QMainWindow):
         self.all_treat_curves = []
         self.simulated_eq = []
         self.simulated_tr = []
-
+        self.timeLbl.setText(self.controller.convertMs(0))
         self.definite_controls()
         self.toggleActivationButtons(True)
         self.definite_graph()
 
-        
+
     def definite_graph(self):
         _i = 0
         self.dats = self.controller.model.getPoint()
@@ -292,7 +310,7 @@ class Window(QtGui.QMainWindow):
 
             if eq.simulate:
                 self.leyend.addItem(self.all_curves[_i],
-                        eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)))
+                        eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)) + ' ' + eq.unit)
             else:
                 self.all_curves[_i].clear()
 

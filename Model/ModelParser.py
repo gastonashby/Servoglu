@@ -151,13 +151,22 @@ class ModelParser():
         userDefinedParameters = xmlroot.find('parameters').find('userDefinedParameters')
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
-                                              'sliderMin', 'sliderMax', 'graphAsTreatment', 'convertFactor'])
+                                              'sliderMin', 'sliderMax', 'graphAsTreatment', 'convertFactor',
+                                              'detailedDescription'])
         d = collections.deque()
         for userdp in userDefinedParameters:
             name = userdp.attrib['name']
             graphAsTreatment = False
             if 'graphAsTreatment' in userdp.attrib:
                 graphAsTreatment = self.str_to_bool(userdp.attrib['graphAsTreatment'])
+
+            detailedDescription = ""
+            if 'detailedDescription' in userdp.attrib:
+                if userdp.attrib['detailedDescription'].startswith("lbl."):
+                    detailedDescription = languageHash[userdp.attrib['detailedDescription']]
+                else:
+                    detailedDescription = userdp.attrib['detailedDescription']
+
             if userdp.attrib['description'].startswith("lbl."):
                 description = languageHash[userdp.attrib['description']]
             else:
@@ -183,7 +192,7 @@ class ModelParser():
                 convertFactor = float(userdp.attrib['convertFactor'])
 
             u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax,
-                            graphAsTreatment, convertFactor)
+                            graphAsTreatment, convertFactor, detailedDescription)
             d.append(u)
         return d
 
@@ -222,7 +231,7 @@ class ModelParser():
         equations = xmlroot.find('equations')
         Equation = collections.namedtuple('Equation',
                                           ['name', 'description', 'unit', 'defaultValue', 'simulate', 'equation',
-                                           'convertFactor'])
+                                           'convertFactor', 'detailedDescription'])
         d = collections.deque()
         for eq in equations:
             name = eq.attrib['name']
@@ -244,7 +253,15 @@ class ModelParser():
             defaultValue = eq.attrib['defaultValue']
             simulate = self.str_to_bool(eq.attrib['simulate'])
             equation = self.translateMathML(ET.tostring(eq[0], encoding='unicode', method='xml'))
-            e = Equation(name, description, unit, defaultValue, simulate, equation, convertFactor)
+
+            detailedDescription = ""
+            if 'detailedDescription' in eq.attrib:
+                if eq.attrib['detailedDescription'].startswith("lbl."):
+                    detailedDescription = languageHash[eq.attrib['detailedDescription']]
+                else:
+                    detailedDescription = eq.attrib['detailedDescription']
+
+            e = Equation(name, description, unit, defaultValue, simulate, equation, convertFactor, detailedDescription)
             d.append(e)
         return d
 

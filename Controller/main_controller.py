@@ -178,7 +178,7 @@ class Controller():
 
         _i = 0
         for eq in self.model._e:
-            self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
+            self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
             _i += 1
 
         self.window.dats[i] = value #/ self.model.eq_convert_factors[i]
@@ -186,7 +186,7 @@ class Controller():
 
         _i = 0
         for eq in self.model._e:
-            self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)))
+            self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
 
             _i += 1
 
