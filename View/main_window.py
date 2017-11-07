@@ -12,6 +12,7 @@ from View.ui_controls_widget import Ui_ControlsDockWidget
 from View.ui_treat_widget import Ui_TreatDockWidget
 from View.ui_properties_widget import Ui_PropertiesDockWidget
 from View.ui_init_val_widget import Ui_InitialValuesDockWidget
+from View.ui_menubar import Ui_Menubar
 
 import numpy
 import types
@@ -30,8 +31,11 @@ class Window(QtGui.QMainWindow):
         #self.ui.dck_model_param_properties.setupUi(self)
         #self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
 
-
+        # MENUBAR
+        self.ui.ui_menubar = Ui_Menubar(self)
+        self.ui.ui_menubar.setupUi()
         self.setMenuBar(self.ui.ui_menubar.ui_menubar)
+
 
         # MENU ACTION
         self.ui.ui_menubar.open_action.triggered.connect(self.open_model)
@@ -46,7 +50,6 @@ class Window(QtGui.QMainWindow):
 
         self.statusBar.addPermanentWidget(QtGui.QLabel(self.controller.version))
         self.setStatusBar(self.statusBar)
-
 
         # INITIAL SETTINGS
         self.round = 4          # General round
