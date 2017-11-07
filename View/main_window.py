@@ -22,7 +22,7 @@ class Window(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(Window, self).__init__(parent)
         self.controller = Controller(self)
-        self.setWindowTitle('SERVOGLU')
+        self.setWindowTitle('SERVOGLU v1.0 - UdelaR - Núcleo de Ingeniería Biomédica')
         self.setWindowIcon(QtGui.QIcon('View/img/logo.png'))
         self.types = types
         self.ui = Ui_MainWindow(self)

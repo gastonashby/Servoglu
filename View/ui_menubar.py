@@ -65,10 +65,10 @@ class Ui_Menubar(QtGui.QMenuBar):
             FILEPATH = os.path.abspath("main.py")
             try:
                 # QtCore.QCoreApplication.instance().quit()
-                print(sys.executable)
-                exitSignal = os.spawnv(os.P_OVERLAY, sys.executable, [lang])
-                print(exitSignal)
-                #subprocess.Popen([sys.executable, FILEPATH,lang])
+                #print(sys.executable)
+                #exitSignal = os.spawnv(os.P_OVERLAY, sys.executable, [lang])
+                #print(exitSignal)
+                subprocess.Popen([sys.executable, FILEPATH,lang])
 
             except Exception as e:
                 print('ERROR: could not restart aplication:')
