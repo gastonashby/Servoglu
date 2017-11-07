@@ -11,19 +11,20 @@ import time
 class Ui_Menubar(QtGui.QMenuBar):
     def __init__(self,MainWindow, parent=None):
         super(Ui_Menubar, self).__init__(parent)
-        self.mainWindow = MainWindow
-        # TODO no hacer esto de abajo porque crea otro controlador, asociar el del parent
-        self.controller = Controller(MainWindow)
-        self.languageHash = self.controller.languageSupport.languageHash
-        self.exit_action = QtGui.QAction(QtGui.QIcon('exit.png'), self.languageHash.__getitem__("lbl.Exit"), self)
-        self.export_action = QtGui.QAction(QtGui.QIcon('save.png'),self.languageHash.__getitem__("lbl.ExportResultsToPDF"), self)
-        self.open_action = QtGui.QAction(QtGui.QIcon('open.png'), self.languageHash.__getitem__("lbl.OpenModel"), self)
+        self.parent = MainWindow
 
-    def setupUi(self, Ui_Menubar):
+    def setupUi(self):
         self.ui_menubar = QtWidgets.QMenuBar()
         #
         # file menu actions:
         # add file menu and file menu actions
+
+
+        self.languageHash = self.parent.controller.languageSupport.languageHash
+        self.exit_action = QtGui.QAction(QtGui.QIcon('exit.png'), self.languageHash.__getitem__("lbl.Exit"), self)
+        self.export_action = QtGui.QAction(QtGui.QIcon('save.png'),
+                                           self.languageHash.__getitem__("lbl.ExportResultsToPDF"), self)
+        self.open_action = QtGui.QAction(QtGui.QIcon('open.png'), self.languageHash.__getitem__("lbl.OpenModel"), self)
 
         self.file_menu = self.ui_menubar.addMenu(self.languageHash.__getitem__("lbl.File"))
         self.file_menu.addAction(self.open_action)
@@ -46,7 +47,7 @@ class Ui_Menubar(QtGui.QMenuBar):
 
         # load system languages
         self.systemLanguageActions = {}
-        d = self.controller.languageSupport.obtainPossibleLanguages()
+        d = self.parent.controller.languageSupport.obtainPossibleLanguages()
         self.systemPossibleLanguages = d
         x=0
         for lang in d:
@@ -64,10 +65,10 @@ class Ui_Menubar(QtGui.QMenuBar):
             FILEPATH = os.path.abspath("main.py")
             try:
                 # QtCore.QCoreApplication.instance().quit()
-                print(sys.executable)
-                exitSignal = os.spawnv(os.P_OVERLAY, sys.executable, [lang])
-                print(exitSignal)
-                #subprocess.Popen([sys.executable, FILEPATH,lang])
+                #print(sys.executable)
+                #exitSignal = os.spawnv(os.P_OVERLAY, sys.executable, [lang])
+                #print(exitSignal)
+                subprocess.Popen([sys.executable, FILEPATH,lang])
 
             except Exception as e:
                 print('ERROR: could not restart aplication:')
@@ -81,7 +82,7 @@ class Ui_Menubar(QtGui.QMenuBar):
         # load model languages
         self.changeLanguageModel.clear()
         self.modelLanguageActions = {}
-        d = self.controller.model.languages
+        d = self.parent.controller.model.languages
         self.modelPossibleLanguages = d
         x = 0
         for lang in d:
@@ -101,8 +102,8 @@ class Ui_Menubar(QtGui.QMenuBar):
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
             try:
-                #self.controller = Controller(self.mainWindow)
-                self.controller.handler_change_language_model(lang)
+                #self.parent.controller = Controller(self.mainWindow)
+                self.parent.controller.handler_change_language_model(lang)
             except Exception as e:
                 print(e)
                 msg = QMessageBox()

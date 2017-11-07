@@ -152,7 +152,7 @@ class ChildDlg(QDialog):
 
                     if (len(self.parent.treatment) > 0):
                         treatment = numpy.asarray(numpy.transpose(self.parent.treatment))[:size, :]
-                    else:#TODO Arreglar esta mierda
+                    else:
                         treatment = []
                     sections = int(self.spinBox.text())
                     plotsPerPage =  int(self.spinBox_2.text())

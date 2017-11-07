@@ -4,8 +4,6 @@ __version__ = '0.0.1'
 import pyqtgraph
 from PyQt5 import QtGui, QtCore
 
-from View.ui_menubar import Ui_Menubar
-
 
 class Ui_MainWindow(QtCore.QObject):
     def __init__(self, MainWindow):
@@ -38,7 +36,5 @@ class Ui_MainWindow(QtCore.QObject):
         #
         MainWindow.setCentralWidget(self.ui_central_widget)
         #
-        # MENUBAR
-        self.ui_menubar = Ui_Menubar(MainWindow)
-        self.ui_menubar.setupUi(self)
+
 
