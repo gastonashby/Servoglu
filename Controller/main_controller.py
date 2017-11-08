@@ -220,8 +220,7 @@ class Controller():
     def handler_change_language_model(self,language):
         try:
             self.window.restart_graphs()
-            #TODO Create_new_model, hacer new Model
-            imp.reload(self.model)
+            self.model = Model()
             self.model.language = language
             self.model.initialize(self.window.modelUbic, self.window.step)
             self.window.initialize_graphs(self.window.modelUbic)
