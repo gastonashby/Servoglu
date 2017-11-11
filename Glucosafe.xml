@@ -877,7 +877,7 @@
 
 		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
 		<equation name="BG" defaultValue="GlucoseInitialValue" detailedDescription="lbl.Blood GlucoseDD"
-				  simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/l"
+				  simulate="True" description="lbl.Blood Glucose concentration" unit="mg/dl"
 				  convertFactor="18.018">
 			<m:math>
 				<apply>
