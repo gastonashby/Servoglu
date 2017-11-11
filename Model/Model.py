@@ -32,8 +32,7 @@ class Model:
         self._timeUnit = ""
         self._modelName = ""
         self._template = ""
-        self.eq_convert_factors = []
-        self.tr_convert_factors = []
+
         self.np = np
         self.functions = []
         self.languages = []
@@ -71,13 +70,6 @@ class Model:
         self.languages = simulatedModel.languages
 
         self.code = df.DefiniteFunction()
-
-        for eq in self._e:
-            self.eq_convert_factors.append(eq.convertFactor)
-
-        for u in self._u:
-            if u.graphAsTreatment:
-                self.tr_convert_factors.append(u.convertFactor)
 
         exec(self.code.defineUserDefinedParameters(self._u))
 
@@ -119,6 +111,8 @@ class Model:
         self._sol = odeint(self.odesys, self._aux, self._xdata)
         #print(self._sol)
 
+    def change_val(self, i, val):
+        self._sol[self.indexModel-1][i] = val
 
     def restart(self):
         self.indexModel = 0

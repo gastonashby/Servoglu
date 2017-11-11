@@ -1,5 +1,4 @@
 import sys
-import Controller.EdfWriter as edf
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QLabel
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox

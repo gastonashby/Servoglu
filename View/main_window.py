@@ -112,7 +112,7 @@ class Window(QtGui.QMainWindow):
 
     def update_graph(self, new_dats):
         old_dats = self.dats
-        self.dats = new_dats
+        self.dats = self.controller.np.multiply(new_dats, self.controller.eq_convert_factors)
         treat = self.ui.dck_treat_controls.get_sliders_vals()
 
         _i = 0
@@ -287,7 +287,7 @@ class Window(QtGui.QMainWindow):
 
     def definite_graph(self):
         _i = 0
-        self.dats = self.controller.model.getPoint()
+        self.dats = self.controller.np.multiply(self.controller.model.getPoint(), self.controller.eq_convert_factors)
         self.old_dats = self.dats
 
         sliderVals = self.ui.dck_treat_controls.get_sliders_vals()

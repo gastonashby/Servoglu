@@ -136,9 +136,9 @@ class DefiniteFunction:
 
     def definiteSlider(self, u, i, convertFactor):
         sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\t" \
-                    "print(int_value / 100)\n\t" \
-                    "#int_value = int_value * " + str(convertFactor) + "\n\t" \
-                    "self.model." + u.name + " = int_value / 100 \n\t" \
+                    "new_val = int_value / " + str(convertFactor) + "\n\t" \
+                    "print(new_val / 100)\n\t" \
+                    "self.model." + u.name + " = new_val / 100 \n\t" \
                     "self.window.ui.dck_treat_controls.label[" + str(i - 1) + "]" \
                     ".setText('" + u.description + " ' + str(int_value/100) + ' " + u.unit + "')\n\t" \
                     "self.model.recalculate(self.window.step)\n"
