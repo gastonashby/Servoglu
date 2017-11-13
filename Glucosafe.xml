@@ -12,7 +12,7 @@
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
 			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
-			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/l" type="real" defaultValue ="2" slider="False" graphAsTreatment="false"/>
+			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mg/dl" type="real" defaultValue ="36.036" slider="False" graphAsTreatment="false"/>
 
 
 			<!-- Treatments, entered by the user -->
