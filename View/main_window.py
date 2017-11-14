@@ -189,21 +189,7 @@ class Window(QtGui.QMainWindow):
                 self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
                 self.leyend.addItem(self.all_curves[_i],
                                     eq.name + ': ' + str(round(self.dats[_i], self.round)) + ' ' + eq.unit)
-                if eq.alMinVal != None:
-                    lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMinVal,
-                                                                  pen=pyqtgraph.mkPen(
-                                                                  self.ui.dck_model_param_properties.colors[_i],
-                                                                  style=QtCore.Qt.DashLine,
-                                                                  width=2))
-                    self.ui.ui_sinc_plot.addItem(lin1)
 
-                if eq.alMaxVal != None:
-                    lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMaxVal,
-                                                                  pen=pyqtgraph.mkPen(
-                                                                  self.ui.dck_model_param_properties.colors[_i],
-                                                                  style=QtCore.Qt.DashLine,
-                                                                  width=2))
-                    self.ui.ui_sinc_plot.addItem(lin1)
             else:
                 self.all_curves[_i].clear()
             _i += 1
