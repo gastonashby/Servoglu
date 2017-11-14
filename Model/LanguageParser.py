@@ -26,7 +26,7 @@ class LanguageParser():
                         if cell == Language:
                             languageIndex = _i
                         _i = _i + 1
-                else:
+                elif len(row) > 0: #se saltea si la linea esta vacia
                     dictionary[row[0]] = row[languageIndex]
                 rowNum = rowNum + 1
             return dictionary
