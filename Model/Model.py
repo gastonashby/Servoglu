@@ -71,14 +71,13 @@ class Model:
 
         self.code = df.DefiniteFunction()
 
-        exec(self.code.defineUserDefinedParameters(self._u))
-
         params = self.code.defineFunctionList(self._f)
         self.functions, definitions = self.code.defineFunctions(self._f, params)
         self._constants, self._calculated = self.code.defineParameters(self._c, params)
 
+        exec(self.code.defineUserDefinedParameters(self._u, params))
         exec(self._constants)
-        exec(self.code.defineEquations(self._e))
+        exec(self.code.defineEquations(self._e, params))
 
         # for f in functions.split('\n'):
         #     print(f)

@@ -296,8 +296,19 @@ class Controller():
                     self.window.all_curves[_i] = self.window.create_curve(_i, self.model._e[_i].name)
                     self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
                                                        self.window.all_data[_i])
+                    if self.window.alarmMin[_i] != None:
+                        self.window.minLines[_i] = self.window.create_line("MIN", _i)
+                        self.window.ui.ui_sinc_plot.addItem(self.window.minLines[_i])
+
+                    if self.window.alarmMax[_i] != None:
+                        self.window.maxLines[_i] = self.window.create_line("MAX", _i)
+                        self.window.ui.ui_sinc_plot.addItem(self.window.maxLines[_i])
                 else:
                     self.window.all_curves[_i].clear()
+                    if self.window.alarmMin[_i] != None:
+                        self.window.ui.ui_sinc_plot.removeItem(self.window.minLines[_i])
+                    if self.window.alarmMax[_i] != None:
+                        self.window.ui.ui_sinc_plot.removeItem(self.window.maxLines[_i])
 
             elif param.name() == 'Color':
                 print("change color")

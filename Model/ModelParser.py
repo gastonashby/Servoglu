@@ -12,7 +12,11 @@ class ModelParser():
         # Open model file
         modelFile = open(ModelFileName, 'rt')
         #Parse XML
-        tree = ET.parse(ModelFileName)
+        try:
+            tree = ET.parse(ModelFileName)
+        except Exception as e:
+            raise Exception('Error parsing XML.')
+
         model = tree.getroot()
 
         #First we get model's general settings
@@ -70,7 +74,7 @@ class ModelParser():
                         if cell == language:
                             languageIndex = _i
                         _i = _i + 1
-                else:
+                elif len(row) > 0:  # se saltea si la linea esta vacia
                     dictionary[row[0]] = row[languageIndex]
                 rowNum = rowNum + 1
             return dictionary
@@ -92,35 +96,6 @@ class ModelParser():
         finally:
             f.close()
 
-    def parseAlarms(self, xmlroot, languageHash):
-        alarms = xmlroot.find('alarms')
-        d = collections.deque()
-        if alarms != []:
-            Alarm = collections.namedtuple('Alarm', ['equation', 'minVal', 'maxVal', 'description'])
-            for al in alarms:
-                if 'equation' in eq.attrib and ('minVal' in eq.attrib or 'maxVal' in eq.attrib):
-                    equation = al.attrib['equation']
-                    minVal = []
-                    maxVal = []
-                    description = []
-
-                    if al.attrib['description'].startswith("lbl."):
-                        description = languageHash[al.attrib['description']]
-                    else:
-                        description = al.attrib['description']
-
-                    if 'minVal' in eq.attrib:
-                        minVal = float(al.attrib['minVal'])
-
-                    if 'maxVal' in eq.attrib:
-                        maxVal = float(al.attrib['maxVal'])
-
-                    a = Alarm(equation, minVal, maxVal, description)
-                    d.append(a)
-                else:
-                    pass
-                    # TODO tirar error
-        return d
 
     def parseConstants(self,xmlroot, languageHash):
         constants = xmlroot.find('parameters').find('constants')
@@ -231,7 +206,8 @@ class ModelParser():
         equations = xmlroot.find('equations')
         Equation = collections.namedtuple('Equation',
                                           ['name', 'description', 'unit', 'defaultValue', 'simulate', 'equation',
-                                           'convertFactor', 'detailedDescription'])
+                                           'convertFactor', 'detailedDescription', 'alMinVal', 'alMaxVal',
+                                           'alDescription'])
         d = collections.deque()
         for eq in equations:
             name = eq.attrib['name']
@@ -261,7 +237,26 @@ class ModelParser():
                 else:
                     detailedDescription = eq.attrib['detailedDescription']
 
-            e = Equation(name, description, unit, defaultValue, simulate, equation, convertFactor, detailedDescription)
+            alMinVal = None
+            alMaxVal = None
+            alDescription = ""
+
+            if 'alarmDescription' in eq.attrib:
+                if eq.attrib['alarmDescription'].startswith("lbl."):
+                    alDescription = languageHash[eq.attrib['alarmDescription']]
+                else:
+                    alDescription = eq.attrib['alarmDescription']
+
+            if 'alarmMinVal' in eq.attrib:
+                if 'alarmMinVal' in eq.attrib:
+                    alMinVal = float(eq.attrib['alarmMinVal'])
+
+            if 'alarmDescription' in eq.attrib:
+                if 'alarmMaxVal' in eq.attrib:
+                    alMaxVal = float(eq.attrib['alarmMaxVal'])
+
+            e = Equation(name, description, unit, defaultValue, simulate, equation, convertFactor, detailedDescription,
+                         alMinVal, alMaxVal, alDescription)
             d.append(e)
         return d
 

@@ -3,7 +3,7 @@ from cx_Freeze import setup, Executable
 import os
 
 os.environ['TCL_LIBRARY'] = "C:\\Python34\\tcl\\tcl8.6"
-os.environ['TK_LIBRARY'] = "C:\\Python34\\tcl\\tcl8.6"
+os.environ['TK_LIBRARY'] = "C:\\Python34\\tcl\\tk8.6"
 import shutil
 from glob import glob
 # Remove the build folder
@@ -32,6 +32,8 @@ packages = []
 
 includefiles = ['LanguageSupport.csv', 'SystemLanguageSupport.csv', 'View\\img\\next.png',
                 'View\\img\\pause.png', 'View\\img\\play.png', 'View\\img\\reset.png',
+                'View\\img\\logo-Inco.jpg', 'View\\img\\logo-Inco.jpg.png', 'View\\img\\logofacMed.png',
+                'template.html',
                 'C:\\Python34\\Lib\\site-packages\\scipy',
                 'dlls\\msvcp100.dll', 'dlls\\msvcr100.dll']
 

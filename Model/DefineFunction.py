@@ -110,14 +110,21 @@ class DefiniteFunction:
         return constants, calculated
 
 
-    def defineUserDefinedParameters(self, userDefinedTuples):
+    def defineUserDefinedParameters(self, userDefinedTuples, funcList):
         userDefinedParameters = ""
         for u in userDefinedTuples:
-            userDefinedParameters += "self." + u.name + " = " + u.defaultValue + "\n"
+            val = None
+            if u.defaultValue[0].isalpha() or \
+                    (u.defaultValue[0] == '-' and len(u.defaultValue) > 1 and u.defaultValue[1].isalpha()):
+                val = self.process(u.defaultValue, funcList[0] + "/" + str(u.convertFactor))
+            else:
+                val = str(float(u.defaultValue) / u.convertFactor)
+
+            userDefinedParameters += "self." + u.name + " = " + val + "\n"
         return userDefinedParameters
 
 
-    def defineEquations(self, equationTuples):
+    def defineEquations(self, equationTuples, funcList):
         equations = ""
         noms = "self._aux = ["
         # x = 2.0
@@ -125,10 +132,13 @@ class DefiniteFunction:
         # z = 4.0
         # aux = [x, y, z]
         for e in equationTuples:
-            if e.defaultValue[0].isalpha():
-                equations += "self." + e.name + " = self." + e.defaultValue + "\n"
+            if e.defaultValue[0].isalpha()or \
+                    (e.defaultValue[0] == '-' and len(e.defaultValue) > 1 and e.defaultValue[1].isalpha()):
+                equations += "self." + e.name + " = (" \
+                             + self.process(e.defaultValue, funcList[0]) + ") / " + str(e.convertFactor) + "\n"
             else:
-                equations += "self." + e.name + " = " + e.defaultValue + "\n"
+                equations += "self." + e.name + " = " \
+                             + str(float(e.defaultValue) / e.convertFactor) + "\n"
             noms += "self." + e.name + ","
         noms = noms[:len(noms) - 1]
         noms += "]"
