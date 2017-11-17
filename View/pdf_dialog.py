@@ -87,12 +87,14 @@ class ChildDlg(QDialog):
         self.spinBox.setMinimum(1)
         self.spinBox.setMaximum(10)
         self.spinBox.setObjectName("spinBox")
+        self.spinBox.setValue(2)
         self.spinBox_2 = QtWidgets.QSpinBox(self.groupBox_2)
         self.spinBox_2.setGeometry(QtCore.QRect(260, 70, 42, 41))
         self.spinBox_2.setCorrectionMode(QtWidgets.QAbstractSpinBox.CorrectToPreviousValue)
         self.spinBox_2.setMinimum(1)
         self.spinBox_2.setMaximum(10)
         self.spinBox_2.setObjectName("spinBox_2")
+        self.spinBox_2.setValue(4)
         self.label_10 = QtWidgets.QLabel(self.groupBox_2)
         self.label_10.setGeometry(QtCore.QRect(20, 80, 221, 16))
         self.label_10.setObjectName("label_10")
@@ -169,8 +171,12 @@ class ChildDlg(QDialog):
                     results = numpy.asarray(numpy.transpose(self.parent.all_data))[:size, :]
                     self.simulated_eq = self.parent.simulated_eq  # Array of bool to indicate the simulated graph
                     self.simulated_tr = self.parent.simulated_tr
-                    userDefinedTreatment = self.getSimulatedTreatment(self.parent.controller.model._t,self.simulated_tr)
-                    equations = self.getSimulatedEquations(self.parent.controller.model._e,self.simulated_eq)
+
+                    #userDefinedTreatment = self.getSimulatedTreatment(self.parent.controller.model._t,self.simulated_tr)
+                    #equations = self.getSimulatedEquations(self.parent.controller.model._e,self.simulated_eq)
+                    userDefinedTreatment = self.parent.controller.model._t
+                    equations = self.parent.controller.model._e
+
                     timeUnit = self.parent.controller.model._timeUnit
 
                     constants = self.parent.controller.model._c
@@ -184,7 +190,8 @@ class ChildDlg(QDialog):
                     sections = int(self.spinBox.text())
                     plotsPerPage =  int(self.spinBox_2.text())
 
-                    pdf.createPdf(results, treatment, xAxe, size, equations,userDefinedTreatment,
+                    pdf.createPdf(self.simulated_eq,self.simulated_tr,
+                                  results, treatment, xAxe,equations,userDefinedTreatment,
                                   constants,name,pdfTuple,sections,plotsPerPage,timeUnit,templateFile)
 
                     self.progressBar.setValue(100)
