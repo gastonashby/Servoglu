@@ -13,7 +13,7 @@ def main():
         app.setApplicationName('SERVOGLU')
         #QApplication.setStyle(QStyleFactory.create('Fusion'))
         window = Window()
-        window.show()
+        window.resize(1000, 500)
         window.showMaximized()
         currentExitCode = app.exec_()
     except Exception as e:
