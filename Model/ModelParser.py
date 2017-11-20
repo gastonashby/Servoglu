@@ -3,6 +3,7 @@ import csv
 import xml.etree.ElementTree as ET
 import collections
 import re
+import os
 
 
 class ModelParser():
@@ -24,21 +25,22 @@ class ModelParser():
         self.defaultLanguage = model.attrib['lang']
         self.timeUnit = model.attrib['timeUnit']
 
+        #Empieza a procesar lenguaje del modelo
         if ('languageSupport' in model.attrib):
             self.languageSupport = model.attrib['languageSupport']
-            # Open language file
-            languageFile = open(self.languageSupport, 'rt')
+
+            modelDir = os.path.dirname(ModelFileName)
+            self.languageFileDir = modelDir +'/'+ self.languageSupport
+
+            self.languages = self.obtainPossibleLanguages()
 
             if Language != "":
-                self.languageHash = self.parseLanguages(self.languageSupport, Language)
+                self.languageHash = self.parseLanguages(Language)
             else:
                 # TODO: Hacer que el default language sea el primero de la lista
-                self.languageHash = self.parseLanguages(self.languageSupport, "English")
+                self.languageHash = self.parseLanguages("English")
 
-            self.languages = self.obtainPossibleLanguages(self.languageSupport)
-            languageFile.close()
-        else:
-            self.languageSupport = "LanguageSupport.csv" #Default language support
+        ##Termino de procesar lenguaje del modelo
 
         if ('template' in model.attrib):
             self.template = model.attrib['template']
@@ -60,11 +62,11 @@ class ModelParser():
                 d.append(u)
         return d
 
-    def parseLanguages(self,LanguageFileName, language):
-        f = open(LanguageFileName, 'rt')
-        dictionary = {}
+    def parseLanguages(self,language):
         try:
-            reader = csv.reader(f)
+            languageFile = open(self.languageFileDir, 'rt')
+            dictionary = {}
+            reader = csv.reader(languageFile)
             rowNum = 0
             for row in reader:
                 if rowNum == 0:
@@ -74,17 +76,18 @@ class ModelParser():
                         if cell == language:
                             languageIndex = _i
                         _i = _i + 1
-                elif len(row) > 0:  # se saltea si la linea esta vacia
+                elif len(row) > 0:  # se saltea la primera linea
                     dictionary[row[0]] = row[languageIndex]
                 rowNum = rowNum + 1
             return dictionary
         finally:
-            f.close()
+            languageFile.close()
 
-    def obtainPossibleLanguages(self,LanguageFileName):
-        f = open(LanguageFileName, 'rt')
+
+    def obtainPossibleLanguages(self):
         try:
-            reader = csv.reader(f)
+            languageFile = open(self.languageFileDir, 'rt')
+            reader = csv.reader(languageFile)
             firstRow = next(reader)
             d = collections.deque()
             _i = 0
@@ -94,7 +97,7 @@ class ModelParser():
                 _i = _i + 1
             return d
         finally:
-            f.close()
+            languageFile.close()
 
 
     def parseConstants(self,xmlroot, languageHash):
