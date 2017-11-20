@@ -7,7 +7,8 @@
 			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Dosage" description="Dosage per hour" unit="hrs" type="integer" defaultValue ="6" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Dosage" description="Dosage every" unit="hrs" type="integer" defaultValue ="6" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Dosis" description="Dosis" unit="mg" type="integer" defaultValue ="1" slider="False" graphAsTreatment="false"/>
 
 
 		</userDefinedParameters>
@@ -74,7 +75,7 @@
 			<m:math>
 				<piecewise>
                 	<piece>
-						<cn>1</cn>
+						<ci>Dosis</ci>
         				<apply>
 							<eq/>
 							<apply>
@@ -518,7 +519,7 @@
 		</equation>
 
 		<!-- dBdt= a*G(t) - b*B(t)  -->
-		<equation name="B" defaultValue="0" simulate="True" description="Concentration of the drug in the blood" unit="mg/ml">
+		<equation name="B" defaultValue="0" simulate="True" description="Concentration of the drug in the blood" unit="mg/ml" alarmDescription="Concentration related side effects/Toxicity" alarmMinVal="0.8" alarmMaxVal="1.5">
 			<m:math>
 				<apply>
 					<minus/>
