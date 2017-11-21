@@ -24,8 +24,8 @@
                          detailedDescription="Represents the Intravenous Glucose rate"
                          type="real" defaultValue="0.0" slider="True" sliderMin="0.0" sliderMax="1.0"
                          color="#AA3939" graphAsTreatment="true"/>
-            <userDefined name="Ex" description="lbl.Exogenous insulin appearance rate"
-                         detailedDescription="lbl.ExDescription"
+            <userDefined name="Ex" description="lbl.ExDescription"
+                         detailedDescription="lbl.ExDetailedDescription"
                          unit="U/h" convertFactor="0.06"
                          type="real" defaultValue="6.6" slider="True" sliderMin="0.0" sliderMax="12" color="#AA6C39"
                          graphAsTreatment="true"/>

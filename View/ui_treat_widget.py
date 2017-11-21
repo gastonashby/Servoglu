@@ -100,12 +100,8 @@ class Ui_TreatDockWidget(QtCore.QObject):
     def definite_slider_change_color(self):
         _i = 0
         for eq in self.parent.controller.model._u:
-            # TODO: pasar a DefiniteFunciton la creacion del codigo
-            controlFunc = "def eqSliderChangeValue_" + str(_i) + "(self, int):\n\t" \
-                "print(" + str(_i) + ")\n\t" \
-                "self.show_slider_att_changing(" + str(_i) + ", 'COLOR')\n\t"
+            controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_color(_i)
 
-            _c_f_aux = "eqSliderChangeValue_" + str(_i)
             exec(controlFunc)
             exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
@@ -114,12 +110,8 @@ class Ui_TreatDockWidget(QtCore.QObject):
     def definite_slider_change_visible(self):
         _i = 0
         for eq in self.parent.controller.model._u:
-            # TODO: pasar a DefiniteFunciton la creacion del codigo
-            controlFunc = "def eqSliderChangeVisibleValue_" + str(_i) + "(self):\n\t" \
-                "print(" + str(_i) + ")\n\t" \
-                "self.show_slider_att_changing(" + str(_i) + ", 'VISIBLE')\n\t"
+            controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_visible(_i)
 
-            _c_f_aux = "eqSliderChangeVisibleValue_" + str(_i)
             exec(controlFunc)
             exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 

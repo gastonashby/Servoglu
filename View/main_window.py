@@ -54,13 +54,11 @@ class Window(QtGui.QMainWindow):
         # INITIAL SETTINGS
         self.round = 4  # General round
 
-        # TODO: cambiar el modo de creacion de los ejes
         self.simulated_cicle_number = 1  # Internal variable
         self.simulated_cicle_steps = 1000  # Cicle
         self.modelUbic = ""
         self.modelTimeUnit = ""
 
-        # TODO: sacar del modelo
         self.simulated_eq = []  # Array of bool to indicate the simulated graph
         self.simulated_tr = []  # Array of bool to indicate the treat graph
 
@@ -97,7 +95,6 @@ class Window(QtGui.QMainWindow):
         return len(self.xDataGraf) - 2 == self.indexGr
 
     def append_new_axis_points(self):
-        # TODO: usar createXaxis?
         linX = self.controller.model.np.linspace(self.xDataGraf[self.indexGr]
                                                  , self.xDataGraf[self.indexGr] + (
                                                      self.step * (
@@ -260,25 +257,20 @@ class Window(QtGui.QMainWindow):
         self.controller.handler_definite_controls()
 
     def create_toolbars(self):
-        self.prevAction = QtGui.QAction(QtGui.QIcon('View/img/prev.png'), 'Previous step', self)
         self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'),
                                         self.controller.languageSupport.languageHash.__getitem__("lbl.PlayPause"), self)
         self.nextAction = QtGui.QAction(QtGui.QIcon('View/img/next.png'), 'Next step', self)
         self.resetAction = QtGui.QAction(QtGui.QIcon('View/img/reset.png'), 'Reset simulation', self)
 
-        self.prevAction.triggered.connect(self.prev_frame)
         self.playAction.triggered.connect(self.play_stop)
         self.nextAction.triggered.connect(self.next_frame)
         self.resetAction.triggered.connect(self.restart_graph)
 
         self.ctrlToolBar = self.addToolBar('Simulation controls')
 
-        self.ctrlToolBar.addAction(self.prevAction)
         self.ctrlToolBar.addAction(self.playAction)
         self.ctrlToolBar.addAction(self.nextAction)
         self.ctrlToolBar.addAction(self.resetAction)
-
-        self.prevAction.setVisible(False)
 
         self.eventToolBar = self.addToolBar('Time controls')
 
@@ -287,7 +279,6 @@ class Window(QtGui.QMainWindow):
         self.spboxStep.setValue(1)
         self.spboxStep.setMinimum(1)
 
-        # TODO sacar unidad de xml
         label2 = QtGui.QLabel(" every ")
         self.spBoxTimmer = QtGui.QSpinBox()
         self.spBoxTimmer.setRange(50, 60000)
@@ -429,7 +420,6 @@ class Window(QtGui.QMainWindow):
     def toggleActivationButtons(self, enabled):
         self.nextAction.setEnabled(enabled)
         self.resetAction.setEnabled(enabled)
-        self.prevAction.setEnabled(enabled)
         self.playAction.setEnabled(enabled)
         self.spboxStep.setEnabled(enabled)
         self.spBoxTimmer.setEnabled(enabled)
@@ -477,10 +467,6 @@ class Window(QtGui.QMainWindow):
     def restart_graph(self):
         self.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
         self.controller.handler_restart_graph()
-
-    def prev_frame(self):
-        # TODO: todo
-        pass
 
     def exportResultsToPdf(self):
         self.stop()

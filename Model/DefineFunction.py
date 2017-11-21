@@ -157,3 +157,28 @@ class DefiniteFunction:
 
         #print (sliderF, "self." + _s_f_aux + " = self.window.types.MethodType(" + _s_f_aux + ", self)", "self." + _s_f_aux)
         return sliderF, "self." + _s_f_aux + " = self.window.types.MethodType(" + _s_f_aux + ", self)", "self." + _s_f_aux
+
+    def define_equation_change_code(self, _i):
+        s1 = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
+                "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t" \
+                "self.parent.controller.handler_change_simulated_value(" + str(_i) + \
+                ", self.parent.ui.dck_model_param_controls.eqCtrlList[" + str(_i) + "].value())\n\t"
+
+        s2 = "eqCtrlChangeValue_" + str(_i)
+        return s1, s2
+
+    def definite_slider_change_color(self, _i):
+        s1 = "def eqSliderChangeValue_" + str(_i) + "(self, int):\n\t" \
+             "print(" + str(_i) + ")\n\t" \
+            "self.show_slider_att_changing(" + str(_i) + ", 'COLOR')\n\t"
+
+        s2 = "eqSliderChangeValue_" + str(_i)
+        return s1, s2
+
+    def definite_slider_change_visible(self, _i):
+        s1 = "def eqSliderChangeVisibleValue_" + str(_i) + "(self):\n\t" \
+                  "print(" + str(_i) + ")\n\t" \
+                  "self.show_slider_att_changing(" + str(_i) + ", 'VISIBLE')\n\t"
+
+        s2 = "eqSliderChangeVisibleValue_" + str(_i)
+        return s1, s2

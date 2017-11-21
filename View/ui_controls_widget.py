@@ -60,13 +60,7 @@ class Ui_ControlsDockWidget(QtCore.QObject):
     def definite_equation_change_control(self):
         _i = 0
         for eq in self.parent.controller.model._e:
-            # TODO: pasar a DefiniteFunciton la creacion del codigo
-            controlFunc = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
-                "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t" \
-                "self.parent.controller.handler_change_simulated_value(" + str(_i) + \
-                ", self.parent.ui.dck_model_param_controls.eqCtrlList[" + str(_i) + "].value())\n\t"
-
-            _c_f_aux = "eqCtrlChangeValue_" + str(_i)
+            controlFunc, _c_f_aux = self.parent.controller.model.code.define_equation_change_code(_i)
             exec(controlFunc)
             exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 

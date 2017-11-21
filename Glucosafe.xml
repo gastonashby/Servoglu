@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier" languageSupport="GlucosafeLanguageSupport.csv" template="GlucosafeTemplate.html" >
+<servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier"
+		  languageSupport="GlucosafeLanguageSupport.csv" template="GlucosafeTemplate.html" >
 	<alarms>
         <alarm equation="BG" description="lbl.alarmBG" minVal="1.9" maxVal="6.2"/>
     </alarms>
@@ -19,10 +20,14 @@
 			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
 						 detailedDescription="Represents the Intravenous Glucose rate"
 						 type="real" defaultValue ="0.0" slider="True" sliderMin="0.0" sliderMax="1.0" color="#AA3939" graphAsTreatment="true"/>
-			<userDefined name="Ex" description="lbl.Exogenous insulin appearance rate"
-						 	detailedDescription="lbl.ExDescription"
-						 	unit="mU/min"
-						 	type="real" defaultValue ="110" slider="True" sliderMin="0.0" sliderMax="200.0" color="#AA6C39" graphAsTreatment="true"/>
+			
+			<userDefined name="Ex"  description="lbl.ExDescription"
+						detailedDescription="lbl.ExDetailedDescription"
+						type="real"  defaultValue ="2"  unit="U/h"
+						slider="True"  sliderMin="0"  sliderMax="10" 
+						graphAsTreatment="true"  color="#AA6C39" 
+						convertFactor="0.06"/>
+							
 			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate"
 						 unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="1" color="#2D882D" graphAsTreatment="true"/>
 

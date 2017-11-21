@@ -43,7 +43,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
             _childAuxEq = []
             # if const.simulate:
             _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': True, 'children': [
-                    {'name': 'Formula', 'type': 'str',
+                    {'name': const.name + ' =', 'type': 'str',
                         'value': const.equation,
                         'readonly': True},
                     {'name': 'Simulated', 'type': 'bool', 'value': const.simulate, 'readonly': False},

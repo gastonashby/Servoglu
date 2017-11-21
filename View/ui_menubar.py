@@ -62,13 +62,14 @@ class Ui_Menubar(QtGui.QMenuBar):
         choice = QtGui.QMessageBox.question(self,self.languageHash.__getitem__("lbl.Restart?"),self.languageHash.__getitem__("lbl.Restart"),
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
-            FILEPATH = os.path.abspath("main.py")
+            FILEPATH = os.path.abspath("servoglu.py")
             try:
                 # QtCore.QCoreApplication.instance().quit()
                 #print(sys.executable)
                 #exitSignal = os.spawnv(os.P_OVERLAY, sys.executable, [lang])
                 #print(exitSignal)
-                subprocess.Popen([sys.executable, FILEPATH,lang])
+                print(sys.executable, FILEPATH, lang)
+                subprocess.Popen([sys.executable, FILEPATH, lang])
 
             except Exception as e:
                 print('ERROR: could not restart aplication:')

@@ -95,7 +95,6 @@ class Model:
             exec(self._calculated[_i])
 
     def change_scale(self, step, init):
-        #TODO dtype
         self._xdata = np.linspace(init, init + (self.top_x - 1) * self.step, self.top_x)
         self.plt_step = self.step
 
@@ -121,9 +120,7 @@ class Model:
 
 
     def getPoint(self):
-        #TODO calcular maximos y minimos por columna para graficar
         if self.indexModel == self.top_x - 1:
-            #TODO pasarle los valores iniciales para recalcular el eje x
             self.recalculate(self.plt_step)
 
         out = self._sol[self.indexModel]

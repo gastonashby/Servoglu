@@ -16,8 +16,9 @@ class Controller():
         self.window = window
         self.dataFormat = self.model.code
         # Initialize language hash with English as default language
+
         if len(sys.argv) > 1:
-            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[1])
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[2])
         else:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "Español")
 
@@ -259,7 +260,6 @@ class Controller():
                 exec(sliderF)
                 exec(sl_met_reg)
 
-                # TODO que entre cuando se suelta el slider o poner un boton
                 self.window.ui.dck_treat_controls.slider[_i - 1].valueChanged.connect(eval(sl_met_nom))
                 _i += 1
 

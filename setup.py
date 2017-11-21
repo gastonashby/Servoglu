@@ -31,8 +31,9 @@ excludes = ['_gtkagg', '_tkagg', 'bsddb', 'curses', "cvxopt", 'pywin.dialogs', '
 packages = []
 
 includefiles = ['LanguageSupport.csv', 'SystemLanguageSupport.csv', 'View\\img\\next.png',
-                'View\\img\\pause.png', 'View\\img\\play.png', 'View\\img\\reset.png',
-                'View\\img\\logo-Inco.jpg', 'View\\img\\logo-Inco.jpg.png', 'View\\img\\logofacMed.png',
+                'View\\img\\pause.png', 'View\\img\\play.png', 'View\\img\\reset.png', 'View\\img\\alarm.png',
+                'View\\img\\logo-Inco.jpg', 'View\\img\\logoNIB.jpg', 'View\\img\\logofacMed.jpg',
+                'View\\img\\logoUDELAR.jpg', 'View\\img\\logoUdelar2.jpg',
                 'template.html',
                 'C:\\Python34\\Lib\\site-packages\\scipy',
                 'dlls\\msvcp100.dll', 'dlls\\msvcr100.dll']
@@ -56,7 +57,7 @@ setup(name = "SERVOGLU",
       version = "0.1",
       description = "SERVOGLU",
       options = {"build_exe": build_exe_options},
-      executables = [Executable("main.py", base=base)])
+      executables = [Executable("servoglu.py", base=base, icon="logo.ico")])
 
 # shutil.move('C:\\Users\\iferrer\\PycharmProjects\\Servoglu\\build\\exe.win-amd64-3.5\\scipy\\spatial\\cKDTree.cp35-win_amd64.pyd',
 #             'C:\\Users\\iferrer\\PycharmProjects\\Servoglu\\build\\exe.win-amd64-3.5\\scipy\\spatial\\ckdtree.cp35-win_amd64.pyd')
