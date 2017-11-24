@@ -110,14 +110,21 @@ class DefiniteFunction:
         return constants, calculated
 
 
-    def defineUserDefinedParameters(self, userDefinedTuples):
+    def defineUserDefinedParameters(self, userDefinedTuples, funcList):
         userDefinedParameters = ""
         for u in userDefinedTuples:
-            userDefinedParameters += "self." + u.name + " = " + u.defaultValue + "\n"
+            val = None
+            if u.defaultValue[0].isalpha() or \
+                    (u.defaultValue[0] == '-' and len(u.defaultValue) > 1 and u.defaultValue[1].isalpha()):
+                val = self.process(u.defaultValue, funcList[0] + "/" + str(u.convertFactor))
+            else:
+                val = str(float(u.defaultValue) / u.convertFactor)
+
+            userDefinedParameters += "self." + u.name + " = " + val + "\n"
         return userDefinedParameters
 
 
-    def defineEquations(self, equationTuples):
+    def defineEquations(self, equationTuples, funcList):
         equations = ""
         noms = "self._aux = ["
         # x = 2.0
@@ -125,10 +132,13 @@ class DefiniteFunction:
         # z = 4.0
         # aux = [x, y, z]
         for e in equationTuples:
-            if e.defaultValue[0].isalpha():
-                equations += "self." + e.name + " = self." + e.defaultValue + "\n"
+            if e.defaultValue[0].isalpha()or \
+                    (e.defaultValue[0] == '-' and len(e.defaultValue) > 1 and e.defaultValue[1].isalpha()):
+                equations += "self." + e.name + " = (" \
+                             + self.process(e.defaultValue, funcList[0]) + ") / " + str(e.convertFactor) + "\n"
             else:
-                equations += "self." + e.name + " = " + e.defaultValue + "\n"
+                equations += "self." + e.name + " = " \
+                             + str(float(e.defaultValue) / e.convertFactor) + "\n"
             noms += "self." + e.name + ","
         noms = noms[:len(noms) - 1]
         noms += "]"
@@ -136,9 +146,10 @@ class DefiniteFunction:
 
     def definiteSlider(self, u, i, convertFactor):
         sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\t" \
-                    "print(int_value / 100)\n\t" \
-                    "#int_value = int_value * " + str(convertFactor) + "\n\t" \
-                    "self.model." + u.name + " = int_value / 100 \n\t" \
+                    "new_val = int_value / " + str(convertFactor) + "\n\t" \
+                    "print(new_val / 100)\n\t" \
+                    "self.model." + u.name + " = new_val / 100 \n\t" \
+                    "self.window.ui.dck_treat_controls.treat_vals[" + str(i - 1) + "] = new_val / 100 \n\t" \
                     "self.window.ui.dck_treat_controls.label[" + str(i - 1) + "]" \
                     ".setText('" + u.description + " ' + str(int_value/100) + ' " + u.unit + "')\n\t" \
                     "self.model.recalculate(self.window.step)\n"
@@ -147,3 +158,28 @@ class DefiniteFunction:
 
         #print (sliderF, "self." + _s_f_aux + " = self.window.types.MethodType(" + _s_f_aux + ", self)", "self." + _s_f_aux)
         return sliderF, "self." + _s_f_aux + " = self.window.types.MethodType(" + _s_f_aux + ", self)", "self." + _s_f_aux
+
+    def define_equation_change_code(self, _i):
+        s1 = "def eqCtrlChangeValue_" + str(_i) + "(self):\n\t" \
+                "#print(self.eqCtrlList[" + str(_i) + "].value())\n\t" \
+                "self.parent.controller.handler_change_simulated_value(" + str(_i) + \
+                ", self.parent.ui.dck_model_param_controls.eqCtrlList[" + str(_i) + "].value())\n\t"
+
+        s2 = "eqCtrlChangeValue_" + str(_i)
+        return s1, s2
+
+    def definite_slider_change_color(self, _i):
+        s1 = "def eqSliderChangeValue_" + str(_i) + "(self, int):\n\t" \
+             "print(" + str(_i) + ")\n\t" \
+            "self.show_slider_att_changing(" + str(_i) + ", 'COLOR')\n\t"
+
+        s2 = "eqSliderChangeValue_" + str(_i)
+        return s1, s2
+
+    def definite_slider_change_visible(self, _i):
+        s1 = "def eqSliderChangeVisibleValue_" + str(_i) + "(self):\n\t" \
+                  "print(" + str(_i) + ")\n\t" \
+                  "self.show_slider_att_changing(" + str(_i) + ", 'VISIBLE')\n\t"
+
+        s2 = "eqSliderChangeVisibleValue_" + str(_i)
+        return s1, s2

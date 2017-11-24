@@ -46,7 +46,7 @@ def replaceVariables(html,pdfTuple,equationsDescription,constantsDescription):
     html = html.replace("{{constants}}", constantsDescription)
     return html
 
-def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefined,plotSections,plotsPerPage,timeUnit):
+def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,treatment,xData,equations,userDefined,plotSections,plotsPerPage,timeUnit):
 
     numberOfPages = math.ceil((plotSections * 2) / plotsPerPage)
     plotSize = math.ceil(xData.size / plotSections)
@@ -71,15 +71,20 @@ def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefine
             j = 0
             if i < plotSections:
                 for ec in equations:
-                    plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description + " (" + ec.unit + ")")
+                    if simulatedEquations[j]: #si estaba activa la visualizacion de la grafica
+                        plt.plot(xData[i*plotSize:(plotSize*(i+1))+1],
+                                 results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description + " (" + ec.unit + ")")
                     j+=1
             else:
                 for ec in equations:
-                    plt.plot(xData[i*plotSize:], results[i*plotSize:, j], label=ec.description + " (" + ec.unit + ")")
+                    if simulatedEquations[j]:
+                        plt.plot(xData[i*plotSize:],
+                                 results[i*plotSize:, j],
+                                 label=ec.description + " (" + ec.unit + ")")
                     j+=1
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time"+"("+timeUnit+")") #TODO agregar unidad de tiempo en ejes y labels
-
+            plt.grid(True)
             plt.title('Model Equations')
             equationsIndex += 2
             if (equationsIndex > plotsPerPage - 1):
@@ -101,12 +106,14 @@ def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefine
             h =0
             plt.subplot2grid(grid_size, (treatmentsIndex,0))
             for u in userDefined:
-                plt.plot(xData[i * plotSize:(plotSize * (i + 1)) + 1],
-                         treatment[i * plotSize:(plotSize * (i + 1)) + 1, h], label=u.description + " (" + u.unit + ")")
+                if simulatedTreatment[h]:
+                    plt.plot(xData[i * plotSize:(plotSize * (i + 1)) + 1],
+                             treatment[i * plotSize:(plotSize * (i + 1)) + 1, h], label=u.description + " (" + u.unit + ")")
                 h += 1
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time" + "(" + timeUnit + ")")
             plt.title('Simulated treatment')
+            plt.grid(True)
             treatmentsIndex += 2
             if (treatmentsIndex > plotsPerPage - 1):
                 if plotsPerPage == 1:
@@ -126,7 +133,7 @@ def generatePlotsWithTreatment(results,treatment,xData,size,equations,userDefine
 
         plt.close()
 
-def generatePlots(results,xData,size,equations,plotSections,plotsPerPage,timeUnit):
+def generatePlots(simulatedEquations,results,xData,equations,plotSections,plotsPerPage,timeUnit):
 
     numberOfPages = math.ceil((plotSections * 2) / plotsPerPage)
     plotSize = math.ceil(xData.size / plotSections)
@@ -144,16 +151,20 @@ def generatePlots(results,xData,size,equations,plotSections,plotsPerPage,timeUni
             j = 0
             if i < plotSections:
                 for ec in equations:
-                    plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description + " (" + ec.unit + ")")
+                    if simulatedEquations[j]:
+                        plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j],
+                                 label=ec.description + " (" + ec.unit + ")")
                     j+=1
             else:
                 for ec in equations:
-                    plt.plot(xData[i*plotSize:], results[i*plotSize:, j], label=ec.description + " (" + ec.unit + ")")
+                    if simulatedEquations[j]:
+                        plt.plot(xData[i*plotSize:], results[i*plotSize:, j],
+                                 label=ec.description + " (" + ec.unit + ")")
                     j+=1
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time" + "(" + timeUnit + ")")
             plt.title('Model Equations')
-
+            plt.grid(True)
             equationsIndex += 1
             if (equationsIndex > plotsPerPage - 1):
                 equationsIndex = 0
@@ -206,14 +217,16 @@ def mergePdfs(fileName):
 
 
 
-def createPdf(results,treatment,xData,size,equations,userDefined,constants,fileName,pdfTuple,plotSections,plotsPerPage,timeUnit,templateFile):
+def createPdf(simulatedEquations,simulatedTreatment,results,treatment,xData,
+              equations,userDefined,constants,fileName,pdfTuple,plotSections,plotsPerPage,
+              timeUnit,templateFile):
 
     generateMetaData(pdfTuple,equations,constants,templateFile)
 
     if (len(treatment) > 0):
-        generatePlotsWithTreatment(results, treatment, xData, size, equations, userDefined, plotSections, plotsPerPage,timeUnit)
+        generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results, treatment, xData, equations, userDefined, plotSections, plotsPerPage,timeUnit)
     else:
-        generatePlots(results, xData, size, equations, plotSections, plotsPerPage, timeUnit)
+        generatePlots(simulatedEquations,results, xData, equations, plotSections, plotsPerPage, timeUnit)
     mergePdfs(fileName)
 
 

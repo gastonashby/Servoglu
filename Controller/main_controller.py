@@ -1,8 +1,6 @@
-import imp
 import os.path
 import sys
 
-import Controller.EdfWriter as edf
 #from Model import Plot2 as self.model
 from Model.LanguageParser import LanguageParser
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
@@ -18,12 +16,16 @@ class Controller():
         self.window = window
         self.dataFormat = self.model.code
         # Initialize language hash with English as default language
+
         if len(sys.argv) > 1:
-            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[1])
+            self.languageSupport = LanguageParser("SystemLanguageSupport.csv", sys.argv[2])
         else:
             self.languageSupport = LanguageParser("SystemLanguageSupport.csv", "Español")
 
         self.version = self.languageSupport.languageHash.__getitem__("lbl.Version")
+        self.eq_convert_factors = []
+        self.tr_convert_factors = []
+        self.np = self.model.np
 
     def convertMs(self, mili):
         # ms = mili % 1000
@@ -179,15 +181,18 @@ class Controller():
 
         _i = 0
         for eq in self.model._e:
-            self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
+            if self.window.simulated_eq[_i]:
+                self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
             _i += 1
 
         self.window.dats[i] = value #/ self.model.eq_convert_factors[i]
+        self.model.change_val(i, value / self.eq_convert_factors[i])
         self.model.recalculate(self.window.step)
 
         _i = 0
         for eq in self.model._e:
-            self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
+            if self.window.simulated_eq[_i]:
+                self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
 
             _i += 1
 
@@ -204,10 +209,20 @@ class Controller():
                 if name.endswith(".xml"):
                     self.window.restart_graphs()
 
-                    #TODO Create_new_model, hacer new Model
                     self.model = Model()
                     self.model.initialize(name, self.window.step)
+
+                    self.eq_convert_factors = []
+                    self.tr_convert_factors = []
+                    for eq in self.model._e:
+                        self.eq_convert_factors.append(eq.convertFactor)
+
+                    for u in self.model._u:
+                        if u.graphAsTreatment:
+                            self.tr_convert_factors.append(u.convertFactor)
+
                     self.window.initialize_graphs(name)
+
         except Exception as e:
             print(e)
             msg = QMessageBox()
@@ -220,8 +235,7 @@ class Controller():
     def handler_change_language_model(self,language):
         try:
             self.window.restart_graphs()
-            #TODO Create_new_model, hacer new Model
-            imp.reload(self.model)
+            self.model = Model()
             self.model.language = language
             self.model.initialize(self.window.modelUbic, self.window.step)
             self.window.initialize_graphs(self.window.modelUbic)
@@ -241,12 +255,11 @@ class Controller():
         sliderF = ""
         for userDef in self.model._u:
             if userDef.isSlider:
-                sliderF, sl_met_reg, sl_met_nom = self.model.code.definiteSlider(userDef, _i, self.model.tr_convert_factors[_i-1])
+                sliderF, sl_met_reg, sl_met_nom = self.model.code.definiteSlider(userDef, _i, self.tr_convert_factors[_i-1])
 
                 exec(sliderF)
                 exec(sl_met_reg)
 
-                # TODO que entre cuando se suelta el slider o poner un boton
                 self.window.ui.dck_treat_controls.slider[_i - 1].valueChanged.connect(eval(sl_met_nom))
                 _i += 1
 
@@ -283,8 +296,19 @@ class Controller():
                     self.window.all_curves[_i] = self.window.create_curve(_i, self.model._e[_i].name)
                     self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
                                                        self.window.all_data[_i])
+                    if self.window.alarmMin[_i] != None:
+                        self.window.minLines[_i] = self.window.create_line("MIN", _i)
+                        self.window.ui.ui_sinc_plot.addItem(self.window.minLines[_i])
+
+                    if self.window.alarmMax[_i] != None:
+                        self.window.maxLines[_i] = self.window.create_line("MAX", _i)
+                        self.window.ui.ui_sinc_plot.addItem(self.window.maxLines[_i])
                 else:
                     self.window.all_curves[_i].clear()
+                    if self.window.alarmMin[_i] != None:
+                        self.window.ui.ui_sinc_plot.removeItem(self.window.minLines[_i])
+                    if self.window.alarmMax[_i] != None:
+                        self.window.ui.ui_sinc_plot.removeItem(self.window.maxLines[_i])
 
             elif param.name() == 'Color':
                 print("change color")

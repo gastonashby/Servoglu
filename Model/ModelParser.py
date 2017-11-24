@@ -3,6 +3,7 @@ import csv
 import xml.etree.ElementTree as ET
 import collections
 import re
+import os
 
 
 class ModelParser():
@@ -12,7 +13,11 @@ class ModelParser():
         # Open model file
         modelFile = open(ModelFileName, 'rt')
         #Parse XML
-        tree = ET.parse(ModelFileName)
+        try:
+            tree = ET.parse(ModelFileName)
+        except Exception as e:
+            raise Exception('Error parsing XML.')
+
         model = tree.getroot()
 
         #First we get model's general settings
@@ -20,21 +25,22 @@ class ModelParser():
         self.defaultLanguage = model.attrib['lang']
         self.timeUnit = model.attrib['timeUnit']
 
+        #Empieza a procesar lenguaje del modelo
         if ('languageSupport' in model.attrib):
             self.languageSupport = model.attrib['languageSupport']
-            # Open language file
-            languageFile = open(self.languageSupport, 'rt')
+
+            modelDir = os.path.dirname(ModelFileName)
+            self.languageFileDir = modelDir +'/'+ self.languageSupport
+
+            self.languages = self.obtainPossibleLanguages()
 
             if Language != "":
-                self.languageHash = self.parseLanguages(self.languageSupport, Language)
+                self.languageHash = self.parseLanguages(Language)
             else:
                 # TODO: Hacer que el default language sea el primero de la lista
-                self.languageHash = self.parseLanguages(self.languageSupport, "English")
+                self.languageHash = self.parseLanguages("English")
 
-            self.languages = self.obtainPossibleLanguages(self.languageSupport)
-            languageFile.close()
-        else:
-            self.languageSupport = "LanguageSupport.csv" #Default language support
+        ##Termino de procesar lenguaje del modelo
 
         if ('template' in model.attrib):
             self.template = model.attrib['template']
@@ -56,11 +62,11 @@ class ModelParser():
                 d.append(u)
         return d
 
-    def parseLanguages(self,LanguageFileName, language):
-        f = open(LanguageFileName, 'rt')
-        dictionary = {}
+    def parseLanguages(self,language):
         try:
-            reader = csv.reader(f)
+            languageFile = open(self.languageFileDir, 'rt')
+            dictionary = {}
+            reader = csv.reader(languageFile)
             rowNum = 0
             for row in reader:
                 if rowNum == 0:
@@ -70,17 +76,18 @@ class ModelParser():
                         if cell == language:
                             languageIndex = _i
                         _i = _i + 1
-                else:
+                elif len(row) > 0:  # se saltea la primera linea
                     dictionary[row[0]] = row[languageIndex]
                 rowNum = rowNum + 1
             return dictionary
         finally:
-            f.close()
+            languageFile.close()
 
-    def obtainPossibleLanguages(self,LanguageFileName):
-        f = open(LanguageFileName, 'rt')
+
+    def obtainPossibleLanguages(self):
         try:
-            reader = csv.reader(f)
+            languageFile = open(self.languageFileDir, 'rt')
+            reader = csv.reader(languageFile)
             firstRow = next(reader)
             d = collections.deque()
             _i = 0
@@ -90,37 +97,8 @@ class ModelParser():
                 _i = _i + 1
             return d
         finally:
-            f.close()
+            languageFile.close()
 
-    def parseAlarms(self, xmlroot, languageHash):
-        alarms = xmlroot.find('alarms')
-        d = collections.deque()
-        if alarms != []:
-            Alarm = collections.namedtuple('Alarm', ['equation', 'minVal', 'maxVal', 'description'])
-            for al in alarms:
-                if 'equation' in eq.attrib and ('minVal' in eq.attrib or 'maxVal' in eq.attrib):
-                    equation = al.attrib['equation']
-                    minVal = []
-                    maxVal = []
-                    description = []
-
-                    if al.attrib['description'].startswith("lbl."):
-                        description = languageHash[al.attrib['description']]
-                    else:
-                        description = al.attrib['description']
-
-                    if 'minVal' in eq.attrib:
-                        minVal = float(al.attrib['minVal'])
-
-                    if 'maxVal' in eq.attrib:
-                        maxVal = float(al.attrib['maxVal'])
-
-                    a = Alarm(equation, minVal, maxVal, description)
-                    d.append(a)
-                else:
-                    pass
-                    # TODO tirar error
-        return d
 
     def parseConstants(self,xmlroot, languageHash):
         constants = xmlroot.find('parameters').find('constants')
@@ -152,7 +130,7 @@ class ModelParser():
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
                                               'sliderMin', 'sliderMax', 'graphAsTreatment', 'convertFactor',
-                                              'detailedDescription'])
+                                              'detailedDescription', 'color'])
         d = collections.deque()
         for userdp in userDefinedParameters:
             name = userdp.attrib['name']
@@ -189,10 +167,14 @@ class ModelParser():
 
             convertFactor = 1
             if 'convertFactor' in userdp.attrib:
-                convertFactor = float(userdp.attrib['convertFactor'])
+                convertFactor = float(userdp.attrib['defaultValue'])
+
+            color = ""
+            if 'color' in userdp.attrib:
+                color = userdp.attrib['color']
 
             u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax,
-                            graphAsTreatment, convertFactor, detailedDescription)
+                            graphAsTreatment, convertFactor, detailedDescription, color)
             d.append(u)
         return d
 
@@ -231,7 +213,8 @@ class ModelParser():
         equations = xmlroot.find('equations')
         Equation = collections.namedtuple('Equation',
                                           ['name', 'description', 'unit', 'defaultValue', 'simulate', 'equation',
-                                           'convertFactor', 'detailedDescription'])
+                                           'convertFactor', 'detailedDescription', 'alMinVal', 'alMaxVal',
+                                           'alDescription'])
         d = collections.deque()
         for eq in equations:
             name = eq.attrib['name']
@@ -261,7 +244,26 @@ class ModelParser():
                 else:
                     detailedDescription = eq.attrib['detailedDescription']
 
-            e = Equation(name, description, unit, defaultValue, simulate, equation, convertFactor, detailedDescription)
+            alMinVal = None
+            alMaxVal = None
+            alDescription = ""
+
+            if 'alarmDescription' in eq.attrib:
+                if eq.attrib['alarmDescription'].startswith("lbl."):
+                    alDescription = languageHash[eq.attrib['alarmDescription']]
+                else:
+                    alDescription = eq.attrib['alarmDescription']
+
+            if 'alarmMinVal' in eq.attrib:
+                if 'alarmMinVal' in eq.attrib:
+                    alMinVal = float(eq.attrib['alarmMinVal'])
+
+            if 'alarmDescription' in eq.attrib:
+                if 'alarmMaxVal' in eq.attrib:
+                    alMaxVal = float(eq.attrib['alarmMaxVal'])
+
+            e = Equation(name, description, unit, defaultValue, simulate, equation, convertFactor, detailedDescription,
+                         alMinVal, alMaxVal, alDescription)
             d.append(e)
         return d
 

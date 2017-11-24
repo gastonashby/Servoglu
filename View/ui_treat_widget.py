@@ -5,11 +5,19 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QColorDialog, QFrame
 from PyQt5.QtGui import QColor
 import types
+import random
 
 class Ui_TreatDockWidget(QtCore.QObject):
 
     def __init__(self):
         super(Ui_TreatDockWidget, self).__init__()
+        self.slider = []
+        self.label = []
+        self.treat_vals = []
+        self.r = lambda: random.randint(0,255)
+
+    def get_new_color(self):
+        return '#%02X%02X%02X' % (self.r(), self.r(), self.r())
 
     def setupUi(self, ControlsBox):
         ControlsBox.setObjectName('General Controls')
@@ -35,8 +43,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
 
 
     def init_eq_sliders(self):
-        self.slider = []
-        self.label = []
+
         _i = 0
 
         self.definite_slider_change_color()
@@ -45,6 +52,11 @@ class Ui_TreatDockWidget(QtCore.QObject):
         sliderF = ""
         for userDef in self.parent.controller.model._u:
             if userDef.isSlider:
+                if len(userDef.color) > 0:
+                    self.colors[_i] = userDef.color
+                else:
+                    self.colors[_i] = self.get_new_color()
+
                 vbox = QtGui.QVBoxLayout()
                 # vbox.addStretch(1)
 
@@ -58,8 +70,6 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
                 l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
                 l_aux.setToolTip(userDef.detailedDescription)
-
-                hbox = QtGui.QHBoxLayout()
 
                 b_aux = QtGui.QPushButton("")
                 b_aux.setMaximumWidth(15)
@@ -78,6 +88,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 h_box_aux.addWidget(ch_aux)
 
                 self.slider.append(s_aux)
+                self.treat_vals.append(s_aux.value()/100)
                 self.label.append(l_aux)
                 vbox.addWidget(l_aux)
                 vbox.addLayout(h_box_aux)
@@ -89,23 +100,20 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 self.house_layout.addSpacing(5)
                 _i += 1
 
+        for userDef in self.parent.controller.model._u:
+            if userDef.graphAsTreatment and not userDef.isSlider:
+                self.treat_vals.append(float(userDef.defaultValue))
+
 
     def get_sliders_vals(self):
-        out = []
-        for sl in self.slider:
-            out.append(sl.value()/100)
-        return out
+        return self.treat_vals
 
 
     def definite_slider_change_color(self):
         _i = 0
         for eq in self.parent.controller.model._u:
-            # TODO: pasar a DefiniteFunciton la creacion del codigo
-            controlFunc = "def eqSliderChangeValue_" + str(_i) + "(self, int):\n\t" \
-                "print(" + str(_i) + ")\n\t" \
-                "self.show_slider_att_changing(" + str(_i) + ", 'COLOR')\n\t"
+            controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_color(_i)
 
-            _c_f_aux = "eqSliderChangeValue_" + str(_i)
             exec(controlFunc)
             exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
@@ -114,12 +122,8 @@ class Ui_TreatDockWidget(QtCore.QObject):
     def definite_slider_change_visible(self):
         _i = 0
         for eq in self.parent.controller.model._u:
-            # TODO: pasar a DefiniteFunciton la creacion del codigo
-            controlFunc = "def eqSliderChangeVisibleValue_" + str(_i) + "(self):\n\t" \
-                "print(" + str(_i) + ")\n\t" \
-                "self.show_slider_att_changing(" + str(_i) + ", 'VISIBLE')\n\t"
+            controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_visible(_i)
 
-            _c_f_aux = "eqSliderChangeVisibleValue_" + str(_i)
             exec(controlFunc)
             exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 

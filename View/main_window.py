@@ -13,6 +13,7 @@ from View.ui_treat_widget import Ui_TreatDockWidget
 from View.ui_properties_widget import Ui_PropertiesDockWidget
 from View.ui_init_val_widget import Ui_InitialValuesDockWidget
 from View.ui_menubar import Ui_Menubar
+import os
 
 import numpy
 import types
@@ -27,15 +28,14 @@ class Window(QtGui.QMainWindow):
         self.types = types
         self.ui = Ui_MainWindow(self)
 
-        #self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
-        #self.ui.dck_model_param_properties.setupUi(self)
-        #self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
+        # self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
+        # self.ui.dck_model_param_properties.setupUi(self)
+        # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
 
         # MENUBAR
         self.ui.ui_menubar = Ui_Menubar(self)
         self.ui.ui_menubar.setupUi()
         self.setMenuBar(self.ui.ui_menubar.ui_menubar)
-
 
         # MENU ACTION
         self.ui.ui_menubar.open_action.triggered.connect(self.open_model)
@@ -52,21 +52,19 @@ class Window(QtGui.QMainWindow):
         self.setStatusBar(self.statusBar)
 
         # INITIAL SETTINGS
-        self.round = 4          # General round
+        self.round = 4  # General round
 
-        # TODO: cambiar el modo de creacion de los ejes
-        self.simulated_cicle_number = 1     # Internal variable
-        self.simulated_cicle_steps = 1000   # Cicle
+        self.simulated_cicle_number = 1  # Internal variable
+        self.simulated_cicle_steps = 1000  # Cicle
         self.modelUbic = ""
         self.modelTimeUnit = ""
 
-        # TODO: sacar del modelo
         self.simulated_eq = []  # Array of bool to indicate the simulated graph
         self.simulated_tr = []  # Array of bool to indicate the treat graph
 
         # X Axis, default 1000 elements from 0 to 999
-        self.xDataGraf = self.controller.create_X_axis(0, self.simulated_cicle_number * self.simulated_cicle_steps -1
-                                          , self.simulated_cicle_number * self.simulated_cicle_steps *2)
+        self.xDataGraf = self.controller.create_X_axis(0, self.simulated_cicle_number * self.simulated_cicle_steps - 1
+                                                       , self.simulated_cicle_number * self.simulated_cicle_steps * 2)
 
         self.timeCount = 0
         self.all_data = []
@@ -74,9 +72,17 @@ class Window(QtGui.QMainWindow):
         self.all_treat_curves = []
         self.indexGr = 0
         self.step = 1
+
         self.dats = []
         self.treatment = []
         self.leyend = pyqtgraph.LegendItem((100, 60), offset=(70, 30))
+        self.alarmMin = []
+        self.alarmMax = []
+        self.alarmMsg = []
+        self.alarms = []
+        self.minLines = []
+        self.maxLines = []
+        self.alarmPic = None
 
         # TIMMER
         self.timer = QtCore.QTimer()
@@ -89,12 +95,12 @@ class Window(QtGui.QMainWindow):
         return len(self.xDataGraf) - 2 == self.indexGr
 
     def append_new_axis_points(self):
-        # TODO: usar createXaxis?
         linX = self.controller.model.np.linspace(self.xDataGraf[self.indexGr]
-                                , self.xDataGraf[self.indexGr] + (
-                                    self.step * (
-                                        (self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
-                                , self.simulated_cicle_number * self.simulated_cicle_steps)
+                                                 , self.xDataGraf[self.indexGr] + (
+                                                     self.step * (
+                                                         (
+                                                         self.simulated_cicle_number * self.simulated_cicle_steps) - 1))
+                                                 , self.simulated_cicle_number * self.simulated_cicle_steps)
         self.xDataGraf = self.controller.model.np.append(self.xDataGraf[:self.indexGr], linX)
 
     def update_time_index(self):
@@ -106,13 +112,42 @@ class Window(QtGui.QMainWindow):
         elif self.controller.model._timeUnit == 'min':
             self.timeCount += self.step * 1000 * 60
         elif self.controller.model._timeUnit == 'hs':
-            self.timeCount += self.step * 1000 * 60  * 60
+            self.timeCount += self.step * 1000 * 60 * 60
 
         self.timeLbl.setText(self.controller.convertMs(self.timeCount))
 
+    def activate_alarm(self, i, val):
+        self.alarms[i] = val
+        # self.alarmPic.setPixmap(QtGui.QPixmap(os.getcwd() + r"\View\img\alarm.png"))
+        # self.alarmToolBar.show()
+
+    def check_alarms(self):
+        alarm = False
+        alarmToolTip = ""
+        _i = 0
+        cantAlarms = 0
+        for al in self.alarms:
+            if al:
+                alarmToolTip += self.alarmMsg[_i] + " ("+ str(self.alarmMin[_i]) + ", " + \
+                                str(self.alarmMax[_i]) + ")" + ".\n"
+                alarm = True
+                cantAlarms += 1
+                self.alarms[_i] = False
+            _i += 1
+
+        alarmToolTip = alarmToolTip[:len(alarmToolTip)-2]
+
+        if alarm:
+            self.alarmPic.setToolTip(alarmToolTip)
+            self.alarmPic.setText("\t\t" + str(cantAlarms) + " alarms.")
+            self.alarmPic.setPixmap(QtGui.QPixmap(os.getcwd() + r"\View\img\alarm.png"))
+            self.alarmPic.show()
+        else:
+            self.alarmPic.clear()
+
     def update_graph(self, new_dats):
         old_dats = self.dats
-        self.dats = new_dats
+        self.dats = self.controller.np.multiply(new_dats, self.controller.eq_convert_factors)
         treat = self.ui.dck_treat_controls.get_sliders_vals()
 
         _i = 0
@@ -121,7 +156,7 @@ class Window(QtGui.QMainWindow):
                 self.treatment[_i].append(treat[_i])
                 if self.simulated_tr[_i]:
                     self.all_treat_curves[_i].setData(self.xDataGraf[:self.indexGr + 1],
-                                                             self.treatment[_i])
+                                                      self.treatment[_i])
                 else:
                     self.all_treat_curves[_i].clear()
                 _i += 1
@@ -129,6 +164,13 @@ class Window(QtGui.QMainWindow):
         # Update graph
         _i = 0
         for eq in self.controller.model._e:
+
+            if self.alarmMin[_i] != None and self.alarmMin[_i] > self.dats[_i]:
+                self.activate_alarm(_i, True)
+
+            if self.alarmMax[_i] != None and self.alarmMax[_i] < self.dats[_i]:
+                self.activate_alarm(_i, True)
+
             # Delete legend old values
             self.leyend.removeItem(eq.name + ': ' + str(round(old_dats[_i], self.round)) + ' ' + eq.unit)
 
@@ -142,16 +184,20 @@ class Window(QtGui.QMainWindow):
             # Else clear the curve
             if self.simulated_eq[_i]:
                 self.all_curves[_i].setData(self.xDataGraf[:self.indexGr + 1], self.all_data[_i])
-                self.leyend.addItem(self.all_curves[_i], eq.name + ': ' + str(round(self.dats[_i], self.round)) + ' ' + eq.unit)
+                self.leyend.addItem(self.all_curves[_i],
+                                    eq.name + ': ' + str(round(self.dats[_i], self.round)) + ' ' + eq.unit)
+
             else:
                 self.all_curves[_i].clear()
             _i += 1
+
+        self.check_alarms()
 
         # Refresh the X axis range
         self.ui.ui_sinc_plot.setXRange(self.xDataGraf[self.indexGr] - 20,
                                        self.xDataGraf[self.indexGr] + 10)
         self.ui.ui_treat_plot.setXRange(self.xDataGraf[self.indexGr] - 20,
-                                              self.xDataGraf[self.indexGr] + 10)
+                                        self.xDataGraf[self.indexGr] + 10)
 
     def remove_graph_labels(self):
         _i = 0
@@ -170,6 +216,12 @@ class Window(QtGui.QMainWindow):
                 self.timeCount = 0
                 self.simulated_eq = []
                 self.simulated_tr = []
+                self.alarmMin = []
+                self.alarmMax = []
+                self.alarmMsg = []
+                self.alarms = []
+                self.step = 1
+                self.alarmPic.clear()
                 self.removeDockWidget(self.ui.dck_model_param_properties.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
@@ -204,26 +256,21 @@ class Window(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_treat_controls.ui_controls_box_widget)
         self.controller.handler_definite_controls()
 
-
     def create_toolbars(self):
-        self.prevAction = QtGui.QAction(QtGui.QIcon('View/img/prev.png'), 'Previous step', self)
-        self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'), self.controller.languageSupport.languageHash.__getitem__("lbl.PlayPause") , self)
+        self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'),
+                                        self.controller.languageSupport.languageHash.__getitem__("lbl.PlayPause"), self)
         self.nextAction = QtGui.QAction(QtGui.QIcon('View/img/next.png'), 'Next step', self)
         self.resetAction = QtGui.QAction(QtGui.QIcon('View/img/reset.png'), 'Reset simulation', self)
 
-        self.prevAction.triggered.connect(self.prev_frame)
         self.playAction.triggered.connect(self.play_stop)
         self.nextAction.triggered.connect(self.next_frame)
         self.resetAction.triggered.connect(self.restart_graph)
 
         self.ctrlToolBar = self.addToolBar('Simulation controls')
 
-        self.ctrlToolBar.addAction(self.prevAction)
         self.ctrlToolBar.addAction(self.playAction)
         self.ctrlToolBar.addAction(self.nextAction)
         self.ctrlToolBar.addAction(self.resetAction)
-
-        self.prevAction.setVisible(False)
 
         self.eventToolBar = self.addToolBar('Time controls')
 
@@ -232,7 +279,6 @@ class Window(QtGui.QMainWindow):
         self.spboxStep.setValue(1)
         self.spboxStep.setMinimum(1)
 
-        # TODO sacar unidad de xml
         label2 = QtGui.QLabel(" every ")
         self.spBoxTimmer = QtGui.QSpinBox()
         self.spBoxTimmer.setRange(50, 60000)
@@ -248,6 +294,11 @@ class Window(QtGui.QMainWindow):
         self.spBoxTimmer.valueChanged.connect(self.timerChange)
         self.spboxStep.valueChanged.connect(self.controller.handler_step_change)
         self.toggleActivationButtons(False)
+
+        self.alarmToolBar = self.addToolBar('Alarm Toolbar')
+
+        self.alarmPic = QtGui.QLabel(self)
+        self.alarmToolBar.addWidget(self.alarmPic)
 
         self.init_time_label()
 
@@ -266,8 +317,8 @@ class Window(QtGui.QMainWindow):
     def initialize_graphs(self, name):
         self.modelUbic = name
         self.xDataGraf = self.controller.model.np.arange(0,
-                                         self.simulated_cicle_number * self.simulated_cicle_steps - 1,
-                                         1)
+                                                         self.simulated_cicle_number * self.simulated_cicle_steps - 1,
+                                                         1)
 
         for gr in self.all_curves:
             gr.clear()
@@ -284,10 +335,9 @@ class Window(QtGui.QMainWindow):
         self.toggleActivationButtons(True)
         self.definite_graph()
 
-
     def definite_graph(self):
         _i = 0
-        self.dats = self.controller.model.getPoint()
+        self.dats = self.controller.np.multiply(self.controller.model.getPoint(), self.controller.eq_convert_factors)
         self.old_dats = self.dats
 
         sliderVals = self.ui.dck_treat_controls.get_sliders_vals()
@@ -314,23 +364,62 @@ class Window(QtGui.QMainWindow):
 
             if eq.simulate:
                 self.leyend.addItem(self.all_curves[_i],
-                        eq.name + ': ' + str(round(self.all_data[_i][self.indexGr], self.round)) + ' ' + eq.unit)
+                                    eq.name + ': ' + str(
+                                        round(self.all_data[_i][self.indexGr], self.round)) + ' ' + eq.unit)
+            if eq.alMinVal != None:
+                lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMinVal,
+                                                              pen=pyqtgraph.mkPen(
+                                                              self.ui.dck_model_param_properties.colors[_i],
+                                                              style=QtCore.Qt.DashLine,
+                                                              width=2))
+                self.minLines.append(lin1)
+                if eq.simulate:
+                    self.ui.ui_sinc_plot.addItem(lin1)
+
+            if eq.alMaxVal != None:
+                lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMaxVal,
+                                                              pen=pyqtgraph.mkPen(
+                                                              self.ui.dck_model_param_properties.colors[_i],
+                                                              style=QtCore.Qt.DashLine,
+                                                              width=2))
+                self.maxLines.append(lin1)
+                if eq.simulate:
+                    self.ui.ui_sinc_plot.addItem(lin1)
+
             else:
                 self.all_curves[_i].clear()
 
             self.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
+
+            self.alarms.append(False)
+            self.alarmMin.append(eq.alMinVal)
+            self.alarmMax.append(eq.alMaxVal)
+            self.alarmMsg.append(eq.alDescription)
 
             _i += 1
         self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
         self.leyend.updateSize()
         self.modelTimeUnit = self.controller.model._timeUnit
         self.spboxStep.setSuffix(" " + self.modelTimeUnit)
+        self.spboxStep.setValue(1)
 
-    
+    def create_line(self, minmax, _i):
+        if minmax == "MIN":
+            return pyqtgraph.InfiniteLine(movable=False, angle=0, pos=self.alarmMin[_i],
+                                          pen=pyqtgraph.mkPen(
+                                              self.ui.dck_model_param_properties.colors[_i],
+                                              style=QtCore.Qt.DashLine,
+                                              width=2))
+        elif minmax == "MAX":
+            return pyqtgraph.InfiniteLine(movable=False, angle=0, pos=self.alarmMax[_i],
+                                          pen=pyqtgraph.mkPen(
+                                              self.ui.dck_model_param_properties.colors[_i],
+                                              style=QtCore.Qt.DashLine,
+                                              width=2))
+
     def toggleActivationButtons(self, enabled):
         self.nextAction.setEnabled(enabled)
         self.resetAction.setEnabled(enabled)
-        self.prevAction.setEnabled(enabled)
         self.playAction.setEnabled(enabled)
         self.spboxStep.setEnabled(enabled)
         self.spBoxTimmer.setEnabled(enabled)
@@ -350,14 +439,15 @@ class Window(QtGui.QMainWindow):
                                          symbolPen='k', symbolBrush=1, name=name,
                                          symbolSize=3, antialias=True,
                                          pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[i],
-                                         width=self.ui.dck_model_param_properties.pen_size[i]))
+                                                             width=self.ui.dck_model_param_properties.pen_size[i]))
 
     def create_treat_curve(self, i, name):
-        return self.ui.ui_treat_plot.plot([self.xDataGraf[0]], [self.ui.dck_treat_controls.get_sliders_vals()[i]], symbol='o',
-                                         symbolPen='k', symbolBrush=1, name=name,
-                                         symbolSize=3, antialias=True,
-                                         pen=pyqtgraph.mkPen(self.ui.dck_treat_controls.colors[i],
-                                         width=self.ui.dck_treat_controls.pen_size[i]))
+        return self.ui.ui_treat_plot.plot([self.xDataGraf[0]], [self.ui.dck_treat_controls.get_sliders_vals()[i]],
+                                          symbol='o',
+                                          symbolPen='k', symbolBrush=1, name=name,
+                                          symbolSize=3, antialias=True,
+                                          pen=pyqtgraph.mkPen(self.ui.dck_treat_controls.colors[i],
+                                                              width=self.ui.dck_treat_controls.pen_size[i]))
 
     def play_stop(self):
         if not self.timer.isActive():
@@ -378,10 +468,6 @@ class Window(QtGui.QMainWindow):
         self.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
         self.controller.handler_restart_graph()
 
-    def prev_frame(self):
-        #TODO: todo
-        pass
-
     def exportResultsToPdf(self):
         self.stop()
         PDFdialog = ChildDlg(self)
@@ -389,7 +475,8 @@ class Window(QtGui.QMainWindow):
 
     def open_model(self):
         myFilter = ["XML file (*.xml)"]
-        name, _ = QFileDialog.getOpenFileName(self, 'Open XML SERVOGLU model...',"","XML file (*.xml)", options=QFileDialog.DontUseNativeDialog)
+        name, _ = QFileDialog.getOpenFileName(self, 'Open XML SERVOGLU model...', "", "XML file (*.xml)",
+                                              options=QFileDialog.DontUseNativeDialog)
         if name != "":
             if name.endswith(".xml"):
                 try:
