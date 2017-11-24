@@ -7,7 +7,7 @@
 			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Dosage" description="Dosage every" unit="hrs" type="integer" defaultValue ="6" slider="False" graphAsTreatment="false"/>
+			<userDefined name="Dosage" description="Dosage every" unit="hrs" type="integer" defaultValue ="6" slider="False" graphAsTreatment="True"/>
 			<userDefined name="Dosis" description="Dosis" unit="mg" type="integer" defaultValue ="1" slider="False" graphAsTreatment="false"/>
 
 

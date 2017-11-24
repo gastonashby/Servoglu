@@ -149,6 +149,7 @@ class DefiniteFunction:
                     "new_val = int_value / " + str(convertFactor) + "\n\t" \
                     "print(new_val / 100)\n\t" \
                     "self.model." + u.name + " = new_val / 100 \n\t" \
+                    "self.window.ui.dck_treat_controls.treat_vals[" + str(i - 1) + "] = new_val / 100 \n\t" \
                     "self.window.ui.dck_treat_controls.label[" + str(i - 1) + "]" \
                     ".setText('" + u.description + " ' + str(int_value/100) + ' " + u.unit + "')\n\t" \
                     "self.model.recalculate(self.window.step)\n"

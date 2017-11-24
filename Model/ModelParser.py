@@ -130,7 +130,7 @@ class ModelParser():
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
                                               'sliderMin', 'sliderMax', 'graphAsTreatment', 'convertFactor',
-                                              'detailedDescription'])
+                                              'detailedDescription', 'color'])
         d = collections.deque()
         for userdp in userDefinedParameters:
             name = userdp.attrib['name']
@@ -167,10 +167,14 @@ class ModelParser():
 
             convertFactor = 1
             if 'convertFactor' in userdp.attrib:
-                convertFactor = float(userdp.attrib['convertFactor'])
+                convertFactor = float(userdp.attrib['defaultValue'])
+
+            color = ""
+            if 'color' in userdp.attrib:
+                color = userdp.attrib['color']
 
             u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax,
-                            graphAsTreatment, convertFactor, detailedDescription)
+                            graphAsTreatment, convertFactor, detailedDescription, color)
             d.append(u)
         return d
 
