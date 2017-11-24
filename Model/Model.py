@@ -7,12 +7,14 @@ import Model.ModelParser as mp
 from PyQt5 import QtGui,QtCore,QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from scipy.integrate import odeint
+import math
 #from Model.Utils import Utils
 import types
 
 class Model:
 
     def __init__(self):
+        np.seterr(all='raise', divide='raise', over='raise', under='raise', invalid='raise')
         self._u = []
         self._t = []
         self._c = []
@@ -38,10 +40,10 @@ class Model:
         self.languages = []
 
     def odesys(self, XX, tt):
+
         self.modelTime = int(tt)
         _i = 0
         salida = []
-
 
         for ec in self._e:
             auux = "self." + ec.name + '= XX[' + str(_i) + ']'
@@ -51,6 +53,12 @@ class Model:
         for eq in self._e:
             salida.append(eval(self.code.processEq(eq.equation)))
 
+
+        # print('t: ', self.modelTime,'e():', round(self.e(),5),'z:', self.z,'E():', round(self.E(),5),
+        #       'Pglut4():', round(self.Pglut4(),5),'a():',
+        #       round(self.a(),5),'iaster():', round(self.iaster(),5),
+        #       'iaster0:', round(self.iaster0, 5),'pinicial0:', round(self.pInitial0, 5),
+        #       'BG:', round(self.BG,5))
         return salida
 
     def initialize(self, name, step):
@@ -164,7 +172,14 @@ class Model:
         return x % y
 
     def pow(self, x, y):
-        return pow(x, y)
+        try:
+            if (math.isclose(x, 0, abs_tol=1e-1)):
+                return 0
+            else:
+                return pow(x, y)
+        except Exception as e:
+            print(e)
+
 
     def max(self, *x):
         return max(x)
