@@ -26,7 +26,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.parent = ControlsBox
         #
         self.house_layout = QtGui.QVBoxLayout()
-        self.colors = ['#4F347A', '#B35C41', '#B3A641', '#2E7D55', '#B345A1', '#B345A1', '#B345A1']
+        self.colors = []
         self.color_buttons = []
         self.tr_checks = []
         self.pen_size = [3, 3, 3, 3, 3, 3]
@@ -53,9 +53,9 @@ class Ui_TreatDockWidget(QtCore.QObject):
         for userDef in self.parent.controller.model._u:
             if userDef.isSlider:
                 if len(userDef.color) > 0:
-                    self.colors[_i] = userDef.color
+                    self.colors.append(userDef.color)
                 else:
-                    self.colors[_i] = self.get_new_color()
+                    self.colors.append(self.get_new_color())
 
                 vbox = QtGui.QVBoxLayout()
                 # vbox.addStretch(1)
@@ -102,6 +102,17 @@ class Ui_TreatDockWidget(QtCore.QObject):
 
         for userDef in self.parent.controller.model._u:
             if userDef.graphAsTreatment and not userDef.isSlider:
+                if len(userDef.color) > 0:
+                    self.colors.append(userDef.color)
+                else:
+                    self.colors.append(self.get_new_color())
+
+                l_aux = QtGui.QLabel()
+                l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
+                l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+                l_aux.setToolTip(userDef.detailedDescription)
+
+
                 self.treat_vals.append(float(userDef.defaultValue))
 
 

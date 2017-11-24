@@ -52,7 +52,7 @@ class Window(QtGui.QMainWindow):
         self.setStatusBar(self.statusBar)
 
         # INITIAL SETTINGS
-        self.round = 4  # General round
+        self.round = 2  # General round
 
         self.simulated_cicle_number = 1  # Internal variable
         self.simulated_cicle_steps = 1000  # Cicle
@@ -342,7 +342,14 @@ class Window(QtGui.QMainWindow):
 
         sliderVals = self.ui.dck_treat_controls.get_sliders_vals()
         for aux in self.controller.model._u:
-            if aux.graphAsTreatment:
+            if aux.isSlider:
+                self.simulated_tr.append(True)
+                self.treatment.append([sliderVals[_i]])
+                self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
+                _i += 1
+
+        for aux in self.controller.model._u:
+            if aux.graphAsTreatment and not aux.isSlider:
                 self.simulated_tr.append(True)
                 self.treatment.append([sliderVals[_i]])
                 self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
