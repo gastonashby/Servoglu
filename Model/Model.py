@@ -7,6 +7,7 @@ import Model.ModelParser as mp
 from PyQt5 import QtGui,QtCore,QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from scipy.integrate import odeint
+from scipy.integrate import ode
 import math
 #from Model.Utils import Utils
 import types
@@ -90,7 +91,7 @@ class Model:
         exec(definitions)
 
         self._auxIni = self._aux
-        self._sol = odeint(self.odesys, self._aux, self._xdata)
+        self._sol = self.solveSystem(self.odesys, self._aux, self._xdata)
         print('Solution created 1st time')
 
 
@@ -110,7 +111,7 @@ class Model:
         self.updateCalculatedConstants()
 
         print("-- Recalculate --")
-        self._sol = odeint(self.odesys, self._aux, self._xdata)
+        self._sol = self.solveSystem(self.odesys, self._aux, self._xdata)
         #print(self._sol)
 
     def change_val(self, i, val):
@@ -120,7 +121,43 @@ class Model:
         self.indexModel = 0
         self.updateCalculatedConstants()
         print("-- Restart --")
-        self._sol = odeint(self.odesys, self._auxIni, self._xdata)
+        self._sol = self.solveSystem(self.odesys, self._auxIni, self._xdata)
+
+    def odesys2(self, tt, XX):
+        self.modelTime = int(tt)
+        _i = 0
+        salida = []
+
+        for ec in self._e:
+            auux = "self." + ec.name + '= XX[' + str(_i) + ']'
+            _i += 1
+            exec(auux)
+
+        for eq in self._e:
+            salida.append(eval(self.code.processEq(eq.equation)))
+
+        # print('t: ', self.modelTime,'e():', round(self.e(),5),'z:', self.z,'E():', round(self.E(),5),
+        #       'Pglut4():', round(self.Pglut4(),5),'a():',
+        #       round(self.a(),5),'iaster():', round(self.iaster(),5),
+        #       'iaster0:', round(self.iaster0, 5),'pinicial0:', round(self.pInitial0, 5),
+        #       'BG:', round(self.BG,5))
+        return salida
+
+
+    def solveSystem(self, odesys, ini, xdata):
+        try:
+            r = ode(self.odesys2).set_integrator('lsoda')
+            r.set_initial_value(ini, self.indexModel)
+            t1 = self.top_x
+            dt = 1
+            s = []
+            while r.successful() and r.t < t1:
+                s.append(r.integrate(r.t+dt))
+
+            #s = odeint(odesys, ini, xdata)
+            return s
+        except Exception as e:
+            raise e
 
 
     def getPoint(self):
