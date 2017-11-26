@@ -5,15 +5,16 @@ import sys
 from Model.LanguageParser import LanguageParser
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from Model.Model import Model
+from View.main_window import Window
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 
 class Controller():
-    def __init__(self, window):
+    def __init__(self):
         self.model = Model()
-        self.window = window
+
         self.dataFormat = self.model.code
         # Initialize language hash with English as default language
 
@@ -26,6 +27,7 @@ class Controller():
         self.eq_convert_factors = []
         self.tr_convert_factors = []
         self.np = self.model.np
+        self.window = Window(self)
 
     def convertMs(self, mili):
         # ms = mili % 1000

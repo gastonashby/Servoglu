@@ -129,14 +129,31 @@ class ModelParser():
         userDefinedParameters = xmlroot.find('parameters').find('userDefinedParameters')
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
-                                              'sliderMin', 'sliderMax', 'graphAsTreatment', 'convertFactor',
+                                              'minTreatment', 'maxTreatment', 'graphAsTreatment', 'convertFactor',
                                               'detailedDescription', 'color'])
         d = collections.deque()
         for userdp in userDefinedParameters:
             name = userdp.attrib['name']
             graphAsTreatment = False
+            isSlider = False
+            trMin = []
+            trMax = []
+            type = userdp.attrib['type']
+            graphAsTreatment = []
+
             if 'graphAsTreatment' in userdp.attrib:
                 graphAsTreatment = self.str_to_bool(userdp.attrib['graphAsTreatment'])
+                if graphAsTreatment:
+                    if 'slider' in userdp.attrib and \
+                                    userdp.attrib['slider'] == 'True' or userdp.attrib['slider'] == 'true':
+                        isSlider = True
+
+                    if type == "int" or type == "integer":
+                        trMin = int(userdp.attrib['minTreatment'])
+                        trMax = int(userdp.attrib['maxTreatment'])
+                    else:
+                        trMin = float(userdp.attrib['minTreatment'])
+                        trMax = float(userdp.attrib['maxTreatment'])
 
             detailedDescription = ""
             if 'detailedDescription' in userdp.attrib:
@@ -155,15 +172,9 @@ class ModelParser():
             else:
                 unit = userdp.attrib['unit']
 
-            type = userdp.attrib['type']
+
             defaultValue = userdp.attrib['defaultValue']
-            isSlider = False
-            sliderMin = 0
-            sliderMax = 0
-            if userdp.attrib['slider'] == 'True' or userdp.attrib['slider'] == 'true':
-                isSlider = True
-                sliderMin = float(userdp.attrib['sliderMin'])
-                sliderMax = float(userdp.attrib['sliderMax'])
+
 
             convertFactor = 1
             if 'convertFactor' in userdp.attrib:
@@ -173,7 +184,7 @@ class ModelParser():
             if 'color' in userdp.attrib:
                 color = userdp.attrib['color']
 
-            u = UserDefined(name, description, unit, type, defaultValue, isSlider, sliderMin, sliderMax,
+            u = UserDefined(name, description, unit, type, defaultValue, isSlider, trMin, trMax,
                             graphAsTreatment, convertFactor, detailedDescription, color)
             d.append(u)
         return d

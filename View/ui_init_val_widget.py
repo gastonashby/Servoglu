@@ -58,7 +58,7 @@ class Ui_InitialValuesDockWidget(QtCore.QObject):
         _listChildUsrDef = []
         for userDef in self.parent.controller.model._u:
             # nomC = const.value1 + ' ' + const.operator
-            if not userDef.isSlider:
+            if not userDef.isSlider and not userDef.graphAsTreatment:
                 _childAuxUsrDef = {'name': userDef.name, 'value': userDef.defaultValue, 'type': 'str',
                                    'readonly': False,
                                    'title': userDef.description + " (" + userDef.unit + ") "}#, 'suffix': userDef.unit, 'siPrefix': True}

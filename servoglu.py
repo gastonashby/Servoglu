@@ -3,8 +3,8 @@ __version__ = '0.0.1'
 
 import sys
 from PyQt5.QtWidgets import QApplication, QStyleFactory, QMessageBox
-from View.main_window import Window
 
+from Controller.main_controller import *
 
 def main():
 
@@ -12,9 +12,9 @@ def main():
         app = QApplication(sys.argv)
         app.setApplicationName('SERVOGLU')
         QApplication.setStyle(QStyleFactory.create('Fusion'))
-        window = Window()
-        window.resize(1000, 500)
-        window.showMaximized()
+        controller = Controller()
+        controller.window.resize(1000, 500)
+        controller.window.showMaximized()
         currentExitCode = app.exec_()
     except Exception as e:
         print(e)

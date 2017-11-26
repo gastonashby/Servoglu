@@ -6,7 +6,7 @@ from View.pdf_dialog import ChildDlg
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Controller.main_controller import *
+
 from View.ui_main_window import Ui_MainWindow
 from View.ui_controls_widget import Ui_ControlsDockWidget
 from View.ui_treat_widget import Ui_TreatDockWidget
@@ -20,12 +20,13 @@ import types
 
 
 class Window(QtGui.QMainWindow):
-    def __init__(self, parent=None):
-        super(Window, self).__init__(parent)
-        self.controller = Controller(self)
+    def __init__(self, controller):
+        super(Window, self).__init__()
+        self.controller = controller
         self.setWindowTitle('SERVOGLU v1.0 - UdelaR - Núcleo de Ingeniería Biomédica')
         self.setWindowIcon(QtGui.QIcon('View/img/logo.png'))
         self.types = types
+        self.numpy = numpy
         self.ui = Ui_MainWindow(self)
 
         # self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
@@ -226,6 +227,13 @@ class Window(QtGui.QMainWindow):
                 self.removeDockWidget(self.ui.dck_model_param_controls.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_treat_controls.ui_controls_box_widget)
                 self.removeDockWidget(self.ui.dck_init_val_controls.ui_controls_box_widget)
+
+                for a in self.minLines:
+                    self.ui.ui_sinc_plot.removeItem(a)
+
+                for a in self.maxLines:
+                    self.ui.ui_sinc_plot.removeItem(a)
+
         except Exception as e:
             print(e)
             msg = QMessageBox()
@@ -446,7 +454,7 @@ class Window(QtGui.QMainWindow):
                                          symbolPen='k', symbolBrush=1, name=name,
                                          symbolSize=3, antialias=True,
                                          pen=pyqtgraph.mkPen(self.ui.dck_model_param_properties.colors[i],
-                                                             width=self.ui.dck_model_param_properties.pen_size[i]))
+                                                             width=3))
 
     def create_treat_curve(self, i, name):
         return self.ui.ui_treat_plot.plot([self.xDataGraf[0]], [self.ui.dck_treat_controls.get_sliders_vals()[i]],
@@ -454,7 +462,7 @@ class Window(QtGui.QMainWindow):
                                           symbolPen='k', symbolBrush=1, name=name,
                                           symbolSize=3, antialias=True,
                                           pen=pyqtgraph.mkPen(self.ui.dck_treat_controls.colors[i],
-                                                              width=self.ui.dck_treat_controls.pen_size[i]))
+                                                              width=3))
 
     def play_stop(self):
         if not self.timer.isActive():

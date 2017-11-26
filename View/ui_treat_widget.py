@@ -14,6 +14,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.slider = []
         self.label = []
         self.treat_vals = []
+        self.tr_spins = []
         self.r = lambda: random.randint(0,255)
 
     def get_new_color(self):
@@ -29,9 +30,9 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.colors = []
         self.color_buttons = []
         self.tr_checks = []
-        self.pen_size = [3, 3, 3, 3, 3, 3]
-
-        self.init_eq_sliders()
+        self.definite_treat()
+        self.init_tr_sliders()
+        self.init_tr_no_sliders()
         self.house_layout.addSpacing(10)
         # self.init_time_label()
 
@@ -41,14 +42,24 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.ui_controls_box_widget.setWidget(self.house_widget)
         self.house_layout.addSpacing(10)
 
+        apply_tr = QtGui.QPushButton("Aplicar Tratamiento")
+        apply_tr.clicked.connect(self.apply_treat)
+        self.house_layout.addWidget(apply_tr)
 
-    def init_eq_sliders(self):
+    def apply_treat(self):
+        # Update treat values slider first
+        for i in range(0, len(self.slider)):
+            self.treat_vals[i] = self.slider[i].value()/100
 
+        j = 0
+        for i in range(len(self.slider), len(self.treat_vals)):
+            self.treat_vals[i] = self.tr_spins[j].value()
+            j += 1
+
+        self.parent.controller.model.recalculate(self.parent.step)
+
+    def init_tr_sliders(self):
         _i = 0
-
-        self.definite_slider_change_color()
-        self.definite_slider_change_visible()
-
         sliderF = ""
         for userDef in self.parent.controller.model._u:
             if userDef.isSlider:
@@ -61,12 +72,15 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 # vbox.addStretch(1)
 
                 s_aux = QtGui.QSlider(QtCore.Qt.Horizontal)
-                s_aux.setRange(float(userDef.sliderMin) * 100, float(userDef.sliderMax) * 100)
+                s_aux.setRange(float(userDef.minTreatment) * 100, float(userDef.maxTreatment) * 100)
                 s_aux.setValue(float(userDef.defaultValue) * 100)
                 s_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
                 s_aux.setToolTip(userDef.detailedDescription)
 
                 l_aux = QtGui.QLabel()
+                myFont = QtGui.QFont()
+                myFont.setBold(True)
+                l_aux.setFont(myFont)
                 l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
                 l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
                 l_aux.setToolTip(userDef.detailedDescription)
@@ -84,8 +98,9 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 self.tr_checks.append(ch_aux)
 
                 h_box_aux = QtGui.QHBoxLayout()
-                h_box_aux.addWidget(b_aux)
                 h_box_aux.addWidget(ch_aux)
+                h_box_aux.addWidget(b_aux)
+
 
                 self.slider.append(s_aux)
                 self.treat_vals.append(s_aux.value()/100)
@@ -96,49 +111,99 @@ class Ui_TreatDockWidget(QtCore.QObject):
 
                 self.house_layout.addLayout(vbox)
                 vbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
-                self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
+                #self.house_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
                 self.house_layout.addSpacing(5)
                 _i += 1
 
+    def init_tr_no_sliders(self):
+        _i = 0
+        _j = len(self.slider)
         for userDef in self.parent.controller.model._u:
             if userDef.graphAsTreatment and not userDef.isSlider:
                 if len(userDef.color) > 0:
                     self.colors.append(userDef.color)
                 else:
                     self.colors.append(self.get_new_color())
+                myFont = QtGui.QFont()
+                myFont.setBold(True)
 
                 l_aux = QtGui.QLabel()
-                l_aux.setText(userDef.description + ' ' + str(float(s_aux.value() / 100)) + ' ' + userDef.unit)
+                lunit_aux = QtGui.QLabel()
+                l_aux.setFont(myFont)
+                spin = []
+
+                if userDef.type == 'integer' or userDef.type == 'int':
+                    spin = QtGui.QSpinBox()
+                    spin.setFont(myFont)
+                    spin.setRange(int(userDef.minTreatment), int(userDef.maxTreatment))
+                    spin.setValue(int(userDef.defaultValue))
+                    self.treat_vals.append(int(userDef.defaultValue))
+                else:
+                    spin = QtGui.QDoubleSpinBox()
+                    spin.setRange(float(userDef.minTreatment), float(userDef.maxTreatment))
+                    spin.setValue(float(userDef.defaultValue))
+                    self.treat_vals.append(float(userDef.defaultValue))
+
+                spin.valueChanged.connect(eval("self.trSpinChangeValue_" + str(_i)))
+                self.tr_spins.append(spin)
+                l_aux.setText(userDef.description)
                 l_aux.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
                 l_aux.setToolTip(userDef.detailedDescription)
 
+                lunit_aux.setText(userDef.unit)
+                lunit_aux.setFont(myFont)
 
-                self.treat_vals.append(float(userDef.defaultValue))
+                vbox = QtGui.QHBoxLayout()
+                vbox.addWidget(l_aux)
+                vbox.addWidget(spin)
+                vbox.addWidget(lunit_aux)
+                self.house_layout.addLayout(vbox)
+
+                b_aux = QtGui.QPushButton("")
+                b_aux.setMaximumWidth(15)
+                b_aux.setMaximumHeight(15)
+                b_aux.setStyleSheet('QPushButton {background-color:' + self.colors[_j] + ';}')
+                b_aux.clicked.connect(eval("self.eqSliderChangeValue_" + str(_j)))
+                self.color_buttons.append(b_aux)
+
+                ch_aux = QtGui.QCheckBox("Visible")
+                ch_aux.setChecked(1)
+                ch_aux.stateChanged.connect(eval("self.eqSliderChangeVisibleValue_" + str(_j)))
+                self.tr_checks.append(ch_aux)
+
+                h_box_aux = QtGui.QHBoxLayout()
+                h_box_aux.addWidget(ch_aux)
+                h_box_aux.addWidget(b_aux)
+
+                vbox.addLayout(h_box_aux)
+
+                _i += 1
+                _j += 1
 
 
     def get_sliders_vals(self):
         return self.treat_vals
 
 
-    def definite_slider_change_color(self):
+    def definite_treat(self):
         _i = 0
         for eq in self.parent.controller.model._u:
-            controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_color(_i)
+            if eq.graphAsTreatment:
 
-            exec(controlFunc)
-            exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
+                controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_color(_i)
+                exec(controlFunc)
+                exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
-            _i += 1
+                controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_visible(_i)
+                exec(controlFunc)
+                exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
-    def definite_slider_change_visible(self):
-        _i = 0
-        for eq in self.parent.controller.model._u:
-            controlFunc, _c_f_aux = self.parent.controller.model.code.definite_slider_change_visible(_i)
+                if not eq.isSlider:
+                    controlFunc, _c_f_aux = self.parent.controller.model.code.definite_spin_change_value(eq, _i, eq.defaultValue)
+                    exec(controlFunc)
+                    exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
-            exec(controlFunc)
-            exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
-
-            _i += 1
+                _i += 1
 
     def show_slider_att_changing(self, slider_id, type):
 

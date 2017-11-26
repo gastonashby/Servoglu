@@ -86,10 +86,6 @@ class Model:
         exec(self.code.defineUserDefinedParameters(self._u, params))
         exec(self._constants)
         exec(self.code.defineEquations(self._e, params))
-
-        # for f in functions.split('\n'):
-        #     print(f)
-        #     exec(f)
         exec(self.functions)
         exec(definitions)
 
@@ -173,12 +169,13 @@ class Model:
 
     def pow(self, x, y):
         try:
-            if (math.isclose(x, 0, abs_tol=1e-1)):
+            if x < 0.00000001:
                 return 0
             else:
                 return pow(x, y)
         except Exception as e:
             print(e)
+        return 0
 
 
     def max(self, *x):

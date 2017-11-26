@@ -9,7 +9,6 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
     def __init__(self):
         self.indexGr = 0
         self.colors = ['#B38C41', '#8E3469', '#85A73D', '#334977', '#B345A1', '#B345A1', '#B345A1']
-        self.pen_size = [3, 3, 3, 3, 3, 3]
         super(Ui_PropertiesDockWidget, self).__init__()
 
     def setupUi(self, ControlsBox):
@@ -63,7 +62,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
                              'readonly': True}
             _listChildAuxFunc.append(_childAuxFunc)
             # print(const)
-        _paramAux = {'name': 'Functions', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': False}
+        _paramAux = {'name': 'Functions', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': True}
         _params.append(_paramAux)
 
         _listChildAuxConst = []
@@ -72,7 +71,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
             # nomC = const.value1 + ' ' + const.operator
             _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
             _listChildAuxConst.append(_childAuxConst)
-        _paramAuxConst = {'name': 'Constants', 'type': 'group', 'children': _listChildAuxConst, 'expanded': False}
+        _paramAuxConst = {'name': 'Constants', 'type': 'group', 'children': _listChildAuxConst, 'expanded': True}
         _params.append(_paramAuxConst)
 
         return _params

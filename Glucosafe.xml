@@ -10,30 +10,29 @@
 			<userDefined name="Sex" description="lbl.Sex" detailedDescription="lbl.sexDescription"
 						 unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
-			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="true"/>
+			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" 
+                         minTreatment="1" maxTreatment="600" graphAsTreatment="true"/>
+			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
 			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
-			<userDefined name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mg/dl" type="real" defaultValue ="36.036" slider="False" graphAsTreatment="false"/>
-
 
 			<!-- Treatments, entered by the user -->
 			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
 						 detailedDescription="Represents the Intravenous Glucose rate"
-						 type="real" defaultValue ="0.0" slider="True" sliderMin="0.0" sliderMax="1.0" graphAsTreatment="true"/>
+						 type="real" defaultValue ="0.0" slider="True" 
+						 minTreatment="0.0" maxTreatment="0.05" graphAsTreatment="true"/>
 			
 			<userDefined name="Ex"  description="lbl.ExDescription"
 						detailedDescription="lbl.ExDetailedDescription"
-						type="real"  defaultValue ="2"  unit="U/h"
-						slider="True"  sliderMin="0"  sliderMax="10" 
-						graphAsTreatment="true"  color="#AA6C39" 
-						convertFactor="0.06"/>
+						type="real"  defaultValue ="110"  unit="mU/min"
+						slider="True"  minTreatment="0"  maxTreatment="200"
+						graphAsTreatment="true"  color="#AA6C39" />
 							
 			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate"
-						 unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" sliderMin="0.0" sliderMax="1" color="#2D882D" graphAsTreatment="true"/>
+						 unit="mmol/kg min" type="real" defaultValue ="0.0105" slider="True" minTreatment="0.0" maxTreatment="1" color="#2D882D" graphAsTreatment="true"/>
 
 			<!-- End of treatments, entered by the user -->
 			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real"
-						 defaultValue ="1.0" slider="True" sliderMin="0.0" sliderMax="1.0" color="#226666"
+						 defaultValue ="1.0" slider="True" minTreatment="0.0" maxTreatment="1.0" color="#226666"
 						 graphAsTreatment="true" />
 		</userDefinedParameters>
 		<constants>
@@ -58,6 +57,17 @@
 								<cn>36</cn>
 							</apply>
 						</apply>
+					</apply>
+				</m:math>
+			</constant>
+
+            <!-- GlucoseInitialValue -->
+			<constant name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/kg" calculated="False">
+				<m:math>
+					<apply>
+						<eq/>
+						<ci>GlucoseInitialValue</ci>
+						<cn type="real">5</cn>
 					</apply>
 				</m:math>
 			</constant>
@@ -882,8 +892,7 @@
 
 		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
 		<equation name="BG" defaultValue="GlucoseInitialValue" detailedDescription="lbl.Blood GlucoseDD"
-				  simulate="True" description="lbl.Blood Glucose concentration" unit="mg/dl"
-				  convertFactor="18.018">
+				  simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/kg">
 			<m:math>
 				<apply>
 					<divide/>

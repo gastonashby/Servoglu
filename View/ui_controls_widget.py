@@ -3,6 +3,7 @@ __version__ = '0.0.1'
 
 from PyQt5 import QtCore, QtGui
 import types
+import sys
 
 class Ui_ControlsDockWidget(QtCore.QObject):
 
@@ -34,7 +35,11 @@ class Ui_ControlsDockWidget(QtCore.QObject):
         for eq in self.parent.controller.model._e:
             hbox = QtGui.QHBoxLayout()
             # hbox.addStretch(1)
-            self.eqLblList.append(QtGui.QLabel(eq.description + " (" + eq.name + "):"))
+            lbl = QtGui.QLabel(eq.description + " (" + eq.name + "):")
+            myFont = QtGui.QFont()
+            myFont.setBold(True)
+            lbl.setFont(myFont)
+            self.eqLblList.append(lbl)
             self.eqLblList[_i].setToolTip(eq.detailedDescription)
             self.eqCtrlList.append(QtGui.QDoubleSpinBox())
             self.eqBtnList.append(QtGui.QPushButton(">"))
@@ -44,7 +49,8 @@ class Ui_ControlsDockWidget(QtCore.QObject):
             self.eqCtrlList[_i].setFont(myFont)
             self.eqCtrlList[_i].setDecimals(self.parent.round)
             self.eqCtrlList[_i].setSuffix(" " + eq.unit)
-            self.eqCtrlList[_i].setMaximum(10000000)
+            self.eqCtrlList[_i].setMaximum(1000)
+            self.eqCtrlList[_i].setMinimum(-1000)
             hbox.addWidget(self.eqLblList[_i])
             hbox.addWidget(self.eqCtrlList[_i])
             hbox.addWidget(self.eqBtnList[_i])
