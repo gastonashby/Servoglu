@@ -137,11 +137,13 @@ class Ui_TreatDockWidget(QtCore.QObject):
                     spin.setFont(myFont)
                     spin.setRange(int(userDef.minTreatment), int(userDef.maxTreatment))
                     spin.setValue(int(userDef.defaultValue))
+                    spin.setSingleStep(1)
                     self.treat_vals.append(int(userDef.defaultValue))
                 else:
                     spin = QtGui.QDoubleSpinBox()
                     spin.setRange(float(userDef.minTreatment), float(userDef.maxTreatment))
                     spin.setValue(float(userDef.defaultValue))
+                    spin.setSingleStep((float(userDef.maxTreatment) - float(userDef.minTreatment)) / 100)
                     self.treat_vals.append(float(userDef.defaultValue))
 
                 spin.valueChanged.connect(eval("self.trSpinChangeValue_" + str(_i)))
@@ -187,6 +189,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
 
     def definite_treat(self):
         _i = 0
+        _j = 0
         for eq in self.parent.controller.model._u:
             if eq.graphAsTreatment:
 
@@ -199,10 +202,10 @@ class Ui_TreatDockWidget(QtCore.QObject):
                 exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
 
                 if not eq.isSlider:
-                    controlFunc, _c_f_aux = self.parent.controller.model.code.definite_spin_change_value(eq, _i, eq.defaultValue)
+                    controlFunc, _c_f_aux = self.parent.controller.model.code.definite_spin_change_value(eq, _j, eq.defaultValue)
                     exec(controlFunc)
                     exec("self." + _c_f_aux + " = self.parent.types.MethodType(" + _c_f_aux + ", self)")
-
+                    _j += 1
                 _i += 1
 
     def show_slider_att_changing(self, slider_id, type):

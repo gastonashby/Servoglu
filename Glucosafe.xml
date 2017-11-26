@@ -11,7 +11,7 @@
 						 unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
 			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
 			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" 
-                         minTreatment="1" maxTreatment="600" graphAsTreatment="true"/>
+                         minTreatment="1" maxTreatment="600" graphAsTreatment="false"/>
 			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
 			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
 
@@ -32,7 +32,7 @@
 
 			<!-- End of treatments, entered by the user -->
 			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real"
-						 defaultValue ="1.0" slider="True" minTreatment="0.0" maxTreatment="1.0" color="#226666"
+						 defaultValue ="1.0" slider="False" minTreatment="0.0" maxTreatment="1.0" color="#226666"
 						 graphAsTreatment="true" />
 		</userDefinedParameters>
 		<constants>

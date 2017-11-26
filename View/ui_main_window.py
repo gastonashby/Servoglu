@@ -19,12 +19,12 @@ class Ui_MainWindow(QtCore.QObject):
         self.ui_sinc_plot = self.ui_window.addPlot()
         self.ui_sinc_plot.showGrid(x=True, y=True, alpha=1)
         self.ui_sinc_plot.setLabel('bottom', 'Time', units="")
-        self.ui_sinc_plot.setXRange(-20, 10)
+        self.ui_sinc_plot.setXRange(0, 8)
 
         self.ui_treat_plot = self.ui_window_treat.addPlot()
         self.ui_treat_plot.showGrid(x=True, y=True, alpha=1)
         self.ui_treat_plot.setLabel('bottom', 'Time', units="")
-        self.ui_treat_plot.setXRange(-20, 10)
+        # self.ui_treat_plot.setXRange(-20, 10)
         # LAYOUT
         # self.ui_central_layout = QtGui.QVBoxLayout()
         # self.ui_central_layout.addWidget(self.ui_window)
@@ -34,8 +34,8 @@ class Ui_MainWindow(QtCore.QObject):
         self.ui_treat_plot.setXLink(self.ui_sinc_plot)
 
         area = DockArea()
-        ds = Dock("Simulation", closable=True)
-        dt = Dock("Treatment", closable=True)
+        ds = Dock("Simulation", closable=False)
+        dt = Dock("Treatment", closable=False)
         area.addDock(ds, 'top')
         area.addDock(dt, 'bottom')
         ds.addWidget(self.ui_window)
