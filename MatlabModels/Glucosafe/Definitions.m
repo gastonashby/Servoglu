@@ -71,27 +71,30 @@ Height = 1.85;
 W = 102;
 Age = 36;
 Sex = 0;
-DiabetesTypeOne = 0;
+DiabetesTypeOne = 1;
 %%%%%%%%%%%%%%%%%%%%%%%
 
 %Treatments
-
-if (t < 60)
-    ecf = 0;
-    Ex = 110;
-    z = 0;
-    s = 0.45;
-elseif ((t > 60) && (t < 120))
-    ecf = 0;
-    Ex = 90;
-    z = 0;
-    s = 0.5;
-else
-    ecf = 0;
-    Ex = 75;
-    z = 0;
-    s = 0.5;
-end
+  ecf = 0;
+  Ex = 0;
+  z = 0;
+  s = 1;
+% if (t < 60)
+%     ecf = 0;
+%     Ex = 110;
+%     z = 0;
+%     s = 0.45;
+% elseif ((t > 60) && (t < 120))
+%     ecf = 0;
+%     Ex = 90;
+%     z = 0;
+%     s = 0.5;
+% else
+%     ecf = 0;
+%     Ex = 75;
+%     z = 0;
+%     s = 0.5;
+% end
 %%%%%%%%%%%%%%%%%
 
 
@@ -134,19 +137,16 @@ FG = 0.0694 * ABSA;
 Tmax = 2;
 KM4 = 5;
 pInitial0 = gamma / C * 18;
-% numerador = (pInitial0 - p0)^d
-% denominador1 = (pInitial0 - p0)^d + k^d
-% denominador = ((pInitial0 - p0)^d + k^d )^(1/d)
 iaster0 = (pInitial0 - p0) / ((pInitial0 - p0)^d + k^d )^(1/d);
 
-fprintf('t: %.5f ', t);
-fprintf('e(): %.5f ', e());
-fprintf('E(): %.5f ', E());
-fprintf('Pglut4(): %.5f ', Pglut4());
-fprintf('a(): %.5f ', a());
-fprintf('iaster(): %.5f ', iaster());
-fprintf('iaster0: %.5f ', iaster0);
-fprintf('BG: %.5f \n', BG);
+% fprintf('t: %.5f ', t);
+% fprintf('e(): %.5f ', e());
+% fprintf('E(): %.5f ', E());
+% fprintf('Pglut4(): %.5f ', Pglut4());
+% fprintf('a(): %.5f ', a());
+% fprintf('iaster(): %.5f ', iaster());
+% fprintf('iaster0: %.5f ', iaster0);
+% fprintf('BG: %.5f \n', BG);
 
 
 Yprime=[-e() + ecf;
