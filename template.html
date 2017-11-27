@@ -37,29 +37,20 @@
 </p>
 <hr />
 <h1 style="text-align: center;"><strong>SERVOGLU</strong></h1>
-<h3 style="text-align: center;">Informe de simulaci&oacute;n</h3>
+<h3 style="text-align: center;">Informe de simulaci&oacute;n {{date}}</h3>
 <table style="width: 670px; height: 286px;">
 <tbody>
 <tr style="height: 17px;">
 <td style="width: 660.8px; height: 17px;"><strong>Paciente:</strong> {{patientName}}</td>
 </tr>
 <tr style="height: 17px;">
-<td style="width: 660.8px; height: 17px;"><strong>Sexo:</strong>&nbsp;{{sex}}&nbsp;</td>
-</tr>
-<tr style="height: 17px;">
-<td style="width: 660.8px; height: 17px;"><strong>Fecha de nacimiento:</strong> {{birthdate}}</td>
-</tr>
-<tr style="height: 17px;">
 <td style="width: 660.8px; height: 17px;"><strong>Informaci&oacute;n adicional del paciente:</strong> {{patientAdditionalInfo}}</td>
 </tr>
 <tr style="height: 17px;">
-<td style="width: 660.8px; height: 17px;"><strong>Nombre del tecnico:</strong>&nbsp;{{technician}}</td>
+<td style="width: 660.8px; height: 17px;"><strong>Nombre del t&eacute;cnico:</strong>&nbsp;{{technician}}</td>
 </tr>
 <tr style="height: 17px;">
 <td style="width: 660.8px; height: 17px;"><strong>Informaci&oacute;n adicional de la simulaci&oacute;n:</strong>&nbsp;{{simulationInfo}}</td>
-</tr>
-<tr style="height: 17px;">
-<td style="width: 660.8px; height: 17px;"><strong>Fecha:</strong>&nbsp;{{date}}&nbsp;</td>
 </tr>
 <tr style="height: 118.075px;">
 <td style="width: 660.8px; height: 118.075px; text-align: left; vertical-align: top;"><strong>Descripci&oacute;n del modelo:&nbsp;</strong>{{modelInfo}}<strong>&nbsp;</strong></td>
@@ -68,7 +59,8 @@
 </table>
 <table>
 <tr >
-<td style="width: 660.8px; height: 118.075px; text-align: left; vertical-align: top;">&nbsp;{{equations}}&nbsp;</td><td>&nbsp;{{constants}}&nbsp;</td>
+<td style="width: 660.8px; text-align: left; vertical-align: top;">&nbsp;{{equations}}&nbsp;</td><!--td>&nbsp;{{constants}}&nbsp;</td-->
+<td style="width: 660.8px; text-align: left; vertical-align: top;">&nbsp;{{userDefinedParameters}}&nbsp;</td>
 </tr>
 </table>
 <p style="text-align: center;">&nbsp;</p>

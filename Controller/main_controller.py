@@ -147,20 +147,20 @@ class Controller():
                     # 0.5 anduvo bien
             if treatment == "c":
                 if t < 60:
-                    self.window.ui.dck_treat_controls.slider[0].setValue(0.0103)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.010)  # Parenteral feeding
                     self.window.ui.dck_treat_controls.slider[1].setValue(110 * const)  # Exogenic insulin supply
                     self.window.ui.dck_treat_controls.slider[2].setValue(0 * const)  # Enteral tube feeding
-                    self.window.ui.dck_treat_controls.slider[3].setValue(1 * const)
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.45 * const)
                 elif t >= 60 and t < 120:
                     self.window.ui.dck_treat_controls.slider[0].setValue(0.013 * const)  # Parenteral feeding
                     self.window.ui.dck_treat_controls.slider[1].setValue(90 * const)  # Exogenic insulin supply
                     self.window.ui.dck_treat_controls.slider[2].setValue(0 * const)  # Enteral tube feeding
-                    self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)
                 else:
-                    self.window.ui.dck_treat_controls.slider[0].setValue(0.0103 * const)  # Parenteral feeding
+                    self.window.ui.dck_treat_controls.slider[0].setValue(0.010 * const)  # Parenteral feeding
                     self.window.ui.dck_treat_controls.slider[1].setValue(75 * const)  # Exogenic insulin supply
                     self.window.ui.dck_treat_controls.slider[2].setValue(0)  # Enteral tube feeding
-                    self.window.ui.dck_treat_controls.slider[3].setValue(0.6 * const)  # Insulin sensitivity
+                    self.window.ui.dck_treat_controls.slider[3].setValue(0.5 * const)  # Insulin sensitivity
 
 
     def handler_update_graph(self):
@@ -171,7 +171,7 @@ class Controller():
         if self.window.is_index_end_axis():
             self.window.append_new_axis_points()
 
-        #self.change_treatment(99,"a",self.window.indexGr -1 )
+        #self.change_treatment(93,"c",self.window.indexGr -1 )
 
         # Update graphs with new points,
         # old points are needed to update the legends

@@ -1,6 +1,6 @@
 Label,English,Español
 lbl.Sex,Sex,SexES
-"lbl.{Male 0,Female 1}","{Male 0,Female 1}","{Male 0,Female 1}ES"
+"lbl.{Male 0,Female 1}","Male 0,Female 1","Male 0,Female 1ES"
 lbl.Height,Height,HeightES
 lbl.Weight,Weight,WeightES
 lbl.Age,Age,AgeES

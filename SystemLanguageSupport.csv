@@ -1,5 +1,6 @@
 Label,English,Español
 lbl.Version,Version 1.0 , Versión 1.0
+
 "lbl.PlayPause","Play/Pause simulation","Iniciar/Pausar la simulación"
 "lbl.NextStep","Next step","Siguiente paso"
 "lbl.Stop","Stop","Detener"
@@ -27,3 +28,4 @@ lbl.Version,Version 1.0 , Versión 1.0
 "lbl.PlotConfiguration","Plot configuration","Configuración de gráficos"
 "lbl.ExportSuccess","Simulation exported succesfully","Simulación exportada con éxito"
 "lbl.ExportResult","Exporting results","Resultados de la exportación"
+

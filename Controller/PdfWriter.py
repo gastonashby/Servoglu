@@ -9,20 +9,29 @@ import locale
 
 
 
-def generateMetaData(pdfTuple,equations,constants,templateFile):
+def generateMetaData(pdfTuple,equations,userDefinedParameters,constants,):
+    templateFile = pdfTuple.templateFile
     # Generate PDF from a html file.
     with open(templateFile, 'r') as myfile:
         html = myfile.read().replace('\n', '')
 
+    #['name', 'description', 'unit', 'defaultValue', 'equation','convertFactor', 'detailedDescription'])
     equationsDescription = "<strong>Equations:</strong> </br>"
     for e in equations:
-        equationsDescription+= e.name + " = " + e.equation + "</br>"
+        equationsDescription+= "d"+e.name+"/dt" + " : " + e.description + " (" + e.unit + ")" + "</br>"
+
+    # ['name', 'description', 'unit', 'type', 'defaultValue','detailedDescription', 'color']
+    userDefinedParamDesc = "<strong>Initial conditions:</strong> </br>"
+    for u in userDefinedParameters:
+        userDefinedParamDesc += u.description + " = " + u.defaultValue + " (" + u.unit + ")" + "</br>"
+    for e in equations:
+        userDefinedParamDesc += "d"+e.name+"/dt" + " = " + e.defaultValue + " (" + e.unit + ")" + "</br>"
 
     constantsDescription = "<strong>Constants:</strong> </br>"
     for c in constants:
         constantsDescription += c.name + " : " + c.value1 + " = " + c.value2 +"</br>"
 
-    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,constantsDescription)
+    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,userDefinedParamDesc,constantsDescription)
     resultFile = open('meta.pdf', "w+b")
 
     # convert HTML to PDF
@@ -31,31 +40,31 @@ def generateMetaData(pdfTuple,equations,constants,templateFile):
     resultFile.close()  # close output file
 
 
-def replaceVariables(html,pdfTuple,equationsDescription,constantsDescription):
+def replaceVariables(html,pdfTuple,equationsDescription,userDefinedParamDesc,constantsDescription):
     html = html.replace("{{patientName}}",pdfTuple.patientName)
-    html = html.replace("{{sex}}", pdfTuple.sex)
-    html = html.replace("{{birthdate}}", pdfTuple.birthdate)
     html = html.replace("{{patientAdditionalInfo}}", pdfTuple.patientAdditionalInfo)
     html = html.replace("{{technician}}", pdfTuple.technician)
     html = html.replace("{{simulationInfo}}", pdfTuple.simulationInfo)
     #Seteamos fecha en idioma local
     locale.setlocale(locale.LC_TIME, '')
-    html = html.replace("{{date}}", datetime.datetime.now().strftime("%I:%M%p de %B %d, %Y"))
+    format = '%Y-%m-%d %I:%M %p'
+    html = html.replace("{{date}}", datetime.datetime.now().strftime(format))
     html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
     html = html.replace("{{equations}}",equationsDescription)
+    html = html.replace("{{userDefinedParameters}}", userDefinedParamDesc)
     html = html.replace("{{constants}}", constantsDescription)
     return html
 
-def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,treatment,xData,equations,userDefined,plotSections,plotsPerPage,timeUnit):
+def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,treatment,xData,equations,userDefined,pdfTuple):
+    plotSections = pdfTuple.plotSections
+    plotsPerPage = pdfTuple.plotsPerPage
+    timeUnit = pdfTuple.timeUnit
 
-    numberOfPages = math.ceil((plotSections * 2) / plotsPerPage)
     plotSize = math.ceil(xData.size / plotSections)
     grid_size = (plotsPerPage, 1)
 
     with PdfPages('plots.pdf') as pdf:
         plt.figure(figsize=(8.27, 11.69))
-
-
         equationsIndex = 0
         #Si hay solo una pagina el indice del tratamiento es 0
         if plotsPerPage == 1:
@@ -69,19 +78,13 @@ def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,tre
             ###PLOT EQUATIONS####
             plt.subplot2grid(grid_size, (equationsIndex,0))
             j = 0
-            if i < plotSections:
-                for ec in equations:
-                    if simulatedEquations[j]: #si estaba activa la visualizacion de la grafica
-                        plt.plot(xData[i*plotSize:(plotSize*(i+1))+1],
-                                 results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.description + " (" + ec.unit + ")")
-                    j+=1
-            else:
-                for ec in equations:
-                    if simulatedEquations[j]:
-                        plt.plot(xData[i*plotSize:],
-                                 results[i*plotSize:, j],
-                                 label=ec.description + " (" + ec.unit + ")")
-                    j+=1
+            for ec in equations:
+                if simulatedEquations[j]: #si estaba activa la visualizacion de la grafica
+                    plt.plot(xData[i*plotSize:(plotSize*(i+1))+1],
+                             results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.name +":"+ ec.description + " (" + ec.unit + ")")
+                    plotAlarms(plt, ec)
+                j+=1
+
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time"+"("+timeUnit+")") #TODO agregar unidad de tiempo en ejes y labels
             plt.grid(True)
@@ -133,9 +136,12 @@ def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,tre
 
         plt.close()
 
-def generatePlots(simulatedEquations,results,xData,equations,plotSections,plotsPerPage,timeUnit):
 
-    numberOfPages = math.ceil((plotSections * 2) / plotsPerPage)
+def generatePlots(simulatedEquations,results,xData,equations,pdfTuple):
+    plotSections = pdfTuple.plotSections
+    plotsPerPage = pdfTuple.plotsPerPage
+    timeUnit = pdfTuple.timeUnit
+
     plotSize = math.ceil(xData.size / plotSections)
     grid_size = (plotsPerPage, 1)
 
@@ -149,18 +155,14 @@ def generatePlots(simulatedEquations,results,xData,equations,plotSections,plotsP
             ###PLOT EQUATIONS####
             plt.subplot2grid(grid_size, (equationsIndex,0))
             j = 0
-            if i < plotSections:
-                for ec in equations:
-                    if simulatedEquations[j]:
-                        plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j],
-                                 label=ec.description + " (" + ec.unit + ")")
-                    j+=1
-            else:
-                for ec in equations:
-                    if simulatedEquations[j]:
-                        plt.plot(xData[i*plotSize:], results[i*plotSize:, j],
-                                 label=ec.description + " (" + ec.unit + ")")
-                    j+=1
+            for ec in equations:
+                if simulatedEquations[j]:
+                    plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j],
+                             label=ec.description + " (" + ec.unit + ")")
+                    plotAlarms(plt,ec)
+                j+=1
+
+
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time" + "(" + timeUnit + ")")
             plt.title('Model Equations')
@@ -182,20 +184,16 @@ def generatePlots(simulatedEquations,results,xData,equations,plotSections,plotsP
 
         plt.close()
 
-def plotEquations(i,plotSections,equations,xData,plotSize,results):
-    j = 0
-    fig = None
-    if i < plotSections:
-        for ec in equations:
-            fig = plt.figure(xData[i * plotSize:(plotSize * (i + 1)) + 1],
-                     results[i * plotSize:(plotSize * (i + 1)) + 1, j], label=ec.description.format(i=j))
-            j += 1
-    else:
-        for ec in equations:
-            fig = plt.figure(xData[i * plotSize:], results[i * plotSize:, j], label=ec.description.format(i=j))
-            j += 1
-    fig.legend(loc=2, prop={'size': 6})
-    return fig
+def plotAlarms(plot,ec):
+    if (ec.alMaxVal != None):
+        plt.axhline(y=ec.alMaxVal, linestyle='dashed', linewidth=0.7,
+                    label=ec.name + " alarm max/min value")
+    if (ec.alMinVal != None) and (
+                ec.alMaxVal != None):  # Se imprime solo una vez el label(el del max o min)
+        plt.axhline(y=ec.alMinVal, linestyle='dashed', linewidth=0.7)
+    elif (ec.alMinVal != None):  # Se imprime solo una vez el label(el del max o min)
+        plt.axhline(y=ec.alMinVal, linestyle='dashed', linewidth=0.7,
+                    label=ec.name + " alarm max/min value")
 
 
 
@@ -218,16 +216,15 @@ def mergePdfs(fileName):
 
 
 def createPdf(simulatedEquations,simulatedTreatment,results,treatment,xData,
-              equations,userDefined,constants,fileName,pdfTuple,plotSections,plotsPerPage,
-              timeUnit,templateFile):
+              equations,userDefinedTreatment,userDefinedParameters,constants,pdfTuple):
 
-    generateMetaData(pdfTuple,equations,constants,templateFile)
+    generateMetaData(pdfTuple,equations,userDefinedParameters,constants)
 
     if (len(treatment) > 0):
-        generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results, treatment, xData, equations, userDefined, plotSections, plotsPerPage,timeUnit)
+        generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results, treatment, xData, equations, userDefinedTreatment,pdfTuple)
     else:
-        generatePlots(simulatedEquations,results, xData, equations, plotSections, plotsPerPage, timeUnit)
-    mergePdfs(fileName)
+        generatePlots(simulatedEquations,results, xData, equations,pdfTuple)
+    mergePdfs(pdfTuple.fileName)
 
 
 
