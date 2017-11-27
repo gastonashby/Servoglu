@@ -209,6 +209,7 @@ class Controller():
         try:
             if name != "":
                 if name.endswith(".xml"):
+                    self.window.timer.stop()
                     self.window.restart_graphs()
 
                     self.model = Model()

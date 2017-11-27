@@ -100,9 +100,9 @@ class Model:
             exec(self._calculated[_i])
 
     def change_scale(self, step, init):
-        self.indexModel -= 1
+        self.step = step
         self._xdata = np.linspace(init, init + (self.top_x - 1) * self.step, self.top_x)
-        self.plt_step = self.step
+        self.plt_step = step
 
     def recalculate(self, step):
         self._aux = self._sol[self.indexModel-1]
@@ -151,24 +151,23 @@ class Model:
 
 
     def solveSystem(self, ini):
-        # r = ode(self.ode_sys).set_integrator('lsoda')
-        # r.set_initial_value(ini, self.indexModel)
-        # t1 = self.top_x
-        # dt = self.plt_step
-        # s = []
-        # # s.append(r.integrate(self.indexModel))
-        # s.append(ini)
-        # time = 1
-        # try:
-        #     while r.successful() and r.t < t1*self.plt_step:
-        #         print(time)
-        #         s.append(r.integrate(time))
-        #         time = r.t + dt
-        # except Exception as e:
-        #     print(e)
-        #
-        # print(s[0:10])
-        s = odeint(self.odeint_sys, ini, self._xdata)
+        r = ode(self.ode_sys).set_integrator('dopri5')
+        r.set_initial_value(ini, self.indexModel)
+        t1 = self.top_x
+        dt = self.plt_step
+        s = []
+        # s.append(r.integrate(self.indexModel))
+        s.append(ini)
+        try:
+            while r.successful() and r.t < t1*self.plt_step:
+                time = r.t + dt
+                print(time)
+                s.append(r.integrate(time))
+        except Exception as e:
+            print(e)
+
+        print(s[0:10])
+        # s = odeint(self.odeint_sys, ini, self._xdata)
         return s
 
 

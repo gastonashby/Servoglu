@@ -234,6 +234,14 @@ class Window(QtGui.QMainWindow):
                 for a in self.maxLines:
                     self.ui.ui_sinc_plot.removeItem(a)
 
+                for gr in self.all_curves:
+                    gr.clear()
+                self.all_curves = []
+
+                for gr in self.all_treat_curves:
+                    gr.clear()
+                self.all_treat_curves = []
+                
         except Exception as e:
             print(e)
             msg = QMessageBox()
