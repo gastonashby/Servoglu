@@ -62,7 +62,7 @@
 			</constant>
 
             <!-- GlucoseInitialValue -->
-			<constant name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/kg" calculated="False">
+			<!--constant name="GlucoseInitialValue" description="lbl.Glucose Initial Value" unit="mmol/kg" calculated="False">
 				<m:math>
 					<apply>
 						<eq/>
@@ -70,7 +70,7 @@
 						<cn type="real">5</cn>
 					</apply>
 				</m:math>
-			</constant>
+			</constant-->
 			
 			
 			<!-- Van cauter parameters -->
@@ -891,7 +891,7 @@
 		</equation>
 
 		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
-		<equation name="BG" defaultValue="GlucoseInitialValue" detailedDescription="lbl.Blood GlucoseDD"
+		<equation name="BG" defaultValue="5" detailedDescription="lbl.Blood GlucoseDD"
 				  simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/kg">
 			<m:math>
 				<apply>
