@@ -6,10 +6,10 @@ lbl.Weight,Weight,WeightES
 lbl.Age,Age,AgeES
 lbl.years,years,yearsES
 lbl.Type 1 Diabetes,Type 1 Diabetes,Type 1 DiabetesES
-"lbl.{No 0,Yes 1}","{No 0,Yes 1}","{No 0,Yes 1}ES"
+"lbl.{No 0,Yes 1}","No 0,Yes 1","No 0,Yes 1ES"
 lbl.Glucose Initial Value,Glucose Initial Value,Glucose Initial ValueES
 lbl.Intravenous Glucose,Intravenous Glucose,Intravenous GlucoseES
-lbl.ExDescription,Exogenous insulin appearance rate,Exogenous insulin appearance rateES
+lbl.ExDescription,Insulin infusion,Insulin infusionES
 lbl.Enteral carbohydrate feedrate,Enteral carbohydrate feedrate,Enteral carbohydrate feedrateES
 lbl.Insulin sensitiviy,Insulin sensitiviy,Insulin sensitiviyES
 lbl.Body surface area,Body surface area,Body surface areaES

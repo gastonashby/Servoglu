@@ -23,9 +23,9 @@ def generateMetaData(pdfTuple,equations,userDefinedParameters,constants,):
     # ['name', 'description', 'unit', 'type', 'defaultValue','detailedDescription', 'color']
     userDefinedParamDesc = "<strong>Initial conditions:</strong> </br>"
     for u in userDefinedParameters:
-        userDefinedParamDesc += u.description + " = " + u.defaultValue + " (" + u.unit + ")" + "</br>"
+        userDefinedParamDesc += u.description + " = " + u.defaultValue + " " + u.unit + "</br>"
     for e in equations:
-        userDefinedParamDesc += "d"+e.name+"/dt" + " = " + e.defaultValue + " (" + e.unit + ")" + "</br>"
+        userDefinedParamDesc += "d"+e.name+"/dt" + " = " + e.defaultValue + " " + e.unit + "</br>"
 
     constantsDescription = "<strong>Constants:</strong> </br>"
     for c in constants:
@@ -82,6 +82,7 @@ def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,tre
                 if simulatedEquations[j]: #si estaba activa la visualizacion de la grafica
                     plt.plot(xData[i*plotSize:(plotSize*(i+1))+1],
                              results[i*plotSize:(plotSize*(i+1))+1, j], label=ec.name +":"+ ec.description + " (" + ec.unit + ")")
+                    #plt.xticks(numpy.arange(min(xData[i*plotSize:(plotSize*(i+1))+1]), max(xData[i*plotSize:(plotSize*(i+1))+1]) + 1, 1.0))
                     plotAlarms(plt, ec)
                 j+=1
 
@@ -112,6 +113,8 @@ def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,tre
                 if simulatedTreatment[h]:
                     plt.plot(xData[i * plotSize:(plotSize * (i + 1)) + 1],
                              treatment[i * plotSize:(plotSize * (i + 1)) + 1, h], label=u.description + " (" + u.unit + ")")
+                    #plt.xticks(numpy.arange(min(xData[i * plotSize:(plotSize * (i + 1)) + 1]),
+                    #                        max(xData[i * plotSize:(plotSize * (i + 1)) + 1]) + 1, 1.0))
                 h += 1
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time" + "(" + timeUnit + ")")
@@ -160,6 +163,8 @@ def generatePlots(simulatedEquations,results,xData,equations,pdfTuple):
                     plt.plot(xData[i*plotSize:(plotSize*(i+1))+1], results[i*plotSize:(plotSize*(i+1))+1, j],
                              label=ec.description + " (" + ec.unit + ")")
                     plotAlarms(plt,ec)
+                    #plt.xticks(numpy.arange(min(xData[i * plotSize:(plotSize * (i + 1)) + 1]),
+                    #                        max(xData[i * plotSize:(plotSize * (i + 1)) + 1]) + 1, 1.0))
                 j+=1
 
 
