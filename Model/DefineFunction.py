@@ -147,12 +147,11 @@ class DefiniteFunction:
     def definiteSlider(self, u, i, convertFactor):
         sliderF = "def sliderValueChanged" + str(i) + "(self, int_value):\n\t" \
                     "new_val = int_value / " + str(convertFactor) + "\n\t" \
-                    "#print(new_val / 100)\n\t" \
-                    "self.model." + u.name + " = new_val / 100 \n\t" \
-                    "#self.window.ui.dck_treat_controls.treat_vals[" + str(i - 1) + "] = new_val / 100 \n\t" \
+                    "#self.model." + u.name + " = new_val / 100 \n\t" \
+                    "self.window.ui.dck_treat_controls.tr_names_value['" + u.name + "'] =  new_val / 100 \n\t" \
                     "self.window.ui.dck_treat_controls.label[" + str(i - 1) + "]" \
                     ".setText('" + u.description + " ' + str(int_value/100) + ' " + u.unit + "')\n\t" \
-                    "#self.model.recalculate(self.window.step)\n"
+                    "self.window.ui.dck_treat_controls.button_apply_tr.setEnabled(True)\n\t"
 
         _s_f_aux = "sliderValueChanged" + str(i)
 
@@ -188,7 +187,8 @@ class DefiniteFunction:
         s1 = "def trSpinChangeValue_" + str(i) + "(self):\n\t" \
                   "#print('" +  u.name + "')\n\t" \
                   "#print(self.tr_spins[" + str(i) + "].value())\n\t" \
-                  "self.parent.controller.model." + u.name + " = self.tr_spins[" + str(i) + "].value() \n\t" \
+                  "self.button_apply_tr.setEnabled(True)\n\t" \
+                  "self.tr_names_value['" + u.name + "'] = self.tr_spins[" + str(i) + "].value()\n\t"
 
         s2 = "trSpinChangeValue_" + str(i)
         return s1, s2

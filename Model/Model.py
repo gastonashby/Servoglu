@@ -40,7 +40,7 @@ class Model:
         self.functions = []
         self.languages = []
 
-    def odesys(self, XX, tt):
+    def odeint_sys(self, XX, tt):
 
         self.modelTime = int(tt)
         _i = 0
@@ -91,7 +91,7 @@ class Model:
         exec(definitions)
 
         self._auxIni = self._aux
-        self._sol = self.solveSystem(self.odesys, self._aux, self._xdata)
+        self._sol = self.solveSystem(self._aux)
         print('Solution created 1st time')
 
 
@@ -100,6 +100,7 @@ class Model:
             exec(self._calculated[_i])
 
     def change_scale(self, step, init):
+        self.indexModel -= 1
         self._xdata = np.linspace(init, init + (self.top_x - 1) * self.step, self.top_x)
         self.plt_step = self.step
 
@@ -111,7 +112,7 @@ class Model:
         self.updateCalculatedConstants()
 
         print("-- Recalculate --")
-        self._sol = self.solveSystem(self.odesys, self._aux, self._xdata)
+        self._sol = self.solveSystem(self._aux)
         #print(self._sol)
 
     def change_val(self, i, val):
@@ -121,9 +122,9 @@ class Model:
         self.indexModel = 0
         self.updateCalculatedConstants()
         print("-- Restart --")
-        self._sol = self.solveSystem(self.odesys, self._auxIni, self._xdata)
+        self._sol = self.solveSystem(self._auxIni)
 
-    def odesys2(self, tt, XX):
+    def ode_sys(self, tt, XX):
         self.modelTime = int(tt)
         _i = 0
         salida = []
@@ -143,21 +144,32 @@ class Model:
         #       'BG:', round(self.BG,5))
         return salida
 
+    def refresh_variables(self, vars):
+        for n, v in vars.items():
+            # print(n + " = " + str(v))
+            exec("self." + n + " = " + str(v))
 
-    def solveSystem(self, odesys, ini, xdata):
-        try:
-            r = ode(self.odesys2).set_integrator('lsoda')
-            r.set_initial_value(ini, self.indexModel)
-            t1 = self.top_x
-            dt = 1
-            s = []
-            while r.successful() and r.t < t1:
-                s.append(r.integrate(r.t+dt))
 
-            #s = odeint(odesys, ini, xdata)
-            return s
-        except Exception as e:
-            raise e
+    def solveSystem(self, ini):
+        # r = ode(self.ode_sys).set_integrator('lsoda')
+        # r.set_initial_value(ini, self.indexModel)
+        # t1 = self.top_x
+        # dt = self.plt_step
+        # s = []
+        # # s.append(r.integrate(self.indexModel))
+        # s.append(ini)
+        # time = 1
+        # try:
+        #     while r.successful() and r.t < t1*self.plt_step:
+        #         print(time)
+        #         s.append(r.integrate(time))
+        #         time = r.t + dt
+        # except Exception as e:
+        #     print(e)
+        #
+        # print(s[0:10])
+        s = odeint(self.odeint_sys, ini, self._xdata)
+        return s
 
 
     def getPoint(self):
