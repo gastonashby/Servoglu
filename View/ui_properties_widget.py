@@ -53,7 +53,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
             _listChildAuxEq.append(_childAuxEq)
             _i += 1
             # print(const)
-        _paramAux = {'name': 'Equations', 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
+        _paramAux = {'name': 'Differential equations', 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
         _params.append(_paramAux)
 
         _listChildAuxFunc = []

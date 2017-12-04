@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>679</width>
-    <height>625</height>
+    <width>553</width>
+    <height>579</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>510</y>
+     <x>10</x>
+     <y>450</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -37,12 +37,12 @@
     <rect>
      <x>40</x>
      <y>20</y>
-     <width>601</width>
-     <height>311</height>
+     <width>471</width>
+     <height>251</height>
     </rect>
    </property>
    <property name="title">
-    <string>PDF export information</string>
+    <string>PDF export information - 29/11/2017 20:34</string>
    </property>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
@@ -57,10 +57,10 @@
      <string>Patient name:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="subjectNameInput">
+   <widget class="QLineEdit" name="patientName">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>220</x>
       <y>40</y>
       <width>211</width>
       <height>20</height>
@@ -71,34 +71,34 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>70</y>
       <width>241</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Patient additional info:</string>
+     <string>Patient identifier:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>220</y>
+      <y>170</y>
       <width>241</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Informacion adicional de la simulacion</string>
+     <string>Simultation additional information:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
-      <width>171</width>
+      <y>100</y>
+      <width>241</width>
       <height>16</height>
      </rect>
     </property>
@@ -106,33 +106,56 @@
      <string>Technician name:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="technicianInput">
+   <widget class="QLineEdit" name="technicianName">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>170</y>
+      <x>220</x>
+      <y>100</y>
       <width>211</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="recordingAdditionalInfoInput">
+   <widget class="QTextEdit" name="simulationAdditionalInfo">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>210</y>
+      <x>220</x>
+      <y>160</y>
       <width>211</width>
       <height>71</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="patientAdditionalInfoInput">
+   <widget class="QLineEdit" name="patientIdentifier">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>80</y>
+      <x>220</x>
+      <y>70</y>
       <width>211</width>
-      <height>71</height>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>241</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Technician identifier:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="technicianIdentifier">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>130</y>
+      <width>211</width>
+      <height>20</height>
      </rect>
     </property>
    </widget>
@@ -140,48 +163,44 @@
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>39</x>
-     <y>340</y>
-     <width>601</width>
+     <x>40</x>
+     <y>280</y>
+     <width>471</width>
      <height>151</height>
     </rect>
    </property>
    <property name="title">
     <string>Plot configuration</string>
    </property>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>40</y>
-      <width>131</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>sections</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_5">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>131</width>
+      <x>200</x>
+      <y>110</y>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
     <property name="text">
-     <string>Divide plot into</string>
+     <string>Number of Periods</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox">
+   <widget class="QSpinBox" name="plotWidth">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>30</y>
+      <x>320</x>
+      <y>100</y>
       <width>42</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="correctionMode">
@@ -197,47 +216,102 @@
      <number>2</number>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox_2">
+   <widget class="QCheckBox" name="plotByPeriods">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>80</y>
-      <width>42</width>
-      <height>41</height>
+      <x>110</x>
+      <y>110</y>
+      <width>20</width>
+      <height>20</height>
      </rect>
     </property>
-    <property name="correctionMode">
-     <enum>QAbstractSpinBox::CorrectToPreviousValue</enum>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
     </property>
-    <property name="minimum">
-     <number>1</number>
+    <property name="text">
+     <string/>
     </property>
-    <property name="maximum">
-     <number>10</number>
+    <property name="checked">
+     <bool>false</bool>
     </property>
-    <property name="value">
-     <number>4</number>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>110</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot by periods:</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="displayAlarm">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>70</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>90</y>
-      <width>221</width>
+      <y>70</y>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Numerp de plots por pagina</string>
+     <string>Display alarms:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>231</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Simulated time:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_15">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>30</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>60 min</string>
     </property>
    </widget>
   </widget>
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>580</y>
+     <x>220</x>
+     <y>510</y>
      <width>118</width>
      <height>23</height>
     </rect>

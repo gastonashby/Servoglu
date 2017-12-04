@@ -2,9 +2,6 @@
 
 <servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier"
 		  languageSupport="GlucosafeLanguageSupport.csv" template="template.html" >
-	<alarms>
-        <alarm equation="BG" description="lbl.alarmBG" minVal="1.9" maxVal="6.2"/>
-    </alarms>
     <parameters>
 		<userDefinedParameters>
 			<userDefined name="Sex" description="lbl.Sex" detailedDescription="lbl.sexDescription"
@@ -18,17 +15,18 @@
 			<!-- Treatments, entered by the user -->
 			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
 						 detailedDescription="Represents the Intravenous Glucose rate"
-						 type="real" defaultValue ="0.02" slider="True"
+						 type="real" defaultValue ="0" slider="True"
 						 minTreatment="0.0" maxTreatment="0.05" graphAsTreatment="true"/>
 
 			<userDefined name="Ex"  description="lbl.ExDescription"
 						detailedDescription="lbl.ExDetailedDescription"
-						type="real"  defaultValue ="110"  unit="mU/min"
+						type="real"  defaultValue ="0"  unit="mU/min"
 						slider="True"  minTreatment="0"  maxTreatment="200"
 						graphAsTreatment="true"  color="#AA6C39" />
 
 			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate"
-						 unit="mmol/kg min" type="real" defaultValue ="0.0" slider="True" minTreatment="0.0" maxTreatment="1" color="#2D882D" graphAsTreatment="true"/>
+						 unit="mmol/kg min" type="real" defaultValue ="0.0" slider="True"
+						 minTreatment="0.0" maxTreatment="1" color="#2D882D" graphAsTreatment="false"/>
 
 			<!-- End of treatments, entered by the user -->
 			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real"
