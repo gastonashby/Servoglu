@@ -178,7 +178,7 @@ class ModelParser():
 
             convertFactor = 1
             if 'convertFactor' in userdp.attrib:
-                convertFactor = float(userdp.attrib['defaultValue'])
+                convertFactor = float(userdp.attrib['convertFactor'])
 
             color = ""
             if 'color' in userdp.attrib:
