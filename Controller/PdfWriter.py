@@ -9,29 +9,32 @@ import locale
 
 
 
-def generateMetaData(pdfTuple,equations,userDefinedParameters,constants,):
+def generateMetaData(pdfTuple,equations,userDefinedParameters,constants):
     templateFile = pdfTuple.templateFile
     # Generate PDF from a html file.
     with open(templateFile, 'r') as myfile:
         html = myfile.read().replace('\n', '')
 
     #['name', 'description', 'unit', 'defaultValue', 'equation','convertFactor', 'detailedDescription'])
-    equationsDescription = "<strong>Diferential equations:</strong> </br>"
+    equationsDescription = "<strong>Sistema de ecuaciones diferenciales:</strong> </br>"
     for e in equations:
         equationsDescription+= "d"+e.name+"/dt" + " : " + e.description + " (" + e.unit + ")" + "</br>"
 
+    equationsInitialValues = "<strong>Valores iniciales:</strong> </br>"
+    for e in equations:
+        equationsInitialValues += e.name+"(0)" + " = " + e.defaultValue + " " + e.unit + "</br>"
+
     # ['name', 'description', 'unit', 'type', 'defaultValue','detailedDescription', 'color']
-    userDefinedParamDesc = "<strong>Initial conditions:</strong> </br>"
+    userDefinedParamDesc = "<strong>Condiciones iniciales:</strong> </br>"
     for u in userDefinedParameters:
         userDefinedParamDesc += u.description + " = " + u.defaultValue + " " + u.unit + "</br>"
-    for e in equations:
-        userDefinedParamDesc += "d"+e.name+"/dt" + " = " + e.defaultValue + " " + e.unit + "</br>"
 
-    constantsDescription = "<strong>Constants:</strong> </br>"
+
+    constantsDescription = "<strong>Constantes:</strong> </br>"
     for c in constants:
         constantsDescription += c.name + " : " + c.value1 + " = " + c.value2 +"</br>"
 
-    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,userDefinedParamDesc,constantsDescription)
+    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,userDefinedParamDesc,constantsDescription)
     resultFile = open('meta.pdf', "w+b")
 
     # convert HTML to PDF
@@ -40,7 +43,7 @@ def generateMetaData(pdfTuple,equations,userDefinedParameters,constants,):
     resultFile.close()  # close output file
 
 
-def replaceVariables(html,pdfTuple,equationsDescription,userDefinedParamDesc,constantsDescription):
+def replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,userDefinedParamDesc,constantsDescription):
     html = html.replace("{{patientName}}",pdfTuple.patientName)
     html = html.replace("{{patientIdentifier}}", pdfTuple.patientIdentifier)
     html = html.replace("{{technicianName}}", pdfTuple.technicianName)
@@ -52,6 +55,7 @@ def replaceVariables(html,pdfTuple,equationsDescription,userDefinedParamDesc,con
     html = html.replace("{{date}}", datetime.datetime.now().strftime(format))
     html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
     html = html.replace("{{equations}}",equationsDescription)
+    html = html.replace("{{equationsInitialValues}}", equationsInitialValues)
     html = html.replace("{{userDefinedParameters}}", userDefinedParamDesc)
     html = html.replace("{{constants}}", constantsDescription)
     html = html.replace("{{simulatedTime}}", pdfTuple.simulatedTime + " " + pdfTuple.timeUnit)
@@ -122,9 +126,7 @@ def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,tre
             for u in userDefined:
                 if simulatedTreatment[h]:
                     plt.plot(xData[i * plotSize:(plotSize * (i + 1)) + 1],
-                             treatment[i * plotSize:(plotSize * (i + 1)) + 1, h], label=u.description + " (" + u.unit + ")")
-                    #plt.xticks(numpy.arange(min(xData[i * plotSize:(plotSize * (i + 1)) + 1]),
-                    #                        max(xData[i * plotSize:(plotSize * (i + 1)) + 1]) + 1, 1.0))
+                             treatment[i * plotSize:(plotSize * (i + 1)) + 1, h],'-r' ,label=u.description + " (" + u.unit + ")")
                 h += 1
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time" + "(" + timeUnit + ")")
