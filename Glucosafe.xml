@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier"
-		  languageSupport="GlucosafeLanguageSupport.csv" template="GlucosafeTemplate.html" >
+		  languageSupport="GlucosafeLanguageSupport.csv" template="template.html" >
 	<alarms>
         <alarm equation="BG" description="lbl.alarmBG" minVal="1.9" maxVal="6.2"/>
     </alarms>
@@ -583,8 +583,7 @@
 
 		</constants>
 
-		
-		
+
 	</parameters>
 	<functions>
 		<function name="e" parameters="" description="lbl.Glucose gut absorption">
@@ -873,7 +872,7 @@
 	</functions>	
 	<equations>
 		<!-- dNdt= -e(t) + ecf(t) -->
-		<equation name="N" defaultValue="0.828" simulate="False"
+		<equation name="N" defaultValue="0.828" visible="False"
 				  detailedDescription="lbl.Bioavailable glucoseDD"
 				  description="lbl.Bioavailable glucose" unit="mmol/kg">
 			<m:math>
@@ -892,7 +891,8 @@
 
 		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
 		<equation name="BG" defaultValue="5" detailedDescription="lbl.Blood GlucoseDD"
-				  simulate="True" description="lbl.Blood Glucose concentration" unit="mmol/kg">
+				  visible="True" description="lbl.Blood Glucose concentration" unit="mg/dl"
+                  convertFactor="18.018" alarmDescription="lbl.alarmBG" alarmMinVal="140" alarmMaxVal="180">
 			<m:math>
 				<apply>
 					<divide/>
@@ -916,7 +916,7 @@
 		</equation>
 
 		<!-- dIdt= -nkl*I(t) - nI/VP*(I(t) - Q(t)) + (P(t) + U(t))/Vp  -->
-		<equation name="I" defaultValue="30" simulate="False" description="lbl.Plasma Insulin concentration" unit="mU/l">
+		<equation name="I" defaultValue="30" visible="False" description="lbl.Plasma Insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>
@@ -960,7 +960,7 @@
 		</equation>
 		
 		
-		<equation name="Q" defaultValue="18" simulate="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
+		<equation name="Q" defaultValue="18" visible="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>

@@ -101,7 +101,7 @@ class ModelParser():
 
 
     def parseConstants(self,xmlroot, languageHash):
-        constants = xmlroot.find('parameters').find('constants')
+        constants = xmlroot.find('constants')
         Constant = collections.namedtuple('Constant',['name', 'description', 'unit', 'calculated', 'value1', 'operator', 'value2'])
         d = collections.deque()
         for cons in constants:
@@ -126,7 +126,7 @@ class ModelParser():
         return d
 
     def parseUserDefinedParameters(self,xmlroot, languageHash):
-        userDefinedParameters = xmlroot.find('parameters').find('userDefinedParameters')
+        userDefinedParameters = xmlroot.find('parameters')
         UserDefined = collections.namedtuple('UserDefined',
                                              ['name', 'description', 'unit', 'type', 'defaultValue', 'isSlider',
                                               'minTreatment', 'maxTreatment', 'graphAsTreatment', 'convertFactor',
@@ -245,7 +245,7 @@ class ModelParser():
                 convertFactor = float(eq.attrib['convertFactor'])
 
             defaultValue = eq.attrib['defaultValue']
-            simulate = self.str_to_bool(eq.attrib['simulate'])
+            simulate = self.str_to_bool(eq.attrib['visible'])
             equation = self.translateMathML(ET.tostring(eq[0], encoding='unicode', method='xml'))
 
             detailedDescription = ""

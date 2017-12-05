@@ -3,37 +3,36 @@
 <servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="min" name="GLUCOSAFE Model by Pielmeier"
 		  languageSupport="GlucosafeLanguageSupport.csv" template="template.html" >
     <parameters>
-		<userDefinedParameters>
-			<userDefined name="Sex" description="lbl.Sex" detailedDescription="lbl.sexDescription"
+			<parameter name="Sex" description="lbl.Sex" detailedDescription="lbl.sexDescription"
 						 unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
-			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"
+			<parameter name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
+			<parameter name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"
                          minTreatment="1" maxTreatment="600" graphAsTreatment="false"/>
-			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
-			<userDefined name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
+			<parameter name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
+			<parameter name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
 
 			<!-- Treatments, entered by the user -->
-			<userDefined name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
+			<parameter name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
 						 detailedDescription="Represents the Intravenous Glucose rate"
 						 type="real" defaultValue ="0" slider="True"
 						 minTreatment="0.0" maxTreatment="0.05" graphAsTreatment="true"/>
 
-			<userDefined name="Ex"  description="lbl.ExDescription"
+			<parameter name="Ex"  description="lbl.ExDescription"
 						detailedDescription="lbl.ExDetailedDescription"
 						type="real"  defaultValue ="0"  unit="mU/min"
 						slider="True"  minTreatment="0"  maxTreatment="200"
 						graphAsTreatment="true"  color="#AA6C39" />
 
-			<userDefined name="ecf" description="lbl.Enteral carbohydrate feedrate"
+			<parameter name="ecf" description="lbl.Enteral carbohydrate feedrate"
 						 unit="mmol/kg min" type="real" defaultValue ="0.0" slider="True"
 						 minTreatment="0.0" maxTreatment="1" color="#2D882D" graphAsTreatment="false"/>
 
 			<!-- End of treatments, entered by the user -->
-			<userDefined name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real"
+			<parameter name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real"
 						 defaultValue ="1.0" slider="False" minTreatment="0.0" maxTreatment="1.0" color="#226666"
 						 graphAsTreatment="false" />
-		</userDefinedParameters>
-		<constants>
+	</parameters>
+	<constants>
 
 			<constant name="ABSA" description="lbl.Body surface area" unit="m2" calculated="True">
 				<m:math>
@@ -580,9 +579,6 @@
 
 
 		</constants>
-
-
-	</parameters>
 	<functions>
 		<function name="e" parameters="" description="lbl.Glucose gut absorption">
 			<m:math>
@@ -870,7 +866,7 @@
 	</functions>
 	<equations>
 		<!-- dNdt= -e(t) + ecf(t) -->
-		<equation name="N" defaultValue="0.828" simulate="False"
+		<equation name="N" defaultValue="0.828" visible="False"
 				  detailedDescription="lbl.Bioavailable glucoseDD"
 				  description="lbl.Bioavailable glucose" unit="mmol/kg">
 			<m:math>
@@ -889,7 +885,7 @@
 
 		<!-- dBGdt=((e + z + E)BM) / Vbg  -->
 		<equation name="BG" defaultValue="80" detailedDescription="lbl.Blood GlucoseDD"
-				  simulate="True" description="lbl.Blood Glucose concentration" unit="mg/dl"
+				  visible="True" description="lbl.Blood Glucose concentration" unit="mg/dl"
                   convertFactor="18.018" alarmDescription="lbl.alarmBG" alarmMinVal="140" alarmMaxVal="180">
 			<m:math>
 				<apply>
@@ -914,7 +910,7 @@
 		</equation>
 
 		<!-- dIdt= -nkl*I(t) - nI/VP*(I(t) - Q(t)) + (P(t) + U(t))/Vp  -->
-		<equation name="I" defaultValue="30" simulate="False" description="lbl.Plasma Insulin concentration" unit="mU/l">
+		<equation name="I" defaultValue="30" visible="False" description="lbl.Plasma Insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>
@@ -958,7 +954,7 @@
 		</equation>
 
 
-		<equation name="Q" defaultValue="18" simulate="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
+		<equation name="Q" defaultValue="18" visible="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>

@@ -45,7 +45,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
                     {'name': const.name + ' =', 'type': 'str',
                         'value': const.equation,
                         'readonly': True},
-                    {'name': 'Simulated', 'type': 'bool', 'value': const.simulate, 'readonly': False},
+                    {'name': 'Visible', 'type': 'bool', 'value': const.simulate, 'readonly': False},
                     {'name': 'Color', 'type': 'color', 'value': self.colors[_i], 'readonly': False},
                     #TODO: agregar mas atributos
                     # {'name': 'Line width', 'type': 'int', 'value': self.pen_size[_i], 'readonly': not const.simulate},
