@@ -41,8 +41,8 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
         for const in self.parent.controller.model._e:
             _childAuxEq = []
             # if const.simulate:
-            _childAuxEq = {'name': const.description + ' (' + const.name + ')', 'type': 'group', 'expanded': True, 'children': [
-                    {'name': const.name + ' =', 'type': 'str',
+            _childAuxEq = {'name': const.description + ' (' + "d" +const.name + "/dt" + ')', 'type': 'group', 'expanded': True, 'children': [
+                    {'name': "d" + const.name + "/dt" + ' =', 'type': 'str',
                         'value': const.equation,
                         'readonly': True},
                     {'name': 'Visible', 'type': 'bool', 'value': const.simulate, 'readonly': False},

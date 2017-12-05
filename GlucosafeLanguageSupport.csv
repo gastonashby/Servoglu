@@ -68,4 +68,4 @@ lbl.alarmBG,The Blood Glucose limit has been reached, Se ha llegado al límite de
 lbl.sexDescription,Patient Sex, Sexo del paciente
 lbl.ExDetailedDescription, This parameter represents Exogenous insulin appearance rate, Este parámetro epresenta la tasa de inyeccion de insulina
 lbl.Bioavailable glucoseDD,Concentration of Glucose Bioavailable,Conentración de Glucosa biodisponible
-lbl.Blood GlucoseDD,Concentration of Blood Glucose,Conentración de Glucosa en Sangre
+lbl.Blood GlucoseDD,Concentration of Blood Glucose,Concentración de Glucosa en Sangre

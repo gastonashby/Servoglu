@@ -219,7 +219,7 @@
    <widget class="QCheckBox" name="plotByPeriods">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>130</x>
       <y>110</y>
       <width>20</width>
       <height>20</height>
@@ -240,18 +240,18 @@
      <rect>
       <x>20</x>
       <y>110</y>
-      <width>81</width>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Plot by periods:</string>
+     <string>Graficar por periodos</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="displayAlarm">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>130</x>
       <y>70</y>
       <width>20</width>
       <height>20</height>
@@ -285,18 +285,18 @@
      <rect>
       <x>20</x>
       <y>30</y>
-      <width>231</width>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Simulated time:</string>
+     <string>Tiempo de simulacion:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>140</x>
       <y>30</y>
       <width>81</width>
       <height>16</height>
