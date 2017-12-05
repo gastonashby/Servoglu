@@ -16,21 +16,25 @@ def generateMetaData(pdfTuple,equations,userDefinedParameters,constants):
         html = myfile.read().replace('\n', '')
 
     #['name', 'description', 'unit', 'defaultValue', 'equation','convertFactor', 'detailedDescription'])
-    equationsDescription = "<strong>Sistema de ecuaciones diferenciales:</strong> </br>"
+    #equationsDescription = "<strong>Sistema de ecuaciones diferenciales:</strong> </br>"
+    equationsDescription = ""
     for e in equations:
         equationsDescription+= "d"+e.name+"/dt" + " : " + e.description + " (" + e.unit + ")" + "</br>"
 
-    equationsInitialValues = "<strong>Valores iniciales:</strong> </br>"
+    #equationsInitialValues = "<strong>Valores iniciales:</strong> </br>"
+    equationsInitialValues = ""
     for e in equations:
         equationsInitialValues += e.name+"(0)" + " = " + e.defaultValue + " " + e.unit + "</br>"
 
     # ['name', 'description', 'unit', 'type', 'defaultValue','detailedDescription', 'color']
-    userDefinedParamDesc = "<strong>Condiciones iniciales:</strong> </br>"
+    #userDefinedParamDesc = "<strong>Condiciones iniciales:</strong> </br>"
+    userDefinedParamDesc = ""
     for u in userDefinedParameters:
         userDefinedParamDesc += u.description + " = " + u.defaultValue + " " + u.unit + "</br>"
 
 
-    constantsDescription = "<strong>Constantes:</strong> </br>"
+    constantsDescription = ""
+    #constantsDescription = "<strong>Constantes:</strong> </br>"
     for c in constants:
         constantsDescription += c.name + " : " + c.value1 + " = " + c.value2 +"</br>"
 
@@ -44,16 +48,48 @@ def generateMetaData(pdfTuple,equations,userDefinedParameters,constants):
 
 
 def replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,userDefinedParamDesc,constantsDescription):
-    html = html.replace("{{patientName}}",pdfTuple.patientName)
-    html = html.replace("{{patientIdentifier}}", pdfTuple.patientIdentifier)
-    html = html.replace("{{technicianName}}", pdfTuple.technicianName)
-    html = html.replace("{{technicianIdentifier}}", pdfTuple.technicianIdentifier)
-    html = html.replace("{{simulationAdditionalInfo}}", pdfTuple.simulationAdditionalInfo)
+    var = ""
+    if len(pdfTuple.patientName.strip()) == 0:
+        var = "-"
+    else:
+        var = pdfTuple.patientName.strip()
+    html = html.replace("{{patientName}}", var)
+
+    if len(pdfTuple.patientIdentifier.strip()) == 0:
+        var = "-"
+    else:
+        var = pdfTuple.patientIdentifier.strip()
+    html = html.replace("{{patientIdentifier}}", var)
+
+    if len(pdfTuple.technicianName.strip()) == 0:
+        var = "-"
+    else:
+        var = pdfTuple.technicianName.strip()
+    html = html.replace("{{technicianName}}", var)
+
+    if len(pdfTuple.technicianIdentifier.strip()) == 0:
+        var = "-"
+    else:
+        var = pdfTuple.technicianIdentifier.strip()
+    html = html.replace("{{technicianIdentifier}}", var)
+
+    if len(pdfTuple.simulationAdditionalInfo.strip()) == 0:
+        var = "-"
+    else:
+        var = pdfTuple.simulationAdditionalInfo.strip()
+    html = html.replace("{{simulationAdditionalInfo}}", var)
+
     #Seteamos fecha en idioma local
     locale.setlocale(locale.LC_TIME, '')
     format = '%Y/%m/%d %H:%M:%S'
     html = html.replace("{{date}}", datetime.datetime.now().strftime(format))
-    html = html.replace("{{modelInfo}}",pdfTuple.modelInfo)
+
+    if len(pdfTuple.modelInfo.strip()) == 0:
+        var = "-"
+    else:
+        var = pdfTuple.modelInfo.strip()
+    html = html.replace("{{modelInfo}}", var)
+
     html = html.replace("{{equations}}",equationsDescription)
     html = html.replace("{{equationsInitialValues}}", equationsInitialValues)
     html = html.replace("{{userDefinedParameters}}", userDefinedParamDesc)
