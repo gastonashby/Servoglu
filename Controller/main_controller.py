@@ -285,7 +285,7 @@ class Controller():
         for param, change, data in changes:
             _i = -1
             var = 1
-            if param.name() == 'Simulated':
+            if param.name() == 'Visible':
                 print("change simulated")
                 while (var):
                     _i += 1
