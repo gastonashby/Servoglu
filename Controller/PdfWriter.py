@@ -111,10 +111,15 @@ def translateHtml(html,languages):
 
     # lbl.SimulationReport ,lbl.Date,lbl.ModelInfo,lbl.InitialConditions,lbl.Treatments,lbl.PhisiologicalVariables,\
     # lbl.DifferentialEquationsSystem,lbl.InitialValues
-
+    html = html.replace("{{lbl.PatientName}}", languages.__getitem__("lbl.PatientName"))
+    html = html.replace("{{lbl.PatientIdentifier}}", languages.__getitem__("lbl.PatientIdentifier"))
+    html = html.replace("{{lbl.TechnicianName}}", languages.__getitem__("lbl.TechnicianName"))
+    html = html.replace("{{lbl.TechnicianIdentifier}}", languages.__getitem__("lbl.TechnicianIdentifier"))
+    html = html.replace("{{lbl.SimulatedTime}}", languages.__getitem__("lbl.SimulatedTime"))
+    html = html.replace("{{lbl.SimulationAdditionalInfo}}", languages.__getitem__("lbl.SimultationAdditionalInfo"))
     html = html.replace("{{lbl.SimulationReport}}",languages.__getitem__("lbl.SimulationReport"))
     html = html.replace("{{lbl.Date}}",languages.__getitem__("lbl.Date"))
-    html = html.replace("lbl.ModelInfo}}",languages.__getitem__("lbl.ModelInfo"))
+    html = html.replace("{{lbl.ModelInfo}}",languages.__getitem__("lbl.ModelInfo"))
     html = html.replace("{{lbl.InitialConditions}}", languages.__getitem__("lbl.InitialConditions"))
     html = html.replace("{{lbl.Treatments}}", languages.__getitem__("lbl.Treatments"))
     html = html.replace("{{lbl.PhisiologicalVariables}}", languages.__getitem__("lbl.PhisiologicalVariables"))
