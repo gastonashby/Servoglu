@@ -212,7 +212,7 @@ class ChildDlg(QDialog):
 
                     pdf.createPdf(self.simulated_eq,self.simulated_tr, results, treatment,
                                   xAxe,equations,userDefinedTreatment, userDefinedParameters,
-                                  constants, pdfTuple)
+                                  constants, pdfTuple, self.parent.controller.languageSupport.languageHash)
 
                     self.progressBar.setValue(100)
 

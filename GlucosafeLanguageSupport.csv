@@ -1,12 +1,12 @@
 Label,English,Español
 lbl.Sex,Sex,SexES
-"lbl.{Male 0,Female 1}","Male 0,Female 1","Male 0,Female 1ES"
+"lbl.{Male 0,Female 1}","{Male 0,Female 1}","{Male 0,Female 1ES}"
 lbl.Height,Height,HeightES
 lbl.Weight,Weight,WeightES
 lbl.Age,Age,AgeES
 lbl.years,years,yearsES
 lbl.Type 1 Diabetes,Type 1 Diabetes,Type 1 DiabetesES
-"lbl.{No 0,Yes 1}","No 0,Yes 1","No 0,Yes 1ES"
+"lbl.{No 0,Yes 1}","{No 0,Yes 1}","{No 0,Yes 1ES}"
 lbl.Glucose Initial Value,Glucose Initial Value,Glucose Initial ValueES
 lbl.Intravenous Glucose,Intravenous Glucose,Intravenous GlucoseES
 lbl.ExDescription,Insulin infusion,Insulin infusionES

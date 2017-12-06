@@ -21,27 +21,27 @@
 	<table width="100%" style="margin-top:10px" border="0.5" cellspacing="0" cellpadding="3" >
 		<thead>
 			<tr>
-				<th colspan="2" style="padding-top: 0.6em;">Informe de simulaci&oacute;n</th>
+				<th colspan="2" style="padding-top: 0.6em;">{{lbl.SimulationReport}}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr style="padding-top: 0.5em;">
-				<td style="">Nombre de paciente: <strong>{{patientName}}</strong></td>
-				<td style="">Identificaci&oacute;n del paciente: <strong>{{patientIdentifier}}</strong></td>
+				<td style="">{{lbl.PatientName}}<strong>{{patientName}}</strong></td>
+				<td style="">{{lbl.PatientIdentifier}}<strong>{{patientIdentifier}}</strong></td>
 			</tr>
 			<tr style="padding-top: 0.5em;">
-				<td style="">Nombre del t&eacute;cnico:&nbsp;<strong>{{technicianName}}</strong></td>
-				<td style="">Identificaci&oacute;n del t&eacute;cnico:&nbsp;<strong>{{technicianIdentifier}}</strong></td>
+				<td style="">{{lbl.TechnicianName}}<strong>{{technicianName}}</strong></td>
+				<td style="">{{lbl.TechnicianIdentifier}}<strong>{{technicianIdentifier}}</strong></td>
 			</tr>
 			<tr style="padding-top: 0.5em">
-				<td style="">Fecha:&nbsp;<strong>{{date}}</strong></td>
-				<td style="">Tiempo simulado:&nbsp;<strong>{{simulatedTime}}</strong></td>
+				<td style="">{{lbl.Date}}<strong>{{date}}</strong></td>
+				<td style="">{{lbl.SimulatedTime}}<strong>{{simulatedTime}}</strong></td>
 			</tr>
 			<tr style="padding-top: 0.5em;">
-				<td style="" colspan="2">Informaci&oacute;n adicional de la simulaci&oacute;n:&nbsp;<strong>{{simulationAdditionalInfo}}</strong></td>
+				<td style="" colspan="2">{{lbl.SimulationAdditionalInfo}}<strong>{{simulationAdditionalInfo}}</strong></td>
 			</tr>
 			<tr style="padding-top: 0.5em;">
-				<td style="" colspan="2">Descripci&oacute;n del modelo:&nbsp;<strong>{{modelInfo}}</strong></td>
+				<td style="" colspan="2">{{lbl.ModelInfo}}<strong>{{modelInfo}}</strong></td>
 			</tr>
 		</tbody>
 	</table >
@@ -52,7 +52,7 @@
 					<table style="margin-top:10px" width="100%" border="0.5" cellspacing="0" cellpadding="3">
 						<thead>
 							<tr>
-								<th style="padding-top: 0.6em;">Condiciones iniciales</th>
+								<th style="padding-top: 0.6em;">{{lbl.InitialConditions}}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -68,13 +68,27 @@
 					<table style="margin-top:10px;" height="100%" width="100%" border="0.5" cellspacing="0" cellpadding="3">
 						<thead>
 							<tr>
-								<th style="padding-top: 0.6em;">Tratamiento</th>
+								<th style="padding-top: 0.6em;">{{lbl.Treatments}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td style="padding-top: 0.6em; margin-left: 0.5em; vertical-align: top;">
 								{{treatments}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table style="margin-top:10px;" height="100%" width="100%" border="0.5" cellspacing="0" cellpadding="3">
+						<thead>
+							<tr>
+								<th style="padding-top: 0.6em;">{{lbl.PhisiologicalVariables}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td style="padding-top: 0.6em; margin-left: 0.5em; vertical-align: top;">
+								{{phisiologicalVariables}}
 								</td>
 							</tr>
 						</tbody>
@@ -86,7 +100,7 @@
 					<table style="margin-top:10px" width="100%" border="0.5" cellspacing="0" cellpadding="3">
 						<thead>
 							<tr>
-								<th style="padding-top: 0.5em;">Sistema de ecuaciones diferenciales</th>
+								<th style="padding-top: 0.5em;">{{lbl.DifferentialEquationsSystem}}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -102,7 +116,7 @@
 					<table style="margin-top:10px;" height="100%" width="100%" border="0.5" cellspacing="0" cellpadding="3">
 						<thead>
 							<tr>
-								<th style="padding-top: 0.6em;">Valores iniciales</th>
+								<th style="padding-top: 0.6em;">{{lbl.InitialValues}}</th>
 							</tr>
 						</thead>
 						<tbody>

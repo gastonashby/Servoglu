@@ -9,7 +9,7 @@ import locale
 
 
 
-def generateMetaData(pdfTuple,equations,userDefinedParameters,constants):
+def generateMetaData(pdfTuple,equations,userDefinedParameters,constants,initialValues,languages):
     templateFile = pdfTuple.templateFile
     # Generate PDF from a html file.
     with open(templateFile, 'r') as myfile:
@@ -18,36 +18,43 @@ def generateMetaData(pdfTuple,equations,userDefinedParameters,constants):
     #['name', 'description', 'unit', 'defaultValue', 'equation','convertFactor', 'detailedDescription'])
     #equationsDescription = "<strong>Sistema de ecuaciones diferenciales:</strong> </br>"
     equationsDescription = ""
+    phisiologicalVariables = ""
+    equationsInitialValues = ""
+    i=0
     for e in equations:
         equationsDescription+= "d"+e.name+"/dt" + " : " + e.description + " (" + e.unit + ")" + "</br>"
+        equationsInitialValues += e.name + "(0)" + " = " + str(initialValues[i]) + " (" + e.unit + ")" + "</br>"
+        if e.simulate:
+            phisiologicalVariables += e.name +":"+ e.description + " (" + e.unit + ")" + "</br>"
+        i+=1
 
-    #equationsInitialValues = "<strong>Valores iniciales:</strong> </br>"
-    equationsInitialValues = ""
-    for e in equations:
-        equationsInitialValues += e.name+"(0)" + " = " + e.defaultValue + " " + e.unit + "</br>"
 
     # ['name', 'description', 'unit', 'type', 'defaultValue','detailedDescription', 'color']
     #userDefinedParamDesc = "<strong>Condiciones iniciales:</strong> </br>"
     userDefinedParamDesc = ""
+    treatments = ""
     for u in userDefinedParameters:
-        userDefinedParamDesc += u.description + " = " + u.defaultValue + " " + u.unit + "</br>"
-
+        if u.graphAsTreatment:
+            treatments += u.description + " " + u.unit + "</br>"
+        else:
+            userDefinedParamDesc += u.description + " = " + u.defaultValue + " " + u.unit + "</br>"
 
     constantsDescription = ""
     #constantsDescription = "<strong>Constantes:</strong> </br>"
     for c in constants:
         constantsDescription += c.name + " : " + c.value1 + " = " + c.value2 +"</br>"
 
-    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,userDefinedParamDesc,constantsDescription)
+    htmlVariables = replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,phisiologicalVariables,userDefinedParamDesc,treatments,constantsDescription)
+    htmlTranslated = translateHtml(htmlVariables, languages)
     resultFile = open('meta.pdf', "w+b")
 
     # convert HTML to PDF
-    pisa.CreatePDF(htmlVariables,dest=resultFile)
+    pisa.CreatePDF(htmlTranslated,dest=resultFile)
     # close output file
     resultFile.close()  # close output file
 
 
-def replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,userDefinedParamDesc,constantsDescription):
+def replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,phisiologicalVariables,userDefinedParamDesc,treatments,constantsDescription):
     var = ""
     if len(pdfTuple.patientName.strip()) == 0:
         var = "-"
@@ -92,10 +99,27 @@ def replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,u
 
     html = html.replace("{{equations}}",equationsDescription)
     html = html.replace("{{equationsInitialValues}}", equationsInitialValues)
+    html = html.replace("{{phisiologicalVariables}}", phisiologicalVariables)
     html = html.replace("{{userDefinedParameters}}", userDefinedParamDesc)
+    html = html.replace("{{treatments}}", treatments)
     html = html.replace("{{constants}}", constantsDescription)
     html = html.replace("{{simulatedTime}}", pdfTuple.simulatedTime + " " + pdfTuple.timeUnit)
 
+    return html
+
+def translateHtml(html,languages):
+
+    # lbl.SimulationReport ,lbl.Date,lbl.ModelInfo,lbl.InitialConditions,lbl.Treatments,lbl.PhisiologicalVariables,\
+    # lbl.DifferentialEquationsSystem,lbl.InitialValues
+
+    html = html.replace("{{lbl.SimulationReport}}",languages.__getitem__("lbl.SimulationReport"))
+    html = html.replace("{{lbl.Date}}",languages.__getitem__("lbl.Date"))
+    html = html.replace("lbl.ModelInfo}}",languages.__getitem__("lbl.ModelInfo"))
+    html = html.replace("{{lbl.InitialConditions}}", languages.__getitem__("lbl.InitialConditions"))
+    html = html.replace("{{lbl.Treatments}}", languages.__getitem__("lbl.Treatments"))
+    html = html.replace("{{lbl.PhisiologicalVariables}}", languages.__getitem__("lbl.PhisiologicalVariables"))
+    html = html.replace("{{lbl.DifferentialEquationsSystem}}", languages.__getitem__("lbl.DifferentialEquationsSystem"))
+    html = html.replace("{{lbl.InitialValues}}", languages.__getitem__("lbl.InitialValues"))
     return html
 
 def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,treatment,xData,equations,userDefined,pdfTuple):
@@ -285,9 +309,10 @@ def mergePdfs(fileName):
 
 
 def createPdf(simulatedEquations,simulatedTreatment,results,treatment,xData,
-              equations,userDefinedTreatment,userDefinedParameters,constants,pdfTuple):
+              equations,userDefinedTreatment,userDefinedParameters,constants,pdfTuple,languages):
 
-    generateMetaData(pdfTuple,equations,userDefinedParameters,constants)
+    initialValues = results[0]
+    generateMetaData(pdfTuple,equations,userDefinedParameters,constants,initialValues,languages)
 
     # modify general settings
     plt.rcParams['axes.linewidth'] = 0.1

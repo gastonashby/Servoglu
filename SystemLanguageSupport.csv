@@ -35,4 +35,12 @@ lbl.Version,Version 1.0 , Versión 1.0
 "lbl.NumberOfPeriods","Number of periods:","Cantidad de períodos:"
 "lbl.DisplayAlarms","Display alarms:","Mostrar alarmas:"
 "lbl.PlotByPeriods","Plot by periods:","Graficar por períodos:"
-"lbl.SimulatedTime","Simulated time:","Tiempo de simulación:"
+"lbl.SimulatedTime","Simulated time:","Tiempo simulado:"
+lbl.SimulationReport,Simulation report,Informe de simulaci&oacute;n
+lbl.Date,Date:,Fecha:
+lbl.ModelInfo,Model description:,Descripci&oacute;n del modelo:
+lbl.InitialConditions,Initial conditions,Condiciones iniciales
+lbl.Treatments,Treatments,Tratamientos
+lbl.PhisiologicalVariables,Phisiological variables,Variables fisiol&oacute;gicas
+lbl.DifferentialEquationsSystem,Differential equations system,Sistema de ecuaciones diferenciales
+lbl.InitialValues,Initial Values,Valores iniciales

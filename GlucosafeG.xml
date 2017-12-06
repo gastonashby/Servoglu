@@ -25,7 +25,7 @@
 
 			<parameter name="ecf" description="lbl.Enteral carbohydrate feedrate"
 						 unit="mmol/kg min" type="real" defaultValue ="0.0" slider="True"
-						 minTreatment="0.0" maxTreatment="1" color="#2D882D" graphAsTreatment="false"/>
+						 minTreatment="0.0" maxTreatment="1" color="#2D882D" graphAsTreatment="true"/>
 
 			<!-- End of treatments, entered by the user -->
 			<parameter name="s" description="lbl.Insulin sensitiviy" unit="{1 normal}" type="real"
