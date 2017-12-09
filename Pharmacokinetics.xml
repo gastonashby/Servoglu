@@ -2,53 +2,52 @@
 
 <servoglu xmlns:m="http://www.w3.org/1998/Math/MathML" lang="ENG" timeUnit="hs" languageSupport="GlucosafeLanguageSupport.csv" name="Pharmacokinetics Model" >
 	<parameters>
-		<userDefinedParameters>
-			<userDefined name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
-			<userDefined name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
-			<userDefined name="Dosage" description="Dosage every" unit="hrs" type="integer" defaultValue ="6" slider="False"
+			<parameter name="Sex" description="lbl.Sex" unit="lbl.{Male 0,Female 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
+			<parameter name="Height" description="lbl.Height" unit="m" type="integer" defaultValue ="1.85" slider="False" graphAsTreatment="false"/>
+			<parameter name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False" graphAsTreatment="false"/>
+			<parameter name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
+			<parameter name="Dosage" description="Dosage every" unit="hrs" type="integer" defaultValue ="6" slider="False"
 						 graphAsTreatment="True" minTreatment="1" maxTreatment="24" />
-			<userDefined name="Dosis" description="Dosis" unit="mg" type="real" defaultValue ="1" slider="False"
-                         graphAsTreatment="True" minTreatment="0" maxTreatment="1000" />
+			<parameter name="Dosis" description="Dosis" unit="mg" type="real" defaultValue ="1" slider="True"
+                         graphAsTreatment="True" minTreatment="0" maxTreatment="20" />
 
+	</parameters>
 
-		</userDefinedParameters>
-		<constants>
-			<constant name="a" description="Constant of proportionality" unit="" calculated="True">
-				<m:math>
+	<constants>
+		<constant name="a" description="Constant of proportionality" unit="" calculated="True">
+			<m:math>
+				<apply>
+					<eq/>
+					<ci>a</ci>
 					<apply>
-						<eq/>
-						<ci>a</ci>
+						<times/>
 						<apply>
-							<times/>
-							<apply>
-								<ln/>
-								<cn>2</cn>
-							</apply>
+							<ln/>
 							<cn>2</cn>
 						</apply>
+						<cn>2</cn>
 					</apply>
-				</m:math>
-			</constant>
-			<constant name="b" description="Constant of proportionality" unit="" calculated="True">
-				<m:math>
+				</apply>
+			</m:math>
+		</constant>
+		<constant name="b" description="Constant of proportionality" unit="" calculated="True">
+			<m:math>
+				<apply>
+					<eq/>
+					<ci>b</ci>
 					<apply>
-						<eq/>
-						<ci>b</ci>
+						<divide/>
 						<apply>
-							<divide/>
-							<apply>
-								<ln/>
-								<cn>2</cn>
-							</apply>
-							<cn>5</cn>
+							<ln/>
+							<cn>2</cn>
 						</apply>
+						<cn>5</cn>
 					</apply>
-				</m:math>
-			</constant>
-		</constants>
-	</parameters>
+				</apply>
+			</m:math>
+		</constant>
+	</constants>
+
 	<functions>
 
 		<function name="Heaviside" parameters="x" description="Heaviside step function">
@@ -501,7 +500,7 @@
 	</functions>
 	<equations>
 		<!-- dGdt= -a*G(t) + D(t) -->
-		<equation name="G" defaultValue="0" simulate="True" description="Concentration of the drug in the gastrointestinal tract" unit="mg/ml">
+		<equation name="G" defaultValue="0" visible="True" description="Concentration of the drug in the gastrointestinal tract" unit="mg/ml">
 			<m:math>
 				<apply>
 					<plus/>
@@ -521,7 +520,7 @@
 		</equation>
 
 		<!-- dBdt= a*G(t) - b*B(t)  -->
-		<equation name="B" defaultValue="0" simulate="True" description="Concentration of the drug in the blood" unit="mg/ml" alarmDescription="Concentration related side effects/Toxicity" alarmMinVal="0.8" alarmMaxVal="1.5">
+		<equation name="B" defaultValue="0" visible="True" description="Concentration of the drug in the blood" unit="mg/ml" alarmDescription="Concentration related side effects/Toxicity" alarmMinVal="0.8" alarmMaxVal="1.5">
 			<m:math>
 				<apply>
 					<minus/>

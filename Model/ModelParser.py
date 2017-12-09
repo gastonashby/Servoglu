@@ -269,7 +269,7 @@ class ModelParser():
                 if 'alarmMinVal' in eq.attrib:
                     alMinVal = float(eq.attrib['alarmMinVal'])
 
-            if 'alarmDescription' in eq.attrib:
+            if 'alarmMaxVal' in eq.attrib:
                 if 'alarmMaxVal' in eq.attrib:
                     alMaxVal = float(eq.attrib['alarmMaxVal'])
 

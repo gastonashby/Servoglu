@@ -10,37 +10,43 @@
 <body>
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align: center">
 		<tbody>
-			<tr style="padding-top: 0.5em;">
-				<td style=""><img style="border: 0px solid; height: 80px; " src="../View/img/logoNIB.jpg" alt="Nucleo de Ingeniería Biomédica" name="logoNIB" /> </td>
+			<tr style="padding-top: 0em;">
+				<td style="">
+					<img style="border: 0px solid; height: 80px; " src="../View/img/logoNIB.jpg" alt="Nucleo de Ingeniería Biomédica" name="logoNIB" />
+				</td>
 			</tr>
-			<tr style="padding-top: 0.2em;">
-				<td style=""><h1><strong>SERVOGLU</strong></h1></strong></td>
+			<tr style="padding-top: 0.5em;">
+				<td style="">
+					<img style="border: 0px solid; height: 40px; " src="../View/img/logo-informe.png" alt="SERVOGLU" name="logoSERVOGLU" />
+					<br/>
+					<span>{{lbl.SERVOGLU_description}}</span>
+				</td>
+			</tr>
+			<tr style="padding-top: 0em; margin-top:10px">
+				<td style="margin-top:10px">
+					<br/>
+					<h2> <strong> {{lbl.SimulationReport}} - {{date}}</strong> </h2>
+				</td>
 			</tr>
 		</tbody>
 	</table>
-	<table width="100%" style="margin-top:10px" border="0.5" cellspacing="0" cellpadding="3" >
-		<thead>
-			<tr>
-				<th colspan="2" style="padding-top: 0.6em;">{{lbl.SimulationReport}}</th>
-			</tr>
-		</thead>
+	<table width="100%" style="margin-top:5px" border="0" cellspacing="0" cellpadding="3" >
 		<tbody>
-			<tr style="padding-top: 0.5em;">
+			<tr style="padding-top: 0em;">
 				<td style="">{{lbl.PatientName}}&nbsp;<strong>{{patientName}}</strong></td>
 				<td style="">{{lbl.PatientIdentifier}}&nbsp;<strong>{{patientIdentifier}}</strong></td>
 			</tr>
-			<tr style="padding-top: 0.5em;">
+			<tr style="padding-top: 0em;">
 				<td style="">{{lbl.TechnicianName}}&nbsp;<strong>{{technicianName}}</strong></td>
 				<td style="">{{lbl.TechnicianIdentifier}}&nbsp;<strong>{{technicianIdentifier}}</strong></td>
 			</tr>
-			<tr style="padding-top: 0.5em">
-				<td style="">{{lbl.Date}}&nbsp;<strong>{{date}}</strong></td>
+			<tr style="padding-top: 0em" colspan="2">
 				<td style="">{{lbl.SimulatedTime}}&nbsp;<strong>{{simulatedTime}}</strong></td>
 			</tr>
-			<tr style="padding-top: 0.5em;">
+			<tr style="padding-top: 0em;">
 				<td style="" colspan="2">{{lbl.SimulationAdditionalInfo}}&nbsp;<strong>{{simulationAdditionalInfo}}</strong></td>
 			</tr>
-			<tr style="padding-top: 0.5em;">
+			<tr style="padding-top: 0em;">
 				<td style="" colspan="2">{{lbl.ModelInfo}}&nbsp;<strong>{{modelInfo}}</strong></td>
 			</tr>
 		</tbody>
