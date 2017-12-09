@@ -44,4 +44,4 @@ lbl.Treatments,Treatments,Tratamientos
 lbl.PhisiologicalVariables,Phisiological variables,Variables fisiol&oacute;gicas
 lbl.DifferentialEquationsSystem,Differential equations system,Sistema de ecuaciones diferenciales
 lbl.InitialValues,Initial Values,Valores iniciales
-lbl.SERVOGLU_description,"Generic simulator of physiological models described by systems of ordinary differential equations.","Simulador Genérico de modelos fisiológicos descritos por sistemas de ecuaciones diferenciales, orientado a la investigación y enseñanza de conductas clínicas para el manejo y seguimiento de estos modelos."
+lbl.SERVOGLU_description,"Generic simulator of physiological models described by systems of ordinary differential equations.","Simulador Genérico de modelos fisiológicos descritos por sistemas de ecuaciones diferenciales."
