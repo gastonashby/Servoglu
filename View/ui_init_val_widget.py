@@ -14,10 +14,12 @@ class Ui_InitialValuesDockWidget(QtCore.QObject):
         self.parameter_tree1 = []
 
     def setupUi(self, ControlsBox):
-        ControlsBox.setObjectName('Controls Box')
-        self.ui_controls_box_widget = QtGui.QDockWidget("Initial Values", ControlsBox)
-        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.parent = ControlsBox
+        self.languageHash = self.parent.controller.languageSupport.languageHash
+        ControlsBox.setObjectName('Controls Box')
+        self.ui_controls_box_widget = QtGui.QDockWidget(self.languageHash.__getitem__("lbl.InitialValues"), ControlsBox)
+        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
+
 
         self.house_layout = QtGui.QVBoxLayout()
 

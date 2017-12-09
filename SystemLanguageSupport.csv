@@ -45,3 +45,16 @@ lbl.PhisiologicalVariables,Phisiological variables,Variables fisiol&oacute;gicas
 lbl.DifferentialEquationsSystem,Differential equations system,Sistema de ecuaciones diferenciales
 lbl.InitialValues,Initial Values,Valores iniciales
 lbl.SERVOGLU_description,"Generic simulator of physiological models described by systems of ordinary differential equations.","Simulador Genérico de modelos fisiológicos descritos por sistemas de ecuaciones diferenciales."
+lbl.Yes,Yes,Sí
+lbl.No,No,No
+lbl.ActualValues,"Actual values","Valores actuales"
+lbl.ModelProperties,"Model Properties","Propiedades del modelo"
+lbl.DifferentialEquations,"Differential Equations","Ecuaciones Diferenciales"
+lbl.Functions,Functions,Funciones
+lbl.Constants,Constants,Constantes
+lbl.ApplyTreatment,"Apply treatment","Aplicar tratamiento"
+lbl.Treatment,Treatment,Tratamiento
+lbl.InitialValues,"Initial Values","Valores Iniciales"
+lbl.Step,"Step ","Paso "
+lbl.every," every "," cada "
+lbl.SimulationTime,"Simulation Time","Tiempo de Simulación"

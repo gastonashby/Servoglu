@@ -11,10 +11,12 @@ class Ui_ControlsDockWidget(QtCore.QObject):
         super(Ui_ControlsDockWidget, self).__init__()
 
     def setupUi(self, ControlsBox):
-        ControlsBox.setObjectName('General Controls')
-        self.ui_controls_box_widget = QtGui.QDockWidget("Actual values", ControlsBox)
-        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.parent = ControlsBox
+        self.languageHash = self.parent.controller.languageSupport.languageHash
+        ControlsBox.setObjectName('General Controls')
+        self.ui_controls_box_widget = QtGui.QDockWidget(self.languageHash.__getitem__("lbl.ActualValues"), ControlsBox)
+        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
+
         #
         self.house_layout = QtGui.QVBoxLayout()
 

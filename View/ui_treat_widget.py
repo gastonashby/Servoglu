@@ -23,10 +23,12 @@ class Ui_TreatDockWidget(QtCore.QObject):
         return '#%02X%02X%02X' % (self.r(), self.r(), self.r())
 
     def setupUi(self, ControlsBox):
-        ControlsBox.setObjectName('General Controls')
-        self.ui_controls_box_widget = QtGui.QDockWidget("Treatment", ControlsBox)
-        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.parent = ControlsBox
+        self.languageHash = self.parent.controller.languageSupport.languageHash
+        ControlsBox.setObjectName('General Controls')
+        self.ui_controls_box_widget = QtGui.QDockWidget(self.languageHash.__getitem__("lbl.Treatment"), ControlsBox)
+        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
+
         #
         self.house_layout = QtGui.QVBoxLayout()
         self.colors = []
@@ -44,7 +46,7 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.ui_controls_box_widget.setWidget(self.house_widget)
         self.house_layout.addSpacing(10)
 
-        self.button_apply_tr = QtGui.QPushButton("Aplicar Tratamiento")
+        self.button_apply_tr = QtGui.QPushButton(self.languageHash.__getitem__("lbl.ApplyTreatment"))
         self.button_apply_tr.clicked.connect(self.apply_treat)
         self.house_layout.addWidget(self.button_apply_tr)
         self.button_apply_tr.setEnabled(False)

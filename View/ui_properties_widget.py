@@ -3,6 +3,7 @@ __version__ = '0.0.1'
 
 from PyQt5 import QtCore, QtGui
 from pyqtgraph.parametertree import Parameter, ParameterTree
+from Controller.main_controller import *
 
 class Ui_PropertiesDockWidget(QtCore.QObject):
 
@@ -12,10 +13,12 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
         super(Ui_PropertiesDockWidget, self).__init__()
 
     def setupUi(self, ControlsBox):
-        ControlsBox.setObjectName('Controls Box')
-        self.ui_controls_box_widget = QtGui.QDockWidget("Model Properties", ControlsBox)
-        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.parent = ControlsBox
+        ControlsBox.setObjectName('Controls Box')
+        self.languageHash = self.parent.controller.languageSupport.languageHash
+        self.ui_controls_box_widget = QtGui.QDockWidget(self.languageHash.__getitem__("lbl.ModelProperties"), ControlsBox)
+        self.ui_controls_box_widget.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
+
 
         self.house_layout = QtGui.QVBoxLayout()
 
@@ -52,8 +55,8 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
                 ]}
             _listChildAuxEq.append(_childAuxEq)
             _i += 1
-            # print(const)
-        _paramAux = {'name': 'Differential equations', 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
+            # print(const)self.languageHash.__getitem__("lbl.ModelProperties")
+        _paramAux = {'name': self.languageHash.__getitem__("lbl.DifferentialEquations"), 'type': 'group', 'children': _listChildAuxEq, 'expanded': True}
         _params.append(_paramAux)
 
         _listChildAuxFunc = []
@@ -62,7 +65,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
                              'readonly': True}
             _listChildAuxFunc.append(_childAuxFunc)
             # print(const)
-        _paramAux = {'name': 'Functions', 'type': 'group', 'children': _listChildAuxFunc, 'expanded': True}
+        _paramAux = {'name': self.languageHash.__getitem__("lbl.Functions"), 'type': 'group', 'children': _listChildAuxFunc, 'expanded': True}
         _params.append(_paramAux)
 
         _listChildAuxConst = []
@@ -71,7 +74,7 @@ class Ui_PropertiesDockWidget(QtCore.QObject):
             # nomC = const.value1 + ' ' + const.operator
             _childAuxConst = {'name': nomC, 'type': 'str', 'value': const.value2, 'readonly': True}
             _listChildAuxConst.append(_childAuxConst)
-        _paramAuxConst = {'name': 'Constants', 'type': 'group', 'children': _listChildAuxConst, 'expanded': True}
+        _paramAuxConst = {'name': self.languageHash.__getitem__("lbl.Constants"), 'type': 'group', 'children': _listChildAuxConst, 'expanded': True}
         _params.append(_paramAuxConst)
 
         return _params

@@ -59,8 +59,19 @@ class Ui_Menubar(QtGui.QMenuBar):
             x += 1
 
     def changeSystemLanguage(self,lang):
-        choice = QtGui.QMessageBox.question(self,self.languageHash.__getitem__("lbl.Restart?"),self.languageHash.__getitem__("lbl.Restart"),
-                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+        box = QtGui.QMessageBox()
+        box.setIcon(QtGui.QMessageBox.Question)
+        box.setWindowTitle(self.languageHash.__getitem__("lbl.Restart?"))
+        box.setText(self.languageHash.__getitem__("lbl.Restart"))
+        box.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+        buttonY = box.button(QtGui.QMessageBox.Yes)
+        buttonY.setText(self.languageHash.__getitem__("lbl.Yes"))
+        buttonN = box.button(QtGui.QMessageBox.No)
+        buttonN.setText(self.languageHash.__getitem__("lbl.No"))
+        choice = box.exec_()
+        # choice = QtGui.QMessageBox.question(self,self.languageHash.__getitem__("lbl.Restart?"),self.languageHash.__getitem__("lbl.Restart"),
+        #                                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+
         if choice == QtGui.QMessageBox.Yes:
             FILEPATH = os.path.abspath("servoglu.py")
             try:
@@ -98,9 +109,19 @@ class Ui_Menubar(QtGui.QMenuBar):
             x += 1
 
     def changeModelLanguage(self, lang):
-        choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),
-                                            self.languageHash.__getitem__("lbl.RestartSimulation"),
-                                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+        box = QtGui.QMessageBox()
+        box.setIcon(QtGui.QMessageBox.Question)
+        box.setWindowTitle(self.languageHash.__getitem__("lbl.Restart?"))
+        box.setText(self.languageHash.__getitem__("lbl.RestartSimulation"))
+        box.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+        buttonY = box.button(QtGui.QMessageBox.Yes)
+        buttonY.setText(self.languageHash.__getitem__("lbl.Yes"))
+        buttonN = box.button(QtGui.QMessageBox.No)
+        buttonN.setText(self.languageHash.__getitem__("lbl.No"))
+        choice = box.exec_()
+        # choice = QtGui.QMessageBox.question(self, self.languageHash.__getitem__("lbl.Restart?"),
+        #                                     self.languageHash.__getitem__("lbl.RestartSimulation"),
+        #                                     QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if choice == QtGui.QMessageBox.Yes:
             try:
                 #self.parent.controller = Controller(self.mainWindow)

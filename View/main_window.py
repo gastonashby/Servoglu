@@ -28,7 +28,7 @@ class Window(QtGui.QMainWindow):
         self.types = types
         self.numpy = numpy
         self.ui = Ui_MainWindow(self)
-
+        self.languageHash = controller.languageSupport.languageHash
         # self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
         # self.ui.dck_model_param_properties.setupUi(self)
         # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
@@ -290,12 +290,12 @@ class Window(QtGui.QMainWindow):
 
         self.eventToolBar = self.addToolBar('Time controls')
 
-        label1 = QtGui.QLabel("Step ")
+        label1 = QtGui.QLabel(self.languageHash.__getitem__("lbl.Step"))
         self.spboxStep = QtGui.QSpinBox()
         self.spboxStep.setValue(1)
         self.spboxStep.setMinimum(1)
 
-        label2 = QtGui.QLabel(" every ")
+        label2 = QtGui.QLabel(self.languageHash.__getitem__("lbl.every"))
         self.spBoxTimmer = QtGui.QSpinBox()
         self.spBoxTimmer.setRange(50, 60000)
         self.spBoxTimmer.setValue(500)
@@ -319,7 +319,7 @@ class Window(QtGui.QMainWindow):
         self.init_time_label()
 
     def init_time_label(self):
-        label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
+        label = QtGui.QLabel(self.languageHash.__getitem__("lbl.SimulationTime") +" (D:HH:MM:SS): ")
         self.timeLbl = QtGui.QLabel("0:00:00:00")
         myFont = QtGui.QFont()
         myFont.setBold(True)
