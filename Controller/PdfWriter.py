@@ -125,6 +125,7 @@ def translateHtml(html,languages):
     html = html.replace("{{lbl.PhisiologicalVariables}}", languages.__getitem__("lbl.PhisiologicalVariables"))
     html = html.replace("{{lbl.DifferentialEquationsSystem}}", languages.__getitem__("lbl.DifferentialEquationsSystem"))
     html = html.replace("{{lbl.InitialValues}}", languages.__getitem__("lbl.InitialValues"))
+    html = html.replace("{{lbl.SERVOGLU_description}}", languages.__getitem__("lbl.SERVOGLU_description"))
     return html
 
 def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,treatment,xData,equations,userDefined,pdfTuple):
