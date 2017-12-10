@@ -9,7 +9,7 @@
 			<parameter name="W" description="lbl.Weight" unit="kg" type="integer" defaultValue ="102" slider="False"
                          minTreatment="1" maxTreatment="600" graphAsTreatment="false"/>
 			<parameter name="Age" description="lbl.Age" unit="lbl.years" type="integer" defaultValue ="36" slider="False" graphAsTreatment="false"/>
-			<parameter name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="1" slider="False" graphAsTreatment="false"/>
+			<parameter name="DiabetesTypeOne" description="lbl.Type 1 Diabetes" unit="lbl.{No 0,Yes 1}" type="bit" defaultValue ="0" slider="False" graphAsTreatment="false"/>
 
 			<!-- Treatments, entered by the user -->
 			<parameter name="z" description="lbl.Intravenous Glucose" unit="mmol/kg/min"
