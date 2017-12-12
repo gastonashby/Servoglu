@@ -35,7 +35,7 @@ class Model:
         self._timeUnit = ""
         self._modelName = ""
         self._template = ""
-
+        self.solver = 'ode'
         self.np = np
         self.functions = []
         self.languages = []
@@ -53,13 +53,6 @@ class Model:
 
         for eq in self._e:
             salida.append(eval(self.code.processEq(eq.equation)))
-
-
-        # print('t: ', self.modelTime,'e():', round(self.e(),5),'z:', self.z,'E():', round(self.E(),5),
-        #       'Pglut4():', round(self.Pglut4(),5),'a():',
-        #       round(self.a(),5),'iaster():', round(self.iaster(),5),
-        #       'iaster0:', round(self.iaster0, 5),'pinicial0:', round(self.pInitial0, 5),
-        #       'BG:', round(self.BG,5))
         return salida
 
     def initialize(self, name, step):
@@ -100,19 +93,21 @@ class Model:
             exec(self._calculated[_i])
 
     def change_scale(self, step, init):
-        self.step = step
-        self._xdata = np.linspace(init, init + (self.top_x - 1) * self.step, self.top_x)
-        self.plt_step = step
+        #self.step = step
+        #self._xdata = np.linspace(init, init + (self.top_x - 1) * self.step, self.top_x)
+        #self.plt_step = step
+        pass
 
     def recalculate(self, step):
         self._aux = self._sol[self.indexModel-1]
-        self._xdata = np.linspace(self._xdata[self.indexModel-1],
-                                  self._xdata[self.indexModel-1] + (self.top_x - 1) * self.step, self.top_x)
-        self.indexModel = 1
+        self._xdata = np.arange(self._xdata[self.indexModel-1], self.top_x + self._xdata[self.indexModel-1], self.plt_step)
+
+        self.indexModel = 0
         self.updateCalculatedConstants()
 
         print("-- Recalculate --")
         self._sol = self.solveSystem(self._aux)
+        self.indexModel += 1
         #print(self._sol)
 
     def change_val(self, i, val):
@@ -136,12 +131,6 @@ class Model:
 
         for eq in self._e:
             salida.append(eval(self.code.processEq(eq.equation)))
-
-        # print('t: ', self.modelTime,'e():', round(self.e(),5),'z:', self.z,'E():', round(self.E(),5),
-        #       'Pglut4():', round(self.Pglut4(),5),'a():',
-        #       round(self.a(),5),'iaster():', round(self.iaster(),5),
-        #       'iaster0:', round(self.iaster0, 5),'pinicial0:', round(self.pInitial0, 5),
-        #       'BG:', round(self.BG,5))
         return salida
 
     def refresh_variables(self, vars):
@@ -151,24 +140,31 @@ class Model:
 
 
     def solveSystem(self, ini):
-        r = ode(self.ode_sys).set_integrator('dopri5')
-        r.set_initial_value(ini, self.indexModel)
-        t1 = self.top_x
-        dt = self.plt_step
-        s = []
-        # s.append(r.integrate(self.indexModel))
-        s.append(ini)
-        try:
-            while r.successful() and r.t < t1*self.plt_step:
-                time = r.t + dt
-                print(time)
-                s.append(r.integrate(time))
-        except Exception as e:
-            print(e)
+        if self.solver == 'odeint':
+            s = odeint(self.odeint_sys, ini, self._xdata)
 
-        print(s[0:10])
-        # s = odeint(self.odeint_sys, ini, self._xdata)
-        return s
+            # print(s[0:10])
+            # s = odeint(self.odeint_sys, ini, self._xdata)
+            return s
+        else:
+            r = ode(self.ode_sys).set_integrator('lsoda')
+            r.set_initial_value(ini, self._xdata[self.indexModel])
+            t1 = self.top_x
+            dt = self.plt_step
+            s = []
+            # s.append(r.integrate(self.indexModel))
+            s.append(ini)
+            try:
+                while r.successful() and r.t < self._xdata[self.indexModel-1]:
+                    time = r.t + dt
+                    #print(time)
+                    s.append(r.integrate(time))
+            except Exception as e:
+                print(e)
+
+            #print(s[0:10])
+            # s = odeint(self.odeint_sys, ini, self._xdata)
+            return s
 
 
     def getPoint(self):

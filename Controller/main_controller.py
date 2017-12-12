@@ -175,7 +175,11 @@ class Controller():
 
         # Update graphs with new points,
         # old points are needed to update the legends
-        self.window.update_graph(self.model.getPoint())
+        points = []
+        for i in range(0, self.window.step):
+            points.append(self.model.getPoint().tolist())
+
+        self.window.update_graph(points)
 
     def handler_change_simulated_value(self, i, value):
         self.window.all_data[i][self.window.indexGr] = value
@@ -184,7 +188,9 @@ class Controller():
         _i = 0
         for eq in self.model._e:
             if self.window.simulated_eq[_i]:
-                self.window.leyend.removeItem(eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
+                self.window.leyend.removeItem('<span style="color: black"><strong>' + eq.name + ': ' +
+                                              str(round(self.window.dats[_i], self.window.round)) + ' ' +
+                                              eq.unit + '</strong></span>')
             _i += 1
 
         self.window.dats[i] = value #/ self.model.eq_convert_factors[i]
@@ -194,8 +200,9 @@ class Controller():
         _i = 0
         for eq in self.model._e:
             if self.window.simulated_eq[_i]:
-                self.window.leyend.addItem(self.window.all_curves[_i], eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) + ' ' + eq.unit)
-
+                self.window.leyend.addItem(self.window.all_curves[_i], '<span style="color: black"><strong>' +
+                                           eq.name + ': ' + str(round(self.window.dats[_i], self.window.round)) +
+                                           ' ' + eq.unit + '</strong></span>')
             _i += 1
 
     def handler_restart_graph(self):
@@ -270,16 +277,16 @@ class Controller():
         return self.model.np.linspace(init, end, steps)
 
     def handler_step_change(self):
-        self.window.step = int(self.window.spboxStep.value())
-        self.model.change_scale(self.window.step, self.window.indexGr)
-        self.model.recalculate(self.window.step)
-        linX = self.model.np.linspace(self.window.xDataGraf[self.window.indexGr]
-                        , self.window.xDataGraf[self.window.indexGr] + (self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
-                        , self.window.simulated_cicle_number * self.window.simulated_cicle_steps)
+        self.window.step = int(self.window.ui.ui_menubar.spboxStep.value())
+        #self.model.change_scale(self.window.step, self.window.indexGr)
+        #self.model.recalculate(self.window.step)
+        # linX = self.model.np.linspace(self.window.xDataGraf[self.window.indexGr]
+        #                 , self.window.xDataGraf[self.window.indexGr] + (self.window.step * ((self.window.simulated_cicle_number * self.window.simulated_cicle_steps) - 1))
+        #                 , self.window.simulated_cicle_number * self.window.simulated_cicle_steps)
         #self.model.np.concatenate((arr1, arr2), axis=0)
-        self.window.xDataGraf = self.model.np.append(self.window.xDataGraf[:self.window.indexGr], linX)
+        # self.window.xDataGraf = self.model.np.append(self.window.xDataGraf[:self.window.indexGr], linX)
 
-        print("Main ", self.window.xDataGraf[:self.window.indexGr +10])
+        # print("Main ", self.window.xDataGraf[:self.window.indexGr +10])
 
     def handler_change_model_propertie(self, param, changes):
         for param, change, data in changes:
@@ -299,19 +306,31 @@ class Controller():
                     self.window.all_curves[_i] = self.window.create_curve(_i, self.model._e[_i].name)
                     self.window.all_curves[_i].setData(self.window.xDataGraf[:self.window.indexGr + 1],
                                                        self.window.all_data[_i])
-                    if self.window.alarmMin[_i] != None:
+                    if self.window.alarmMin[_i] is not None:
                         self.window.minLines[_i] = self.window.create_line("MIN", _i)
-                        self.window.ui.ui_sinc_plot.addItem(self.window.minLines[_i])
+                        if self.window.multigraph:
+                            self.window.ui.addItem(_i, self.window.minLines[_i])
+                        else:
+                            self.window.ui.addItem(None, self.window.minLines[_i])
 
-                    if self.window.alarmMax[_i] != None:
+                    if self.window.alarmMax[_i] is not None:
                         self.window.maxLines[_i] = self.window.create_line("MAX", _i)
-                        self.window.ui.ui_sinc_plot.addItem(self.window.maxLines[_i])
+                        if self.window.multigraph:
+                            self.window.ui.addItem(_i, self.window.maxLines[_i])
+                        else:
+                            self.window.ui.addItem(None, self.window.maxLines[_i])
                 else:
                     self.window.all_curves[_i].clear()
-                    if self.window.alarmMin[_i] != None:
-                        self.window.ui.ui_sinc_plot.removeItem(self.window.minLines[_i])
-                    if self.window.alarmMax[_i] != None:
-                        self.window.ui.ui_sinc_plot.removeItem(self.window.maxLines[_i])
+                    if self.window.alarmMin[_i] is not None:
+                        if self.window.multigraph:
+                            self.window.ui.removeItem(_i, self.window.minLines[_i])
+                        else:
+                            self.window.ui.removeItem(None, self.window.minLines[_i])
+                    if self.window.alarmMax[_i] is not None:
+                        if self.window.multigraph:
+                            self.window.ui.removeItem(_i, self.window.maxLines[_i])
+                        else:
+                            self.window.ui.removeItem(None, self.window.maxLines[_i])
 
             elif param.name() == 'Color':
                 print("change color")

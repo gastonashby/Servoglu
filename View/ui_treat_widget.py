@@ -38,7 +38,6 @@ class Ui_TreatDockWidget(QtCore.QObject):
         self.init_tr_sliders()
         self.init_tr_spins()
         self.house_layout.addSpacing(10)
-        # self.init_time_label()
 
         self.house_widget = QtGui.QWidget()
         self.house_widget.setLayout(self.house_layout)
