@@ -60,7 +60,7 @@
    <widget class="QLineEdit" name="patientName">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>238</x>
       <y>40</y>
       <width>211</width>
       <height>20</height>
@@ -85,7 +85,7 @@
      <rect>
       <x>10</x>
       <y>170</y>
-      <width>241</width>
+      <width>221</width>
       <height>16</height>
      </rect>
     </property>
@@ -109,7 +109,7 @@
    <widget class="QLineEdit" name="technicianName">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>238</x>
       <y>100</y>
       <width>211</width>
       <height>20</height>
@@ -119,7 +119,7 @@
    <widget class="QTextEdit" name="simulationAdditionalInfo">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>238</x>
       <y>160</y>
       <width>211</width>
       <height>71</height>
@@ -129,7 +129,7 @@
    <widget class="QLineEdit" name="patientIdentifier">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>238</x>
       <y>70</y>
       <width>211</width>
       <height>20</height>
@@ -152,7 +152,7 @@
    <widget class="QLineEdit" name="technicianIdentifier">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>238</x>
       <y>130</y>
       <width>211</width>
       <height>20</height>
@@ -180,7 +180,7 @@
      <rect>
       <x>200</x>
       <y>110</y>
-      <width>111</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
@@ -197,7 +197,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>350</x>
       <y>100</y>
       <width>42</width>
       <height>31</height>
@@ -219,7 +219,7 @@
    <widget class="QCheckBox" name="plotByPeriods">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>160</x>
       <y>110</y>
       <width>20</width>
       <height>20</height>
@@ -240,7 +240,7 @@
      <rect>
       <x>20</x>
       <y>110</y>
-      <width>111</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
@@ -251,7 +251,7 @@
    <widget class="QCheckBox" name="displayAlarm">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>160</x>
       <y>70</y>
       <width>20</width>
       <height>20</height>
@@ -272,7 +272,7 @@
      <rect>
       <x>20</x>
       <y>70</y>
-      <width>81</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
@@ -296,7 +296,7 @@
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>168</x>
       <y>30</y>
       <width>81</width>
       <height>16</height>
