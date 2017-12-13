@@ -911,8 +911,7 @@
 		</equation>
 
 		<!-- dIdt= -nkl*I(t) - nI/VP*(I(t) - Q(t)) + (P(t) + U(t))/Vp  -->
-		<equation name="I" defaultValue="30" visible="False" description="lbl.Plasma Insulin concentration" unit="mU/l"
-		 alarmMinVal="50" >
+		<equation name="I" defaultValue="30" visible="False" description="lbl.Plasma Insulin concentration" unit="mU/l" >
 			<m:math>
 				<apply>
 					<plus/>
@@ -956,7 +955,7 @@
 		</equation>
 
 
-		<equation name="Q" defaultValue="18" visible="False" description="lbl.Peripheral insulin concentration" unit="mU/l" alarmMaxVal="4">
+		<equation name="Q" defaultValue="18" visible="False" description="lbl.Peripheral insulin concentration" unit="mU/l">
 			<m:math>
 				<apply>
 					<plus/>

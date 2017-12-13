@@ -145,8 +145,8 @@ class Window(QtGui.QMainWindow):
             if eq.simulate:
                 self.leyend.addItem(self.all_curves[_i],
                                     '<span style="color: black"><strong>' + eq.name + ': ' + str(
-                                        round(self.all_data[_i][self.indexGr], self.round)) + ' ' + eq.unit + '<strong></span>')
-            if eq.alMinVal != None:
+                                        round(self.all_data[_i][self.indexGr], self.round)) + ' ' + eq.unit + '</strong></span>')
+            if eq.alMinVal is not None:
                 lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMinVal,
                                               pen=pyqtgraph.mkPen(
                                                   self.ui.dck_model_param_properties.colors[_i],
@@ -466,138 +466,6 @@ class Window(QtGui.QMainWindow):
             msg.setWindowTitle("Error")
             msg.exec_()
 
-    def definite_controls(self):
-
-        self.ui.dck_init_val_controls = Ui_InitialValuesDockWidget()
-        self.ui.dck_init_val_controls.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_init_val_controls.ui_controls_box_widget)
-
-        self.ui.dck_model_param_controls = Ui_ControlsDockWidget()
-        self.ui.dck_model_param_controls.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_controls.ui_controls_box_widget)
-
-        self.ui.dck_model_param_properties = Ui_PropertiesDockWidget()
-        self.ui.dck_model_param_properties.setupUi(self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.ui.dck_model_param_properties.ui_controls_box_widget)
-        self.ui.dck_model_param_properties.parTr.sigTreeStateChanged.connect(
-            self.controller.handler_change_model_propertie)
-
-        self.ui.dck_treat_controls = Ui_TreatDockWidget()
-        self.ui.dck_treat_controls.setupUi(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.ui.dck_treat_controls.ui_controls_box_widget)
-        self.controller.handler_definite_controls()
-
-    def initialize_graphs(self, name):
-        self.modelUbic = name
-        self.xDataGraf = self.controller.model.np.arange(0,
-                                                         self.simulated_cicle_number * self.simulated_cicle_steps - 1,
-                                                         1)
-
-        for gr in self.all_curves:
-            gr.clear()
-        for gr in self.all_treat_curves:
-            gr.clear()
-
-        self.all_data = []
-        self.treatment = []
-        self.all_treat_curves = []
-        self.simulated_eq = []
-        self.simulated_tr = []
-        self.modelTimeUnit = self.controller.model._timeUnit
-
-        self.definite_controls()
-        self.ui.ui_menubar.toggleActivationButtons(True)
-        self.definite_graph()
-
-
-    def definite_graph(self):
-        _i = 0
-        self.dats = self.controller.np.multiply(self.controller.model.getPoint(), self.controller.eq_convert_factors)
-        self.old_dats = self.dats
-
-        sliderVals = self.ui.dck_treat_controls.get_sliders_vals()
-        for aux in self.controller.model._u:
-            if aux.isSlider:
-                self.simulated_tr.append(True)
-                self.treatment.append([sliderVals[_i]])
-                self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
-                _i += 1
-
-        for aux in self.controller.model._u:
-            if aux.graphAsTreatment and not aux.isSlider:
-                self.simulated_tr.append(True)
-                self.treatment.append([sliderVals[_i]])
-                self.all_treat_curves.append(self.create_treat_curve(_i, aux.name))
-                _i += 1
-
-        self.ui.setLabelSim(None, self.modelTimeUnit)
-        self.ui.setTitleSim(None, self.controller.model._modelName[0:50])
-        self.ui.setLabelTr(None, self.modelTimeUnit)
-
-        _i = 0
-        for eq in self.controller.model._e:
-            if eq.simulate:
-                self.simulated_eq.append(True)
-            else:
-                self.simulated_eq.append(False)
-
-            self.all_data.append([self.dats[_i]])
-            self.all_curves.append(self.create_curve(_i, eq.name))
-
-            if eq.simulate:
-                self.leyend.addItem(self.all_curves[_i],
-                                    '<span style="color: black"><strong>' + eq.name + ': ' + str(
-                                        round(self.all_data[_i][self.indexGr], self.round)) + ' ' + eq.unit
-                                    + '</strong></span>')
-            if eq.alMinVal != None:
-                lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMinVal,
-                                                              pen=pyqtgraph.mkPen(
-                                                              self.ui.dck_model_param_properties.colors[_i],
-                                                              style=QtCore.Qt.DashLine,
-                                                              width=2))
-                self.minLines.append(lin1)
-                if eq.simulate:
-                    self.ui.ui_sinc_plot.addItem(lin1)
-
-            if eq.alMaxVal != None:
-                lin1 = pyqtgraph.InfiniteLine(movable=False, angle=0, pos=eq.alMaxVal,
-                                                              pen=pyqtgraph.mkPen(
-                                                              self.ui.dck_model_param_properties.colors[_i],
-                                                              style=QtCore.Qt.DashLine,
-                                                              width=2))
-                self.maxLines.append(lin1)
-                if eq.simulate:
-                    self.ui.ui_sinc_plot.addItem(lin1)
-
-            else:
-                self.all_curves[_i].clear()
-
-            self.ui.dck_model_param_controls.eqCtrlList[_i].setValue(round(self.dats[_i], self.round))
-
-            self.alarms.append(False)
-            self.alarmMin.append(eq.alMinVal)
-            self.alarmMax.append(eq.alMaxVal)
-            self.alarmMsg.append(eq.alDescription)
-
-            _i += 1
-        self.leyend.setParentItem(self.ui.ui_sinc_plot.graphicsItem())
-        self.leyend.updateSize()
-
-
-    def create_line(self, minmax, _i):
-        if minmax == "MIN":
-            return pyqtgraph.InfiniteLine(movable=False, angle=0, pos=self.alarmMin[_i],
-                                          pen=pyqtgraph.mkPen(
-                                              self.ui.dck_model_param_properties.colors[_i],
-                                              style=QtCore.Qt.DashLine,
-                                              width=2))
-        elif minmax == "MAX":
-            return pyqtgraph.InfiniteLine(movable=False, angle=0, pos=self.alarmMax[_i],
-                                          pen=pyqtgraph.mkPen(
-                                              self.ui.dck_model_param_properties.colors[_i],
-                                              style=QtCore.Qt.DashLine,
-                                              width=2))
-
     def close_app(self):
         choice = QtGui.QMessageBox.question(self, 'Exit?', 'Close application?',
                                             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
@@ -627,6 +495,7 @@ class Window(QtGui.QMainWindow):
     def restart_graph(self):
         self.ui.ui_menubar.playAction.setIcon(QtGui.QIcon('View/img/play.png'))
         self.controller.handler_restart_graph()
+        self.ui.ui_menubar.init_time_controlls(self.modelTimeUnit)
 
     def exportResultsToPdf(self):
         self.stop()
