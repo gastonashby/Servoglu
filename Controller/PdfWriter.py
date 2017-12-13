@@ -86,6 +86,7 @@ def replaceVariables(html,pdfTuple,equationsDescription,equationsInitialValues,p
         var = pdfTuple.simulationAdditionalInfo.strip()
     html = html.replace("{{simulationAdditionalInfo}}", var)
 
+
     #Seteamos fecha en idioma local
     locale.setlocale(locale.LC_TIME, '')
     format = '%Y/%m/%d %H:%M:%S'

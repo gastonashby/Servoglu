@@ -13,6 +13,17 @@ class Ui_Menubar(QtGui.QMenuBar):
         super(Ui_Menubar, self).__init__(parent)
         self.parent = MainWindow
 
+        self.playAction = []
+        self.nextAction = []
+        self.resetAction = []
+        self.eventToolBar = []
+        self.alarmToolBar = []
+        self.timeLbl =[]
+        self.alarmPic =[]
+        self.spBoxTimmer = []
+        self.ctrlToolBar = []
+        self.spboxStep = []
+
     def setupUi(self):
         self.ui_menubar = QtWidgets.QMenuBar()
         #
@@ -57,6 +68,7 @@ class Ui_Menubar(QtGui.QMenuBar):
             # keep reference
             action.triggered.connect(lambda checked, lang=lang: self.changeSystemLanguage(lang))
             x += 1
+
 
     def changeSystemLanguage(self,lang):
         box = QtGui.QMessageBox()
@@ -135,10 +147,77 @@ class Ui_Menubar(QtGui.QMenuBar):
                 msg.setWindowTitle("Error")
                 msg.exec_()
 
-    def restart_program(self):
-        """Restarts the current program.
-        Note: this function does not return. Any cleanup action (like
-        saving data) must be done before calling this function."""
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
 
+    def create_toolbars(self):
+        self.playAction = QtGui.QAction(QtGui.QIcon('View/img/play.png'),
+                                        self.parent.controller.languageSupport.languageHash.__getitem__("lbl.PlayPause"), self)
+        self.nextAction = QtGui.QAction(QtGui.QIcon('View/img/next.png'), 'Next step', self)
+        self.resetAction = QtGui.QAction(QtGui.QIcon('View/img/reset.png'), 'Reset simulation', self)
+
+        self.playAction.triggered.connect(self.parent.play_stop)
+        self.nextAction.triggered.connect(self.parent.next_frame)
+        self.resetAction.triggered.connect(self.parent.restart_graph)
+
+        self.ctrlToolBar = self.parent.addToolBar('Simulation controls')
+
+        self.ctrlToolBar.addAction(self.playAction)
+        self.ctrlToolBar.addAction(self.nextAction)
+        self.ctrlToolBar.addAction(self.resetAction)
+
+        self.eventToolBar = self.parent.addToolBar('Time controls')
+        self.alarmToolBar = self.parent.addToolBar('Alarm Toolbar')
+        self.toggleActivationButtons(False)
+
+    def init_time_controlls(self, model_unit):
+
+
+        label1 = QtGui.QLabel("Step: 1 " + model_unit + ".  Time factor: ")
+
+        self.spboxStep = QtGui.QSpinBox()
+        self.spboxStep.setValue(1)
+        self.spboxStep.setMinimum(1)
+        self.spboxStep.setMaximum(500)
+
+        label2 = QtGui.QLabel(" steps every ")
+
+        self.spBoxTimmer = QtGui.QDoubleSpinBox()
+        self.spBoxTimmer.setRange(0.1, 60)
+        self.spBoxTimmer.setValue(0.5)
+        self.spBoxTimmer.setSingleStep(0.1)
+        self.spBoxTimmer.setDecimals (1)
+
+        label3 = QtGui.QLabel(" seconds.")
+
+        self.eventToolBar.addWidget(label1)
+        self.eventToolBar.addWidget(self.spboxStep)
+        self.eventToolBar.addWidget(label2)
+        self.eventToolBar.addWidget(self.spBoxTimmer)
+        self.eventToolBar.addWidget(label3)
+        self.spBoxTimmer.valueChanged.connect(self.parent.timerChange)
+        self.spboxStep.valueChanged.connect(self.parent.controller.handler_step_change)
+        self.toggleActivationButtons(True)
+
+        self.alarmPic = QtGui.QLabel(self)
+        self.alarmToolBar.addWidget(self.alarmPic)
+
+        label = QtGui.QLabel("Simulation time (D:HH:MM:SS): ")
+        self.timeLbl = QtGui.QLabel("0:00:00:00")
+        myFont = QtGui.QFont()
+        myFont.setBold(True)
+        myFont.setPointSize(11)
+        self.timeLbl.setFont(myFont)
+
+        self.eventToolBar.addWidget(QtGui.QLabel("   "))
+        self.eventToolBar.addWidget(label)
+        self.eventToolBar.addWidget(self.timeLbl)
+
+        self.parent.timerChange()
+
+    def toggleActivationButtons(self, enabled):
+        self.nextAction.setEnabled(enabled)
+        self.resetAction.setEnabled(enabled)
+        self.playAction.setEnabled(enabled)
+        if self.spboxStep != []:
+            self.spboxStep.setEnabled(enabled)
+            self.spBoxTimmer.setEnabled(enabled)
+        self.export_action.setEnabled(enabled)
