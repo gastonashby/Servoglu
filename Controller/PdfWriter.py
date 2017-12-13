@@ -192,7 +192,7 @@ def generatePlotsWithTreatment(simulatedEquations,simulatedTreatment,results,tre
             for u in userDefined:
                 if simulatedTreatment[h]:
                     plt.plot(xData[i * plotSize:(plotSize * (i + 1)) + 1],
-                             treatment[i * plotSize:(plotSize * (i + 1)) + 1, h],'-r' ,label=u.description + " (" + u.unit + ")")
+                             treatment[i * plotSize:(plotSize * (i + 1)) + 1, h],label=u.description + " (" + u.unit + ")")
                 h += 1
             plt.legend(loc=2, prop={'size': 6})
             plt.xlabel("time" + "(" + timeUnit + ")")
